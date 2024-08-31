@@ -83,6 +83,11 @@ public class Grid<T>
     {
         return new Vector2(x, y) * cellSize + origin;
     }
+    
+    public Vector2 GetWorldPositionWithCellOffset(int x, int y)
+    {
+        return new Vector2(x, y) * cellSize + origin + cellOffset;
+    }
 
 #if UNITY_EDITOR
     private void DrawDebugData()

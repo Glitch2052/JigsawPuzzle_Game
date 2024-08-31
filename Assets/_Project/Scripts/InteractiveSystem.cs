@@ -20,6 +20,7 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public Camera Camera { get; protected set; }
     
     public static readonly float DRAG_Z_ORDER = -45f;
+    public static readonly float SnapThreshold = 0.8f;
 
     private void Awake()
     {

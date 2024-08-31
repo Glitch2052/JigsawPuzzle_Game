@@ -14,6 +14,10 @@ public class PuzzleGenerator : MonoBehaviour
     [Space(25), Header("Puzzle Data")]
     [SerializeField] private PuzzlePiece piecePrefab;
     public EdgeShapeSO edgeShapeSO;
+
+    [Space(25), Header("Additional Data")] 
+    [SerializeField] private SpriteRenderer border;
+    [SerializeField] private Transform refImage;
     
     public Grid<GridObject> PuzzleGrid { get; private set; }
 
@@ -42,6 +46,14 @@ public class PuzzleGenerator : MonoBehaviour
         iSystem = interactiveSystem;
         edgeShapeSO.Init(cellSize);
         edgeShapeSO.EvaluateAllPossibleSplinesCombinationOnMainThread();
+
+        if (border)
+        {
+            border.gameObject.SetActive(true);
+            border.size = new Vector2(xWidth, yWidth) * 2 + new Vector2(0.27f, 0.27f);
+        }
+        
+        UpdateRefImage();
     }
 
     public void GenerateGrid(int xSize, int ySize)
@@ -68,8 +80,8 @@ public class PuzzleGenerator : MonoBehaviour
         
         PuzzleGrid.IterateOverGridObjects((x, y, gridObj) =>
         {
-            gridObj.puzzlePiece.GetMeshDataFromJob();
-            gridObj.puzzlePiece.UpdateMesh();
+            gridObj.desiredPuzzlePiece.GetMeshDataFromJob();
+            gridObj.desiredPuzzlePiece.UpdateMesh();
         });
     }
 
@@ -77,17 +89,17 @@ public class PuzzleGenerator : MonoBehaviour
     {
         GridObject gridObject = new GridObject(grid, x, y);
         Vector3 puzzlePos = grid.GetWorldPosition(x, y) + grid.cellOffset;
-        gridObject.puzzlePiece = Instantiate(piecePrefab, puzzlePos, Quaternion.identity,iSystem.transform);
+        gridObject.desiredPuzzlePiece = Instantiate(piecePrefab, puzzlePos, Quaternion.identity,iSystem.transform);
         
         //Init Puzzle Piece
-        gridObject.puzzlePiece.SetISystem(iSystem);
-        gridObject.puzzlePiece.SetData(cellSize,x,y);
+        gridObject.desiredPuzzlePiece.SetISystem(iSystem);
+        gridObject.desiredPuzzlePiece.SetData(cellSize,x,y);
         
         //Choose all 4 EdgeType for Puzzle Piece
-        CalculateEdges(gridObject.puzzlePiece, grid ,x, y);
+        CalculateEdges(gridObject.desiredPuzzlePiece, grid ,x, y);
         
         //Generate Mesh
-        meshGenerationJobHandles.Add(gridObject.puzzlePiece.ScheduleMeshDataGenerationJob());
+        meshGenerationJobHandles.Add(gridObject.desiredPuzzlePiece.ScheduleMeshDataGenerationJob());
         
         return gridObject;
     }
@@ -96,9 +108,9 @@ public class PuzzleGenerator : MonoBehaviour
 
     private void CalculateEdges(PuzzlePiece puzzlePiece,Grid<GridObject> grid ,int x, int y)
     {
-        puzzlePiece.leftEdge = x == 0 ? EdgeType.Flat : GetComplimentaryEdgeType(grid.GetGridObject(x - 1, y).puzzlePiece.rightEdge);
+        puzzlePiece.leftEdge = x == 0 ? EdgeType.Flat : GetComplimentaryEdgeType(grid.GetGridObject(x - 1, y).desiredPuzzlePiece.rightEdge);
         puzzlePiece.rightEdge = (x == xWidth - 1) ? EdgeType.Flat : GetRandomEdgeType();
-        puzzlePiece.bottomEdge = y == 0 ? EdgeType.Flat : GetComplimentaryEdgeType(grid.GetGridObject(x, y - 1).puzzlePiece.topEdge);
+        puzzlePiece.bottomEdge = y == 0 ? EdgeType.Flat : GetComplimentaryEdgeType(grid.GetGridObject(x, y - 1).desiredPuzzlePiece.topEdge);
         puzzlePiece.topEdge = (y == yWidth - 1) ? EdgeType.Flat : GetRandomEdgeType();
     }
 
@@ -110,6 +122,14 @@ public class PuzzleGenerator : MonoBehaviour
     EdgeType GetRandomEdgeType()
     {
         return (EdgeType)Random.Range(1, 3); // Randomly returns Knob or Socket
+    }
+
+    private void UpdateRefImage()
+    {
+        if (refImage)
+        {
+            refImage.localScale = new Vector3(xWidth * 2, yWidth * 2, 1);
+        }
     }
     #endregion
 }

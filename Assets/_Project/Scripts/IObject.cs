@@ -58,8 +58,7 @@ public class IObject : MonoBehaviour
             currPos = prevPos = transform.position;
             draggingPointerId = pointerId;
             
-            //Set Position On Pointer Down 
-            // Position = Position.SetZ(InteractiveSystem.DRAG_Z_ORDER);
+            OnSelected();
 
             return this;
         }
@@ -82,6 +81,7 @@ public class IObject : MonoBehaviour
     {
         if (draggingPointerId == pointerId)
         {
+            OnReleased();
             draggingPointerId = EMPTY;
             return this;
         }
@@ -97,6 +97,16 @@ public class IObject : MonoBehaviour
         if (iSystem) iSystem.RegisterIEntity(this);
     }
 
+    protected virtual void OnSelected()
+    {
+        
+    }
+
+    protected virtual void OnReleased()
+    {
+        
+    }
+
     public virtual void OnRegistered()
     {
         iSystem.RegisterTouchCollider(MainCollider,this);
@@ -106,4 +116,5 @@ public class IObject : MonoBehaviour
     {
         iSystem.UnRegisterTouchCollider(MainCollider);
     }
+    
 }

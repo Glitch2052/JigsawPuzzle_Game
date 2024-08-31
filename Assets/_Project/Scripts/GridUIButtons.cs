@@ -12,7 +12,7 @@ public class GridUIButtons : MonoBehaviour
     {
         PuzzleGenerator.Instance.PuzzleGrid.IterateOverGridObjects((x,y, gridObj) =>
         {
-            Destroy(gridObj.puzzlePiece.gameObject);
+            Destroy(gridObj.desiredPuzzlePiece.gameObject);
         });
 
         float startTime = Time.realtimeSinceStartup;

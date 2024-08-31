@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -167,5 +168,32 @@ public class PuzzlePiece : IObject
     {
         Debug.Log($"Pointer drag on puzzle piece having coord {gridCoordinate}");
         return base.OnPointerDrag(worldPos, pointerId);
+    }
+
+    protected override void OnSelected()
+    {
+        //Set Position On Pointer Down
+        Position = Position.SetZ(InteractiveSystem.DRAG_Z_ORDER);
+    }
+
+    protected override void OnReleased()
+    {
+        Vector2 gridPos = PuzzleGenerator.Instance.PuzzleGrid.GetWorldPositionWithCellOffset(gridCoordinate.x, gridCoordinate.y);
+        if (Vector2.Distance(gridPos, Position) < InteractiveSystem.SnapThreshold)
+        {
+            //disable Input by removing Isystem
+            SetISystem(null);
+            
+            //set grid object
+            var gridObject = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(gridCoordinate.x, gridCoordinate.y);
+            gridObject.AssignTargetPuzzlePiece(this);
+            
+            transform.DOMove(gridPos, 0.14f).SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlaced;
+        }
+    }
+
+    private void OnPuzzlePiecePlaced()
+    {
+        //Play PopSound To Let Know Puzzle Piece is fitted
     }
 }
