@@ -18,7 +18,8 @@ public class PuzzleGenerator : MonoBehaviour
     [Space(25), Header("Additional Data")] 
     [SerializeField] private SpriteRenderer border;
     [SerializeField] private Transform refImage;
-    
+
+    public float CellSize => cellSize;
     public Grid<GridObject> PuzzleGrid { get; private set; }
 
     private InteractiveSystem iSystem;

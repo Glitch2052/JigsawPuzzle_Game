@@ -60,6 +60,17 @@ public class Grid<T>
         return default;
     }
 
+    public bool GetGridObject(int x, int y, out T gridObject)
+    {
+        if (x >= 0 && x < width && y >= 0 && y < height)
+        {
+            gridObject = gridArray[x, y];
+            return true;
+        }
+        gridObject = default;
+        return false;
+    }
+
     public T GetGridObject(Vector2 worldPosition)
     {
         (int x, int y) = GetXY(worldPosition);

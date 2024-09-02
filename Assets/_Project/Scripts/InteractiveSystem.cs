@@ -20,7 +20,8 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public Camera Camera { get; protected set; }
     
     public static readonly float DRAG_Z_ORDER = -45f;
-    public static readonly float SnapThreshold = 0.8f;
+    public static float gridSnapThreshold;
+    public static float neighbourSnapThreshold;
 
     private void Awake()
     {
@@ -51,7 +52,9 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public void Init()
     {
         inputSystem = new InputSystem(this);
-        
+
+        gridSnapThreshold = puzzleGenerator.CellSize * 0.5f;
+        neighbourSnapThreshold = puzzleGenerator.CellSize * 1.5f;
         puzzleGenerator.Init(this);
         puzzleGenerator.GenerateGrid();
     }

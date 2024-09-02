@@ -12,6 +12,8 @@ public class PuzzlePiece : IObject
     [SerializeField] private MeshRenderer meshRenderer;
 
     [HideInInspector] public Vector2Int gridCoordinate;
+    private Dictionary<int,Vector2Int> neighbourCoordinates;
+    private float size;
 
     [Space(20),Header("EdgeInfo")]
     public EdgeType topEdge;
@@ -40,9 +42,13 @@ public class PuzzlePiece : IObject
     {
         mesh = new Mesh();
         meshFilter.mesh = mesh;
-        
+
+        size = cellSize;
         MainCollider.size = Vector2.one * cellSize;
         gridCoordinate = new Vector2Int(x, y);
+        
+        //Get Neighbouring Grid Coordinates
+        GetNeighbouringPieceGridCoordinates();
     }
     
     public JobHandle ScheduleMeshDataGenerationJob()
@@ -158,6 +164,17 @@ public class PuzzlePiece : IObject
         mesh.uv2 = meshUvs;
     }
 
+    private void GetNeighbouringPieceGridCoordinates()
+    {
+        neighbourCoordinates = new Dictionary<int, Vector2Int>
+        {
+            {0, new (gridCoordinate.x - 1, gridCoordinate.y)}, 
+            {1, new (gridCoordinate.x, gridCoordinate.y + 1)},
+            {2, new (gridCoordinate.x + 1, gridCoordinate.y)},
+            {3, new (gridCoordinate.x, gridCoordinate.y - 1)}
+        };
+    }
+
     public override IObject OnPointerDown(Vector2 worldPos, int pointerId)
     {
         Debug.Log($"Pointer down on Puzzle Piece having coord {gridCoordinate}");
@@ -178,8 +195,9 @@ public class PuzzlePiece : IObject
 
     protected override void OnReleased()
     {
+        //Try Placement With Puzzle Board
         Vector2 gridPos = PuzzleGenerator.Instance.PuzzleGrid.GetWorldPositionWithCellOffset(gridCoordinate.x, gridCoordinate.y);
-        if (Vector2.Distance(gridPos, Position) < InteractiveSystem.SnapThreshold)
+        if (Vector2.Distance(gridPos, Position) < InteractiveSystem.gridSnapThreshold)
         {
             //disable Input by removing Isystem
             SetISystem(null);
@@ -190,10 +208,40 @@ public class PuzzlePiece : IObject
             
             transform.DOMove(gridPos, 0.14f).SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlaced;
         }
+        
+        //Try Placement With Neighbouring Puzzle Piece
+        foreach (KeyValuePair<int,Vector2Int> neighbourKeyValue in neighbourCoordinates)
+        {
+            Vector2Int neighbourGridPos = neighbourKeyValue.Value;
+            
+            if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y, out GridObject gridObject))
+                continue;
+
+            Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * neighbourKeyValue.Key) * Vector2.left;
+        }
+        
+        for (int i = 0; i < neighbourCoordinates.Count; i++)
+        {
+            Vector2Int neighbourGridPos = neighbourCoordinates[i];
+            
+            if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y, out GridObject gridObject))
+                continue;
+            
+            PuzzlePiece neighbour = gridObject.desiredPuzzlePiece;
+            if (Vector2.Distance(neighbour.Position, Position) < (size + InteractiveSystem.gridSnapThreshold))
+            {
+                
+            }
+        }
     }
 
     private void OnPuzzlePiecePlaced()
     {
         //Play PopSound To Let Know Puzzle Piece is fitted
+    }
+
+    private bool IsNeighbourWithinRange(PuzzlePiece neighbour)
+    {
+        return false;
     }
 }
