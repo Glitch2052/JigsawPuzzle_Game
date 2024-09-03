@@ -5,7 +5,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
 public class PuzzlePiece : IObject
 {
     [SerializeField] private MeshFilter meshFilter;
@@ -13,7 +12,7 @@ public class PuzzlePiece : IObject
 
     [HideInInspector] public Vector2Int gridCoordinate;
     private Dictionary<int,Vector2Int> neighbourCoordinates;
-    private float size;
+    private IOGroupedPiece group;
 
     [Space(20),Header("EdgeInfo")]
     public EdgeType topEdge;
@@ -43,7 +42,6 @@ public class PuzzlePiece : IObject
         mesh = new Mesh();
         meshFilter.mesh = mesh;
 
-        size = cellSize;
         MainCollider.size = Vector2.one * cellSize;
         gridCoordinate = new Vector2Int(x, y);
         
@@ -177,7 +175,9 @@ public class PuzzlePiece : IObject
 
     public override IObject OnPointerDown(Vector2 worldPos, int pointerId)
     {
-        Debug.Log($"Pointer down on Puzzle Piece having coord {gridCoordinate}");
+        if (group)
+            return group.OnPointerDown(worldPos, pointerId);
+        
         return base.OnPointerDown(worldPos, pointerId);
     }
 
@@ -218,19 +218,18 @@ public class PuzzlePiece : IObject
                 continue;
 
             Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * neighbourKeyValue.Key) * Vector2.left;
-        }
-        
-        for (int i = 0; i < neighbourCoordinates.Count; i++)
-        {
-            Vector2Int neighbourGridPos = neighbourCoordinates[i];
-            
-            if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y, out GridObject gridObject))
-                continue;
-            
             PuzzlePiece neighbour = gridObject.desiredPuzzlePiece;
-            if (Vector2.Distance(neighbour.Position, Position) < (size + InteractiveSystem.gridSnapThreshold))
+            if (IsNeighbourWithinRange(neighbour, requiredDir))
             {
-                
+                //Add It To Group
+                //Case 1 : neighbour and this is not in a group
+                if (neighbour.group == null && group == null)
+                {
+                    
+                }
+                //Case 2 : neighbour is in a group and this is not in a group
+                //case 3 : neighbour is not in a group and this is in a group
+                //case 4 : both are in different group
             }
         }
     }
@@ -240,8 +239,12 @@ public class PuzzlePiece : IObject
         //Play PopSound To Let Know Puzzle Piece is fitted
     }
 
-    private bool IsNeighbourWithinRange(PuzzlePiece neighbour)
+    private bool IsNeighbourWithinRange(PuzzlePiece neighbour, Vector2 dirRef)
     {
-        return false;
+        float distBetweenPiece = Vector2.Distance(neighbour.Position, Position);
+        bool isWithinRange = distBetweenPiece > InteractiveSystem.gridSnapThreshold && distBetweenPiece < InteractiveSystem.neighbourSnapThreshold;
+        bool isAligned = Vector2.Angle(dirRef, neighbour.Position - Position) < 45;
+
+        return isWithinRange && isAligned;
     }
 }

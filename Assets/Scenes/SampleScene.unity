@@ -1616,6 +1616,7 @@ MonoBehaviour:
   yWidth: 15
   cellSize: 2
   piecePrefab: {fileID: 5979877976914833657, guid: 8723118e076267046908b6049405bc8f, type: 3}
+  groupedPiecePrefab: {fileID: 0}
   edgeShapeSO: {fileID: 11400000, guid: a2a996d74e249af499628b5494026a06, type: 2}
   border: {fileID: 2032979606}
   refImage: {fileID: 1485848462}

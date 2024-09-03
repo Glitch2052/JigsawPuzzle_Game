@@ -13,6 +13,7 @@ public class PuzzleGenerator : MonoBehaviour
 
     [Space(25), Header("Puzzle Data")]
     [SerializeField] private PuzzlePiece piecePrefab;
+    [SerializeField] private IOGroupedPiece groupedPiecePrefab;
     public EdgeShapeSO edgeShapeSO;
 
     [Space(25), Header("Additional Data")] 
@@ -133,4 +134,9 @@ public class PuzzleGenerator : MonoBehaviour
         }
     }
     #endregion
+
+    public void AddPuzzlePieceToGroup(PuzzlePiece puzzlePiece, IOGroupedPiece group = null)
+    {
+        
+    }
 }
