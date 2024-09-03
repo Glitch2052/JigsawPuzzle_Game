@@ -10,9 +10,9 @@ public class PuzzlePiece : IObject
     [SerializeField] private MeshFilter meshFilter;
     [SerializeField] private MeshRenderer meshRenderer;
 
+    [HideInInspector] public IOGroupedPiece group;
     [HideInInspector] public Vector2Int gridCoordinate;
     private Dictionary<int,Vector2Int> neighbourCoordinates;
-    private IOGroupedPiece group;
 
     [Space(20),Header("EdgeInfo")]
     public EdgeType topEdge;
@@ -195,6 +195,8 @@ public class PuzzlePiece : IObject
 
     protected override void OnReleased()
     {
+        Position = Position.SetZ(0);
+        
         //Try Placement With Puzzle Board
         Vector2 gridPos = PuzzleGenerator.Instance.PuzzleGrid.GetWorldPositionWithCellOffset(gridCoordinate.x, gridCoordinate.y);
         if (Vector2.Distance(gridPos, Position) < InteractiveSystem.gridSnapThreshold)
@@ -225,7 +227,12 @@ public class PuzzlePiece : IObject
                 //Case 1 : neighbour and this is not in a group
                 if (neighbour.group == null && group == null)
                 {
-                    
+                    transform.DOMove((Vector2)neighbour.Position - requiredDir.normalized * PuzzleGenerator.Instance.CellSize, 0.14f)
+                        .SetEase(Ease.OutQuad).onComplete += () =>
+                    {
+                        var newGroup = PuzzleGenerator.Instance.AddPuzzlePieceToGroup(neighbour);
+                        PuzzleGenerator.Instance.AddPuzzlePieceToGroup(this, newGroup);
+                    };
                 }
                 //Case 2 : neighbour is in a group and this is not in a group
                 //case 3 : neighbour is not in a group and this is in a group

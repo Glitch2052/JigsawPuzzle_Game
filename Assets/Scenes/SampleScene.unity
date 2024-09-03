@@ -1612,8 +1612,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1caa887f28ee72943a1072034702390b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xWidth: 15
-  yWidth: 15
+  xWidth: 5
+  yWidth: 5
   cellSize: 2
   piecePrefab: {fileID: 5979877976914833657, guid: 8723118e076267046908b6049405bc8f, type: 3}
   groupedPiecePrefab: {fileID: 0}

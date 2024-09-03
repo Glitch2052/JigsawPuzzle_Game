@@ -11,6 +11,8 @@ public class IObject : MonoBehaviour
     protected int draggingPointerId = EMPTY;
     private Vector2 offset, speed, prevPos, currPos, touchPoint, speedMultiplier = new (20f, 20f);
     [field: SerializeField] public BoxCollider2D MainCollider { get; private set; }
+    
+    public IObject parent;
 
     public Vector3 Position
     {
@@ -118,4 +120,36 @@ public class IObject : MonoBehaviour
         iSystem.UnRegisterTouchCollider(MainCollider);
     }
     
+    public virtual void SetParent(IObject parent, Transform parentTransform = null)
+    {
+        if (parent)
+        {
+            transform.SetParent(parentTransform ? parentTransform : parent.transform);
+        }
+        else
+        {
+            if (iSystem == null)
+            {
+                SetISystem(iSystem);
+            }
+
+            transform.SetParent(iSystem.transform);
+        }
+
+        if (this.parent) this.parent.OnChildRemoved(this);
+
+        this.parent = parent;
+
+        if (this.parent) this.parent.OnChildAttached(this);
+    }
+    
+    protected virtual void OnChildAttached(IObject child)
+    {
+        // Debug.Log("OnChildAttached(" + child.name + ")", gameObject);
+    }
+
+    protected virtual void OnChildRemoved(IObject child)
+    {
+        // Debug.Log("OnChildRemoved(" + child.name + ")", gameObject);
+    }
 }

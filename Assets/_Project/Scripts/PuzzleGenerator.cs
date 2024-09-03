@@ -135,8 +135,16 @@ public class PuzzleGenerator : MonoBehaviour
     }
     #endregion
 
-    public void AddPuzzlePieceToGroup(PuzzlePiece puzzlePiece, IOGroupedPiece group = null)
+    public IOGroupedPiece AddPuzzlePieceToGroup(PuzzlePiece puzzlePiece, IOGroupedPiece group = null)
     {
-        
+        if (group == null)
+        {
+            group = Instantiate(groupedPiecePrefab, puzzlePiece.Position, Quaternion.identity, iSystem.transform);
+            group.SetISystem(iSystem);
+        }
+
+        puzzlePiece.group = group;
+        puzzlePiece.transform.parent = group.transform;
+        return group;
     }
 }
