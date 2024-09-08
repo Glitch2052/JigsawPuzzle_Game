@@ -12,7 +12,7 @@ public class PuzzlePiece : IObject
 
     [HideInInspector] public IOGroupedPiece group;
     [HideInInspector] public Vector2Int gridCoordinate;
-    private Dictionary<int,Vector2Int> neighbourCoordinates;
+    public Dictionary<int,Vector2Int> neighbourCoordinates;
 
     [Space(20),Header("EdgeInfo")]
     public EdgeType topEdge;
@@ -176,8 +176,9 @@ public class PuzzlePiece : IObject
     public override IObject OnPointerDown(Vector2 worldPos, int pointerId)
     {
         if (group)
-            return group.OnPointerDown(worldPos, pointerId);
-        
+        {
+            return group.isMoving ? null : group.OnPointerDown(worldPos, pointerId);
+        }
         return base.OnPointerDown(worldPos, pointerId);
     }
 
@@ -189,13 +190,12 @@ public class PuzzlePiece : IObject
 
     protected override void OnSelected()
     {
-        //Set Position On Pointer Down
-        Position = Position.SetZ(InteractiveSystem.DRAG_Z_ORDER);
+        base.OnSelected();
     }
 
     protected override void OnReleased()
     {
-        Position = Position.SetZ(0);
+        base.OnReleased();
         
         //Try Placement With Puzzle Board
         Vector2 gridPos = PuzzleGenerator.Instance.PuzzleGrid.GetWorldPositionWithCellOffset(gridCoordinate.x, gridCoordinate.y);
@@ -208,50 +208,83 @@ public class PuzzlePiece : IObject
             var gridObject = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(gridCoordinate.x, gridCoordinate.y);
             gridObject.AssignTargetPuzzlePiece(this);
             
-            transform.DOMove(gridPos, 0.14f).SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlaced;
+            transform.DOMove(gridPos, 0.14f).SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlacedOnBoard;
+            return;
         }
-        
+
         //Try Placement With Neighbouring Puzzle Piece
-        foreach (KeyValuePair<int,Vector2Int> neighbourKeyValue in neighbourCoordinates)
+        foreach (KeyValuePair<int, Vector2Int> neighbourKeyValue in neighbourCoordinates)
         {
+            int sideIndex = neighbourKeyValue.Key;
             Vector2Int neighbourGridPos = neighbourKeyValue.Value;
-            
-            if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y, out GridObject gridObject))
+
+            if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y,
+                    out GridObject gridObject))
                 continue;
 
-            Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * neighbourKeyValue.Key) * Vector2.left;
+            Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * sideIndex) * Vector2.left;
             PuzzlePiece neighbour = gridObject.desiredPuzzlePiece;
             if (IsNeighbourWithinRange(neighbour, requiredDir))
             {
+                SetISystem(null);
+                neighbourCoordinates.Remove(sideIndex);
+                neighbour.neighbourCoordinates.Remove(GetOppositeSideIndex(sideIndex));
+
                 //Add It To Group
                 //Case 1 : neighbour and this is not in a group
                 if (neighbour.group == null && group == null)
                 {
-                    transform.DOMove((Vector2)neighbour.Position - requiredDir.normalized * PuzzleGenerator.Instance.CellSize, 0.14f)
-                        .SetEase(Ease.OutQuad).onComplete += () =>
-                    {
-                        var newGroup = PuzzleGenerator.Instance.AddPuzzlePieceToGroup(neighbour);
-                        PuzzleGenerator.Instance.AddPuzzlePieceToGroup(this, newGroup);
-                    };
+                    var newGroup = PuzzleGenerator.Instance.GetPuzzlePiecesGroup(neighbour.Position);
+                    newGroup.AddPuzzlePieceToGroup(neighbour);
+                    newGroup.AddPuzzlePieceToGroup(this);
+                    transform.DOLocalMove(
+                            (Vector2)neighbour.LocalPosition -
+                            requiredDir.normalized * PuzzleGenerator.Instance.CellSize, 0.14f)
+                        .SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlacedWithNeighbour;
                 }
+
                 //Case 2 : neighbour is in a group and this is not in a group
-                //case 3 : neighbour is not in a group and this is in a group
-                //case 4 : both are in different group
+                if (neighbour.group != null && group == null)
+                {
+                    var newGroup = neighbour.group;
+                    newGroup.AddPuzzlePieceToGroup(this);
+                    transform.DOLocalMove(
+                            (Vector2)neighbour.LocalPosition -
+                            requiredDir.normalized * PuzzleGenerator.Instance.CellSize, 0.14f)
+                        .SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlacedWithNeighbour;
+                }
+
+                break;
             }
         }
     }
 
-    private void OnPuzzlePiecePlaced()
+    private void OnPuzzlePiecePlacedOnBoard()
     {
+        transform.parent = PuzzleGenerator.Instance.transform;
         //Play PopSound To Let Know Puzzle Piece is fitted
+    }
+
+    private void OnPuzzlePiecePlacedWithNeighbour()
+    {
+        SetISystem(group.iSystem);
     }
 
     private bool IsNeighbourWithinRange(PuzzlePiece neighbour, Vector2 dirRef)
     {
         float distBetweenPiece = Vector2.Distance(neighbour.Position, Position);
         bool isWithinRange = distBetweenPiece > InteractiveSystem.gridSnapThreshold && distBetweenPiece < InteractiveSystem.neighbourSnapThreshold;
-        bool isAligned = Vector2.Angle(dirRef, neighbour.Position - Position) < 45;
+        bool isAligned = Vector2.Angle(dirRef, neighbour.Position - Position) < 30;
 
         return isWithinRange && isAligned;
+    }
+
+    // 0 => returns 2
+    // 1 => returns 3
+    // 2 => returns 0
+    // 3 => returns 1
+    public static int GetOppositeSideIndex(int index)
+    {
+        return (index + 2) % 4;
     }
 }

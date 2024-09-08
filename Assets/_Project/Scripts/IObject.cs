@@ -12,12 +12,18 @@ public class IObject : MonoBehaviour
     private Vector2 offset, speed, prevPos, currPos, touchPoint, speedMultiplier = new (20f, 20f);
     [field: SerializeField] public BoxCollider2D MainCollider { get; private set; }
     
-    public IObject parent;
+    protected IObject parent;
 
     public Vector3 Position
     {
         get => transform.position;
         set => OnPositionUpdate(value);
+    }
+
+    public Vector3 LocalPosition
+    {
+        get => transform.localPosition;
+        set => transform.localPosition = value;
     }
     public virtual void Init()
     {
@@ -102,12 +108,13 @@ public class IObject : MonoBehaviour
 
     protected virtual void OnSelected()
     {
-        
+        //Set Position On Pointer Down
+        Position = Position.SetZ(InteractiveSystem.DRAG_Z_ORDER);
     }
 
     protected virtual void OnReleased()
     {
-        
+        Position = Position.SetZ(0);
     }
 
     public virtual void OnRegistered()

@@ -147,4 +147,11 @@ public class PuzzleGenerator : MonoBehaviour
         puzzlePiece.transform.parent = group.transform;
         return group;
     }
+
+    public IOGroupedPiece GetPuzzlePiecesGroup(Vector3 pos)
+    {
+        IOGroupedPiece group = Instantiate(groupedPiecePrefab, pos, Quaternion.identity, iSystem.transform);
+        group.SetISystem(iSystem);
+        return group;
+    }
 }

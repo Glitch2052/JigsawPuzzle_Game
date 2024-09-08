@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler,IPointerUpHandler
 {
     public PuzzleGenerator puzzleGenerator;
+    public PuzzlePalette palette;
     public CameraController cameraController;
     
     public SortedDictionary<int, IObject> iObjects;
@@ -57,6 +58,8 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         neighbourSnapThreshold = puzzleGenerator.CellSize * 1.5f;
         puzzleGenerator.Init(this);
         puzzleGenerator.GenerateGrid();
+
+        palette.SetISystem(this);
     }
     
     public void RegisterIEntity(IObject iEntity)
