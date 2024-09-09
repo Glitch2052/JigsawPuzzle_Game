@@ -5,8 +5,7 @@
     public int Y { get; set; }
 
     public PuzzlePiece desiredPuzzlePiece;
-
-    public PuzzlePiece targetPuzzlePiece;
+    private PuzzlePiece targetPuzzlePiece;
 
     public GridObject(Grid<GridObject> grid, int x, int y)
     {

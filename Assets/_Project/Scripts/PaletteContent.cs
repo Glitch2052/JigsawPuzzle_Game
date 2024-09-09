@@ -1,32 +1,58 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PaletteContent : MonoBehaviour
 {
+    public float zOrder;
+    public float gap;
+    public float restLine;
+    
     private PuzzlePalette palette;
     public const float DRAG_THRESHOLD = 0.5f;
     public const int EMPTY = -999;
     private int dragPointerId = EMPTY;
-
+    
     private PuzzlePiece dragObject;
     private float targetPosition;
     Vector2 dragStart;
     private float width, leftLimit, rightLimit, leftLimitSoft, rightLimitSoft, lastTouchX, currentTouchX;
     private float offset;
+    private float halfCamWidth, halfCellSize;
 
     private float velocity;
     private float minVelocityThreshold = 0.015f;
     private float decelerationRate = 0.95f;
+
+    private List<PuzzlePiece> puzzlePieces;
+    
+    public float Width => gap * (puzzlePieces.Count + 1);
     
     public void Init(PuzzlePalette palette)
     {
+        puzzlePieces = new List<PuzzlePiece>();
+        PuzzleGenerator.Instance.PuzzleGrid.IterateOverGridObjects((x, y, gridObject) =>
+        {
+            puzzlePieces.Add(gridObject.desiredPuzzlePiece);
+            gridObject.desiredPuzzlePiece.SetParent(palette,transform);
+            gridObject.desiredPuzzlePiece.LocalPosition = Vector3.zero;
+        });
+
+        gap += PuzzleGenerator.Instance.CellSize;
         this.palette = palette;
         targetPosition = transform.localPosition.x;
-        leftLimit = -20f;
-        rightLimit = 20f;
+
+        halfCamWidth = palette.iSystem.cameraSize.x * 0.5f;
+        halfCellSize = PuzzleGenerator.Instance.CellSize * 0.5f + 0.5f;
+        leftLimit = Mathf.Min(-Width * 0.5f + halfCamWidth + halfCellSize, 0);
+        rightLimit = Mathf.Max(Width * 0.5f - halfCamWidth - halfCellSize, 0);
     }
 
-    public void UpdatePositions()
+    public void IUpdate()
     {
+        UpdatePositions();
+
+        leftLimit = Mathf.Min(-Width * 0.5f + halfCamWidth + halfCellSize, 0);
+        rightLimit = Mathf.Max(Width * 0.5f - halfCamWidth - halfCellSize, 0);
         if (Mathf.Abs(velocity) > minVelocityThreshold)
         {
             targetPosition += velocity;
@@ -44,14 +70,30 @@ public class PaletteContent : MonoBehaviour
 
         transform.localPosition = pos;
     }
+
+    private void UpdatePositions()
+    {
+        float x = -Width * 0.5f + gap;
+        float y = restLine;
+        float z = zOrder;
+        Vector3 pos = Vector3.zero;
+        
+        foreach (PuzzlePiece piece in puzzlePieces)
+        {
+            // if (palette.IsShowing != State.Visible) y -= 1;
+            pos.Set(x, y, z);
+            piece.LocalPosition = Vector3.Lerp(piece.LocalPosition, pos, 0.1f);
+
+            x += gap;
+        }
+    }
     
     public IObject OnPointerDown(Vector2 worldPos, int pointerId)
     {
         if (dragPointerId != EMPTY)
             return null;
 
-        // dragObject = GetDragCharacter(worldPos);
-        // if (dragObject is PuzzlePiece piece) dragObject = null;
+        dragObject = GetDraggedPiece(worldPos);
 
         dragStart = worldPos;
         dragPointerId = pointerId;
@@ -70,7 +112,7 @@ public class PaletteContent : MonoBehaviour
         if (dragObject && (worldPos - dragStart).y >= DRAG_THRESHOLD)
         {
             // palette.TransferObjectToCurrentScene(dragObject);
-            // RemoveObjectFromPalette(dragObject);
+            RemoveObjectFromPalette(dragObject);
             dragPointerId = EMPTY;
             return dragObject.OnPointerDown(worldPos, pointerId);
         }
@@ -92,6 +134,21 @@ public class PaletteContent : MonoBehaviour
             dragObject = null;
             dragPointerId = EMPTY;
             return palette;
+        }
+
+        return null;
+    }
+    
+    private void RemoveObjectFromPalette(PuzzlePiece piece)
+    {
+        puzzlePieces.Remove(piece);
+    }
+    
+    public PuzzlePiece GetDraggedPiece(Vector2 worldPoint)
+    {
+        foreach (PuzzlePiece piece in puzzlePieces)
+        {
+            if (piece.MainCollider.OverlapPoint(worldPoint)) return piece;
         }
 
         return null;

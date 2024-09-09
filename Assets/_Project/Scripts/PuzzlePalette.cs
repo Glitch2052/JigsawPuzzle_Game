@@ -13,7 +13,7 @@ public class PuzzlePalette : IObject
     
     public override void IUpdate()
     {
-        content.UpdatePositions();
+        content.IUpdate();
     }
 
     public override IObject OnPointerDown(Vector2 worldPos, int pointerId)
