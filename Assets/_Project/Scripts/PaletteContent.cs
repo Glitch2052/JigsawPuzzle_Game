@@ -142,6 +142,7 @@ public class PaletteContent : MonoBehaviour
     private void RemoveObjectFromPalette(PuzzlePiece piece)
     {
         puzzlePieces.Remove(piece);
+        piece.SetParent(null);
     }
     
     public PuzzlePiece GetDraggedPiece(Vector2 worldPoint)
