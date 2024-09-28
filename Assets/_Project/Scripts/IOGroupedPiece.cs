@@ -1,10 +1,14 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using SimpleJSON;
 using UnityEngine;
 
 public class IOGroupedPiece : IObject
 {
+    public ContactFilter2D contactFilter2D;
+    
     private List<PuzzlePiece> puzzlePieces;
+    private Collider2D[] colliderResults;
 
     public bool isMoving { get; private set; }
 
@@ -60,6 +64,8 @@ public class IOGroupedPiece : IObject
                 
                 Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * sideIndex) * Vector2.left;
                 PuzzlePiece neighbour = gridObject.desiredPuzzlePiece;
+                
+                if(neighbour.parent is PuzzlePalette) continue;
 
                 if (IsNeighbourWithinRange(piece ,neighbour, requiredDir))
                 {
@@ -99,10 +105,22 @@ public class IOGroupedPiece : IObject
                             Destroy(gameObject);
                         };
                     }
-                    break;
+                    return;
                 }
             }
         }
+
+        float z = 0;
+        foreach (PuzzlePiece piece in puzzlePieces)
+        {
+            IObject overlappingPiece = GetBelowPuzzlePiece(piece.MainCollider);
+            if (overlappingPiece)
+            {
+                z = overlappingPiece.Position.z - 0.05f;
+                break;
+            }
+        }
+        Position = Position.SetZ(z);
     }
     
     private void OnPuzzlePiecePlacedOnBoard()
@@ -125,5 +143,58 @@ public class IOGroupedPiece : IObject
         bool isAligned = Vector2.Angle(dirRef, neighbour.Position - piece.Position) < 30;
 
         return isWithinRange && isAligned;
+    }
+    
+    private IObject GetBelowPuzzlePiece(BoxCollider2D pieceCollider)
+    {
+        colliderResults ??= new Collider2D[10];
+        int hitCount = pieceCollider.OverlapCollider(contactFilter2D, colliderResults);
+        SortColliders(hitCount, colliderResults);
+        
+        Collider2D puzzleCollider = colliderResults[0];
+        if (!puzzleCollider) return null;
+        
+        if (puzzleCollider.TryGetComponent(out PuzzlePiece puzzlePiece))
+            return puzzlePiece;
+        if (puzzleCollider.TryGetComponent(out IOGroupedPiece groupedPiece))
+            return groupedPiece;
+        return null;
+    }
+
+    public override JSONNode ToJson(JSONNode node = null)
+    {
+        node = base.ToJson(node);
+        
+        node["GroupedPiece"] = 1;
+
+        JSONArray children = new JSONArray();
+        int i = 0;
+        foreach (PuzzlePiece piece in puzzlePieces)
+        {
+            children[i] = piece.ToJson();
+            i++;
+        }
+
+        node["Pieces"] = children;
+        
+        return node;
+    }
+
+    public override void FromJson(JSONNode node)
+    {
+        base.FromJson(node);
+
+        JSONNode children = node["Pieces"];
+        for (int i = 0; i < children.Count; i++)
+        {
+            JSONNode childNode = children[i];
+            int index = childNode["Index"];
+            GridObject gridObject = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(index);
+            if (gridObject != null)
+            {
+                AddPuzzlePieceToGroup(gridObject.desiredPuzzlePiece);
+                gridObject.desiredPuzzlePiece.FromJson(childNode);
+            }
+        }
     }
 }

@@ -97,14 +97,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c71f82a1a427594cadfcf99484a31c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  iSystem: {fileID: 0}
+  <MainCollider>k__BackingField: {fileID: 3729167981318852673}
+  parent: {fileID: 0}
   meshFilter: {fileID: 5589912520321331529}
   meshRenderer: {fileID: 7141602924024978915}
-  <MainCollider>k__BackingField: {fileID: 3729167981318852673}
+  group: {fileID: 0}
   gridCoordinate: {x: 0, y: 0}
-  topEdge: 0
-  bottomEdge: 0
+  contactFilter2D:
+    useTriggers: 0
+    useLayerMask: 1
+    useDepth: 1
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 64
+    minDepth: -145
+    maxDepth: 5
+    minNormalAngle: 0
+    maxNormalAngle: 0
   leftEdge: 0
+  topEdge: 0
   rightEdge: 0
+  bottomEdge: 0
 --- !u!61 &3729167981318852673
 BoxCollider2D:
   m_ObjectHideFlags: 0

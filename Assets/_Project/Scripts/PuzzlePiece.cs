@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using SimpleJSON;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -13,12 +14,14 @@ public class PuzzlePiece : IObject
     [HideInInspector] public IOGroupedPiece group;
     [HideInInspector] public Vector2Int gridCoordinate;
     public Dictionary<int,Vector2Int> neighbourCoordinates;
+    private Collider2D[] colliderResults;
+    public ContactFilter2D contactFilter2D;
 
     [Space(20),Header("EdgeInfo")]
-    public EdgeType topEdge;
-    public EdgeType bottomEdge;
     public EdgeType leftEdge;
+    public EdgeType topEdge;
     public EdgeType rightEdge;
+    public EdgeType bottomEdge;
 
     //Mesh Data
     private Mesh mesh;
@@ -36,6 +39,11 @@ public class PuzzlePiece : IObject
     private NativeArray<float2> nativeBoardUvData;
     private NativeArray<float2> nativeMeshUvData;
     private NativeList<int> indexList;
+
+    // public override void Init()
+    // {
+    //     colliderResults = new RaycastHit2D[10];
+    // }
 
     public void SetData(float cellSize, int x, int y)
     {
@@ -88,11 +96,6 @@ public class PuzzlePiece : IObject
             allSplinePoints.AddRange(bottomEdge == EdgeType.Knob ? PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.BottomKnob) :
                 PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.BottomSocket));
         }
-        
-        // allSplinePoints.AddRange(PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.LeftSocket));
-        // allSplinePoints.AddRange(PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.TopKnob));
-        // allSplinePoints.AddRange(PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.RightKnob));
-        // allSplinePoints.AddRange(PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.BottomSocket));
 
         //Native Vertex Container
         nativeVertexData = new NativeArray<float3>(allSplinePoints.Count, Allocator.TempJob);
@@ -195,8 +198,13 @@ public class PuzzlePiece : IObject
 
     protected override void OnReleased()
     {
-        base.OnReleased();
-        
+        if (TryInteractWithPalette())
+        {
+            return;
+        }
+
+        // base.OnReleased();
+
         //Try Placement With Puzzle Board
         Vector2 gridPos = PuzzleGenerator.Instance.PuzzleGrid.GetWorldPositionWithCellOffset(gridCoordinate.x, gridCoordinate.y);
         if (Vector2.Distance(gridPos, Position) < InteractiveSystem.gridSnapThreshold)
@@ -224,6 +232,9 @@ public class PuzzlePiece : IObject
 
             Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * sideIndex) * Vector2.left;
             PuzzlePiece neighbour = gridObject.desiredPuzzlePiece;
+            
+            if(neighbour.parent is PuzzlePalette) continue;
+            
             if (IsNeighbourWithinRange(neighbour, requiredDir))
             {
                 SetISystem(null);
@@ -254,9 +265,54 @@ public class PuzzlePiece : IObject
                         .SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlacedWithNeighbour;
                 }
 
-                break;
+                return;
             }
         }
+
+        float z = 0;
+        IObject piece = GetBelowPuzzlePiece();
+        if(piece)
+            z = piece.Position.z - 0.05f;
+        
+        Position = Position.SetZ(z);
+    }
+    
+    private IObject GetBelowPuzzlePiece()
+    {
+        colliderResults ??= new Collider2D[10];
+        int hitCount = MainCollider.OverlapCollider(contactFilter2D, colliderResults);
+        SortColliders(hitCount, colliderResults);
+        
+        Collider2D puzzleCollider = colliderResults[0];
+        if (!puzzleCollider) return null;
+        
+        if (puzzleCollider.TryGetComponent(out PuzzlePiece puzzlePiece))
+            return puzzlePiece;
+        if (puzzleCollider.TryGetComponent(out IOGroupedPiece groupedPiece))
+            return groupedPiece;
+        return null;
+    }
+
+    private bool TryInteractWithPalette()
+    {
+        // colliderResults ??= new RaycastHit2D[10];
+        //
+        // int count = Physics2D.BoxCastNonAlloc(Position, MainCollider.size, 0, Vector2.zero,colliderResults,15f);
+        // for (int i = 0; i < count; i++)
+        // {
+        //     if (colliderResults[i].collider.TryGetComponent(out PuzzlePalette palette))
+        //     {
+        //         palette.AddObjectToPalette(this);
+        //         Debug.Log("Palette Found");
+        //         return true;
+        //     }
+        // }
+        if (Mathf.Abs(Position.y - iSystem.palette.Position.y) < iSystem.palette.PaletteHeight * 0.5)
+        {
+            iSystem.palette.AddObjectToPalette(this);
+            return true;
+        }
+        return false;
     }
 
     private void OnPuzzlePiecePlacedOnBoard()
@@ -286,5 +342,52 @@ public class PuzzlePiece : IObject
     public static int GetOppositeSideIndex(int index)
     {
         return (index + 2) % 4;
+    }
+
+    public override JSONNode ToJson(JSONNode node = null)
+    {
+        node = base.ToJson(node);
+        node["Index"] = gridCoordinate.x + gridCoordinate.y * PuzzleGenerator.Instance.PuzzleGrid.Width;
+        
+        JSONArray neighbours = new JSONArray();
+        List<int> neighboursKeys = new List<int>{ 0, 1, 2, 3 };
+        int count = neighboursKeys.Count;
+        for (int i = 0; i < count; i++)
+        {
+            if (neighbourCoordinates.ContainsKey(i))
+            {
+                neighboursKeys.Remove(i);
+            }
+        }
+        foreach (int remainingKey  in neighboursKeys)
+        {
+            neighbours.Add(remainingKey);
+        }
+        node["RemovedNeighbourCoord"] = neighbours;
+        
+        return node;
+    }
+
+    public override void FromJson(JSONNode node)
+    {
+        base.FromJson(node);
+        
+        if(node == null) return;
+
+        JSONArray neighbours = node["RemovedNeighbourCoord"] as JSONArray;
+        foreach (var childrenKeyValue in neighbours)
+        {
+            neighbourCoordinates.Remove(childrenKeyValue.Value);
+        }
+    }
+
+    public JSONNode EdgeTypeToJson()
+    {
+        JSONNode edgeNode = new JSONObject();
+        edgeNode["Left"] = (int)leftEdge;
+        edgeNode["Top"] = (int)topEdge;
+        edgeNode["Right"] = (int)rightEdge;
+        edgeNode["Bottom"] = (int)bottomEdge;
+        return edgeNode;
     }
 }

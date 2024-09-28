@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -9,10 +10,13 @@ public class IObject : MonoBehaviour
 
     protected const int EMPTY = -999;
     protected int draggingPointerId = EMPTY;
-    private Vector2 offset, speed, prevPos, currPos, touchPoint, speedMultiplier = new (20f, 20f);
+    private Vector2 offset, speed, prevPos, currPos, touchPoint, speedMultiplier = new (18f, 18f);
     [field: SerializeField] public BoxCollider2D MainCollider { get; private set; }
     
-    protected IObject parent;
+    [HideInInspector] public IObject parent;
+
+    private Coroutine localScaleCoroutine;
+    
 
     public Vector3 Position
     {
@@ -31,9 +35,35 @@ public class IObject : MonoBehaviour
         get => transform.localScale;
         set => transform.localScale = value;
     }
-    public virtual void Init()
+    
+    public Vector3 LocalScaleLerped
+    {
+        get => transform.localScale;
+        set
+        {
+            if (localScaleCoroutine != null) StopCoroutine(localScaleCoroutine);
+            if (gameObject.activeInHierarchy)
+                localScaleCoroutine = StartCoroutine(_LocalScaleLerp(transform.localScale, value));
+            else transform.localScale = value;
+        }
+    }
+    
+    IEnumerator _LocalScaleLerp(Vector3 fromValue, Vector3 toValue)
     {
         
+        var alpha = 0f;
+        while (true)
+        {
+            alpha = Mathf.Clamp01(alpha + Time.deltaTime * 5f);
+            transform.localScale = Vector3.Lerp(fromValue, toValue, alpha);
+            if (alpha >= 1) break;
+            yield return null;
+        }
+
+        localScaleCoroutine = null;
+    }
+    public virtual void Init()
+    {
     }
 
     public virtual bool OnTap(Vector2 worldPos, int pointerId)
@@ -47,15 +77,19 @@ public class IObject : MonoBehaviour
         {
             touchPoint = iSystem.inputSystem.GetCurrentWorldPosition(draggingPointerId);
             currPos = touchPoint + offset;
-            speed = currPos - prevPos;
-            Vector3 position = transform.position;
-            prevPos = position;
-
-            Vector3 pos = position;
-            pos.x += speed.x * speedMultiplier.x * Time.deltaTime;
-            pos.y += speed.y * speedMultiplier.y * Time.deltaTime;
-
+            Vector3 pos = transform.position;
+            pos.x = Mathf.Lerp(pos.x, currPos.x, Time.deltaTime * speedMultiplier.x);
+            pos.y = Mathf.Lerp(pos.y, currPos.y, Time.deltaTime * speedMultiplier.y);
             Position = pos;
+            // speed = currPos - prevPos;
+            // Vector3 position = transform.position;
+            // prevPos = position;
+            //
+            // Vector3 pos = position;
+            // pos.x += speed.x * speedMultiplier.x * Time.deltaTime;
+            // pos.y += speed.y * speedMultiplier.y * Time.deltaTime;
+            //
+            // Position = pos;
         }
     }
 
@@ -164,5 +198,65 @@ public class IObject : MonoBehaviour
     protected virtual void OnChildRemoved(IObject child)
     {
         // Debug.Log("OnChildRemoved(" + child.name + ")", gameObject);
+    }
+    
+    protected void SortColliders(int count, Collider2D[] colliders)
+    {
+        float threshold = 0.05f;
+        // Array is already sorted by depth
+        // Sort array according to position (Nearest to farthest)
+        Vector2 pos = Position;
+        int from = -1, to = -1;
+
+        for (int i = 1; i < count; i++)
+        {
+            if (colliders[i].transform.position.z - colliders[i - 1].transform.position.z < threshold)
+            {
+                if (from == -1) from = i - 1;
+                to = i;
+            }
+            else if (from != -1)
+            {
+                SortList(colliders, from, to);
+                from = to = -1;
+            }
+        }
+
+        if (from != -1) SortList(colliders, from, to);
+    }
+
+    void SortList(Collider2D[] colliders, int from, int to)
+    {
+        for (int i = from; i <= to; i++)
+        {
+            for (int j = i + 1; j <= to; j++)
+            {
+                float dist_i = (Position - colliders[i].transform.position).sqrMagnitude;
+                float dist_j = (Position - colliders[j].transform.position).sqrMagnitude;
+
+                if (dist_j < dist_i)
+                {
+                    (colliders[i], colliders[j]) = (colliders[j], colliders[i]);
+                }
+            }
+        }
+    }
+    
+    public virtual JSONNode ToJson(JSONNode node = null)
+    {
+        if (node == null)
+            node = new JSONObject();
+
+        node["pos"] = Position;
+        node["rot"] = transform.rotation;
+        return node;
+    }
+
+    public virtual void FromJson(JSONNode node)
+    {
+        if(node == null) return;
+        
+        Position = node["pos"];
+        transform.rotation = node["rot"];
     }
 }

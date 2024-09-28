@@ -5,7 +5,7 @@
     public int Y { get; set; }
 
     public PuzzlePiece desiredPuzzlePiece;
-    private PuzzlePiece targetPuzzlePiece;
+    public PuzzlePiece targetPuzzlePiece { get; private set; }
 
     public GridObject(Grid<GridObject> grid, int x, int y)
     {
@@ -19,6 +19,7 @@
         if (desiredPuzzlePiece == puzzlePiece)
         {
             targetPuzzlePiece = puzzlePiece;
+            puzzlePiece.SetISystem(null);
         }
     }
 

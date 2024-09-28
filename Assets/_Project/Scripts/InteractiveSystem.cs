@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,15 +17,17 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public InputSystem inputSystem;
     
     public Vector2 cameraSize;
+    public Vector2 halfCameraSize;
     protected Vector3 cameraPosition;
     public Camera Camera { get; protected set; }
     
-    public static readonly float DRAG_Z_ORDER = -45f;
+    public static readonly float DRAG_Z_ORDER = -145f;
     public static float gridSnapThreshold;
     public static float neighbourSnapThreshold;
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
         Camera = Camera.main;
 
         iObjects = new SortedDictionary<int, IObject>();
@@ -34,6 +36,8 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         float orthographicSize = Camera.orthographicSize;
         cameraSize.x = orthographicSize * Screen.width / Screen.height;
         cameraSize.y = orthographicSize;
+
+        halfCameraSize = cameraSize;
         cameraSize *= 2;
     }
 
@@ -48,6 +52,11 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         {
             iObject.IUpdate();
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SaveAll(ExportJson());
+        }
     }
 
     public void Init()
@@ -57,9 +66,58 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         gridSnapThreshold = puzzleGenerator.CellSize * 0.5f;
         neighbourSnapThreshold = puzzleGenerator.CellSize * 1.5f;
         puzzleGenerator.Init(this);
-        puzzleGenerator.GenerateGrid();
 
+        JSONNode configData = new JSONObject();
+        if (StorageManager.IsFileExist("Puzzle.json"))
+        {
+            string data = StorageManager.ReadNow("Puzzle.json", string.Empty);
+            Debug.Log($"data is {data}");
+            configData = JSONNode.Parse(data);
+        }
+
+        puzzleGenerator.GenerateGrid(configData["PuzzlePieceData"]);
+        cameraController.SetISystem(this);
         palette.SetISystem(this);
+
+        //From Json
+        puzzleGenerator.FromJson(configData["grid"]);
+        palette.SetUpContentData(configData["palette"]);
+        
+        OnSceneLoad(configData["items"]);
+    }
+
+    public void OnSceneLoad(JSONNode configData = null)
+    {
+        if(configData == null) return;
+
+        for (int i = 0; i < configData.Count; i++)
+        {
+            JSONNode childNode = configData[i];
+            if (childNode["GroupedPiece"])
+            {
+                var groupedPiece = puzzleGenerator.GetPuzzlePiecesGroup(childNode["pos"]);
+                groupedPiece.FromJson(childNode);
+            }
+            else
+            {
+                int index = childNode["Index"];
+                GridObject gridObject = puzzleGenerator.PuzzleGrid.GetGridObject(index);
+                if (gridObject != null)
+                {
+                    gridObject.desiredPuzzlePiece.FromJson(childNode);
+                }
+            }
+        }
+    }
+
+    public void UpdateCameraSize()
+    {
+        float orthographicSize = Camera.orthographicSize;
+        cameraSize.x = orthographicSize * Camera.aspect;
+        cameraSize.y = orthographicSize;
+
+        halfCameraSize = cameraSize;
+        cameraSize *= 2;
     }
     
     public void RegisterIEntity(IObject iEntity)
@@ -107,5 +165,38 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public void OnPointerUp(PointerEventData eventData)
     {
         inputSystem?.OnPointerUp(eventData);
+    }
+
+    private JSONNode ExportJson()
+    {
+        JSONNode parent = new JSONObject();
+        JSONArray children = new JSONArray();
+        SerializeChildren(children);
+        parent["items"] = children;
+        parent["palette"] = palette.ToJson();
+        parent["grid"] = puzzleGenerator.ToJson();
+        parent["PuzzlePieceData"] = puzzleGenerator.GetAllPuzzlePieceNode();
+        return parent;
+    }
+
+    private void SerializeChildren(JSONArray children)
+    {
+        foreach (IObject obj in iObjects.Values)
+        {
+            JSONNode node = null;
+            if (((obj is PuzzlePiece piece && piece.group == null) || obj is IOGroupedPiece) && obj.parent is not PuzzlePalette)
+            {
+                node = obj.ToJson();
+            }
+            if(node != null) children.Add(node);
+        }
+    }
+
+    private void SaveAll(JSONNode data)
+    {
+        string output = data.ToString();
+        Debug.Log($"node is {output}");
+        string json = data.ToString();
+        StorageManager.Write( "Puzzle.json", json);
     }
 }

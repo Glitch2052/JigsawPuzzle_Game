@@ -17,7 +17,7 @@ public class GridUIButtons : MonoBehaviour
 
         float startTime = Time.realtimeSinceStartup;
         
-        PuzzleGenerator.Instance.GenerateGrid(gridSizes[index].x,gridSizes[index].y);
+        // PuzzleGenerator.Instance.GenerateGrid(gridSizes[index].x,gridSizes[index].y);
         
         timerText.text = ((Time.realtimeSinceStartup - startTime) * 1000).ToString("F2") + " millisec";
     }

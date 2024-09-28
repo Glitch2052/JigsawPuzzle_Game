@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 
 public class PuzzlePalette : IObject
@@ -9,23 +10,38 @@ public class PuzzlePalette : IObject
     private float newOrthoSize;
     private float oldOrthoSize;
 
+    public float PaletteHeight =>MainCollider.size.y * LocalScale.y;
+
     public override void Init()
     {
         content.Init(this);
-        newOrthoSize = oldOrthoSize = iSystem.Camera.orthographicSize;
+        //here the ref orthographic size is assumed 16 because the palette scale and size were designed with orthographic size 16
+        newOrthoSize = oldOrthoSize = 16;
+    }
+
+    public void SetUpContentData(JSONNode node = null)
+    {
+        content.SetUpData(node);
     }
     
     public override void IUpdate()
     {
-        ScalePaletteWithCamera();
+        ScaleAndPositionPaletteWithCamera();
         content.IUpdate();
     }
 
-    private void ScalePaletteWithCamera()
+    private void ScaleAndPositionPaletteWithCamera()
     {
         newOrthoSize = iSystem.Camera.orthographicSize;
         LocalScale = newOrthoSize / oldOrthoSize * LocalScale.SetZ(1);
         oldOrthoSize = iSystem.Camera.orthographicSize;
+        iSystem.UpdateCameraSize();
+        LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 1.5f);
+    }
+
+    public void AddObjectToPalette(PuzzlePiece puzzlePiece)
+    {
+        content.AddObjectToPalette(puzzlePiece);
     }
 
     public override IObject OnPointerDown(Vector2 worldPos, int pointerId)
@@ -41,5 +57,10 @@ public class PuzzlePalette : IObject
     public override IObject OnPointerUp(Vector2 worldPos, int pointerId)
     {
         return content.OnPointerUp(worldPos, pointerId);
+    }
+
+    public override JSONNode ToJson(JSONNode node = null)
+    {
+        return content.ToJson(node);
     }
 }

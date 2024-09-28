@@ -1,4 +1,5 @@
 using System;
+using SimpleJSON;
 using UnityEngine;
 
 public class Grid<T>
@@ -52,6 +53,17 @@ public class Grid<T>
             }
         }
     }
+    
+    public void IterateHorizontallyOverGridObjects(Action<int,int,T> action)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                action?.Invoke(i,j,GetGridObject(i,j));
+            }
+        }
+    }
 
     public T GetGridObject(int x, int y)
     {
@@ -74,7 +86,13 @@ public class Grid<T>
     public T GetGridObject(Vector2 worldPosition)
     {
         (int x, int y) = GetXY(worldPosition);
-            return GetGridObject(x,y);
+        return GetGridObject(x,y);
+    }
+
+    public T GetGridObject(int index)
+    {
+        (int x, int y) = GetXY(index);
+        return GetGridObject(x,y);
     }
 
     public void SetGridObject(int x, int y,T cell)
@@ -87,6 +105,13 @@ public class Grid<T>
     {
         int x = Mathf.FloorToInt((worldPosition.x - origin.x) / cellSize);
         int y = Mathf.FloorToInt((worldPosition.y - origin.y) / cellSize);
+        return (x, y);
+    }
+
+    private (int, int) GetXY(int index)
+    {
+        int x = index % width;
+        int y = index / width;
         return (x, y);
     }
 
