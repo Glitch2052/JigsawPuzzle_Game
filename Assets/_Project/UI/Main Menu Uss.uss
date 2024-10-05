@@ -1,3 +1,7 @@
+:root{
+    --categoryColor: white;
+}
+
 .BackGround {
     height: 100%;
     background-color: #ffffff;
@@ -5,7 +9,6 @@
 
 .Sections {
     flex: 1;
-    
 }
 
 .Header {
@@ -19,7 +22,15 @@
 
 .Categories {
     height: 10%;
-    background-color: #ffffff;
+    background-color: var(--categoryColor);
     border-top-width: 6px;
     border-top-color: #cccccc;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.Categories .Category{
+    background-color: var(--categoryColor);
+    flex:1;
+    /*border-color: var(--categoryColor);*/
 }
