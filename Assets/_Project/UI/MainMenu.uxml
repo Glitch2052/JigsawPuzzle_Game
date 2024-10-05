@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/UI/Main%20Menu%20Uss.uss?fileID=7433441132597879392&amp;guid=d0750bc4a64891b41ae158cb27d97b0c&amp;type=3#Main Menu Uss" />
+    <ui:VisualElement name="BG" class="BackGround">
+        
+        <ui:VisualElement name="Components Panel" class="Sections">
+            
+            <ui:VisualElement name="TopPanel" class="Header" />
+            
+            <ui:VisualElement name="MainBodyPanel" class="Body">
+                <ui:ListView />
+            </ui:VisualElement>
+            
+            <ui:VisualElement name="CategoriesPanel" class="Categories"> 
+                
+            </ui:VisualElement>
+            
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>
