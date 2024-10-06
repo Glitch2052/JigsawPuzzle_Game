@@ -7,11 +7,14 @@
             <ui:VisualElement name="TopPanel" class="Header" />
             
             <ui:VisualElement name="MainBodyPanel" class="Body">
-                <ui:ListView />
+                <ui:ListView name="MainCategoryContent" class="ContentTab CurrentSelectedContent" />
+                <ui:ListView name="ThemeCategoryContent" class="ContentTab" />
+                <ui:ListView name="CustomCategoryContent" class="ContentTab" />
+
             </ui:VisualElement>
             
-            <ui:VisualElement name="CategoriesPanel" class="Categories"> 
-                <ui:Button name="MainCategory" class="Category">
+            <ui:VisualElement name="CategoriesPanel"> 
+                <ui:Button name="MainCategory" class="Category CurrentSelectedTab">
                     <ui:Image class="CategoryImage MainCatImage"/>
                     <ui:Label text="Main" class="CategoryText MainCatText"/>
                 </ui:Button>

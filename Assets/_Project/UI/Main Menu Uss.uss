@@ -1,5 +1,6 @@
 :root{
     --categoryColor: white;
+    --SelectedTabColor: #2ec02e;
 }
 
 *{
@@ -25,7 +26,7 @@
     flex: 1;
 }
 
-.Categories {
+#CategoriesPanel {
     height: 10%;
     background-color: var(--categoryColor);
     border-top-width: 5px;
@@ -34,7 +35,7 @@
     justify-content: space-around;
 }
 
-.Categories .Category{
+#CategoriesPanel .Category{
     background-color: var(--categoryColor);
     flex:1;
     margin-left: 30px;
@@ -45,7 +46,7 @@
     border-width: 0;
 }
 
-.Categories .CategoryText{
+#CategoriesPanel .CategoryText{
     font-size: 30px;
     color: #808080;
 }
@@ -66,4 +67,21 @@
 
 .CustomCatImage{
     background-image: url("project://database/Assets/_Project/UI/Icons/icon_gallery.png");
+}
+
+#CategoriesPanel .CurrentSelectedTab .CategoryImage{
+    -unity-background-image-tint-color: var(--SelectedTabColor);
+}
+
+#CategoriesPanel .CurrentSelectedTab .CategoryText{
+    color: var(--SelectedTabColor);
+}
+
+.ContentTab{
+    display: none;
+}
+
+.ContentTab.CurrentSelectedContent{
+    display: flex;
+    flex: 1;
 }
