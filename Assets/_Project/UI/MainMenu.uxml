@@ -12,18 +12,18 @@
             
             <ui:VisualElement name="CategoriesPanel" class="Categories"> 
                 <ui:Button name="MainCategory" class="Category">
-                    <ui:Image class="CategoryImage"/>
-                    <ui:Label text="Main" class="CategoryText"/>
+                    <ui:Image class="CategoryImage MainCatImage"/>
+                    <ui:Label text="Main" class="CategoryText MainCatText"/>
                 </ui:Button>
                 
                 <ui:Button name="ThemeCategory" class="Category">
-                    <ui:Image class="CategoryImage"/>
-                    <ui:Label text="Themes" class="CategoryText"/>
+                    <ui:Image class="CategoryImage ThemeCatImage"/>
+                    <ui:Label text="Themes" class="CategoryText ThemeCatText"/>
                 </ui:Button>
                 
                 <ui:Button name="CustomCategory" class="Category">
-                    <ui:Image class="CategoryImage"/>
-                    <ui:Label text="My Puzzles" class="CategoryText"/>
+                    <ui:Image class="CategoryImage CustomCatImage"/>
+                    <ui:Label text="My Puzzles" class="CategoryText CustomCatText"/>
                 </ui:Button>
             </ui:VisualElement>
             

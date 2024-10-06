@@ -2,6 +2,11 @@
     --categoryColor: white;
 }
 
+*{
+    -unity-font: url("project://database/Assets/_Project/UI/Fonts/Roboto-Medium.ttf");
+    -unity-font-definition: initial;
+}
+
 .BackGround {
     height: 100%;
     background-color: #ffffff;
@@ -23,7 +28,7 @@
 .Categories {
     height: 10%;
     background-color: var(--categoryColor);
-    border-top-width: 6px;
+    border-top-width: 5px;
     border-top-color: #cccccc;
     flex-direction: row;
     justify-content: space-around;
@@ -32,5 +37,33 @@
 .Categories .Category{
     background-color: var(--categoryColor);
     flex:1;
-    /*border-color: var(--categoryColor);*/
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 8px;
+    justify-content: space-around;
+    align-items: center;
+    border-width: 0;
+}
+
+.Categories .CategoryText{
+    font-size: 30px;
+    color: #808080;
+}
+
+.CategoryImage{
+    width: 70px;
+    height: 70px;
+    -unity-background-image-tint-color: #808080;
+}
+
+.MainCatImage{
+    background-image: url("project://database/Assets/_Project/UI/Icons/icon_main.png");
+}
+
+.ThemeCatImage{
+    background-image: url("project://database/Assets/_Project/UI/Icons/icon_theme.png");
+}
+
+.CustomCatImage{
+    background-image: url("project://database/Assets/_Project/UI/Icons/icon_gallery.png");
 }
