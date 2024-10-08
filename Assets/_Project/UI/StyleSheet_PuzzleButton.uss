@@ -1,0 +1,19 @@
+#Container{
+    flex-direction: row;
+    width: auto;
+    height: 512px;
+}
+
+.ItemBox{
+    flex:1;
+    margin: 12px;
+    border-radius: 64px;
+}
+
+.ItemBox Button{
+    margin: 20px;
+    border-radius: 64px;
+    flex:1;
+    background-image: url("project://database/Assets/_Project/Puzzle Textures/puzzle_01.png");
+}
+

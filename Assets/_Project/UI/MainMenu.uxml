@@ -7,7 +7,7 @@
             <ui:VisualElement name="TopPanel" class="Header" />
             
             <ui:VisualElement name="MainBodyPanel" class="Body">
-                <ui:ListView name="MainCategoryContent" class="ContentTab CurrentSelectedContent" />
+                <ui:ListView name="MainCategoryContent" class="ContentTab CurrentSelectedContent" selection-type="None"/>
                 <ui:ListView name="ThemeCategoryContent" class="ContentTab" />
                 <ui:ListView name="CustomCategoryContent" class="ContentTab" />
 
