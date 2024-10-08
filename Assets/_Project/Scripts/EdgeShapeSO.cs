@@ -9,6 +9,7 @@ public class EdgeShapeSO : ScriptableObject
     public SplineContainer knobProfile;
     public float xLength;
     private float scaleFactor;
+    public Material puzzleMaterial;
 
     private List<float3> flatCornerPositions;
     private Dictionary<string, List<float3>> profileVertices;

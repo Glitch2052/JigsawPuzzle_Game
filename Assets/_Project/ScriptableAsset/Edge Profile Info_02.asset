@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   knobProfile: {fileID: 656439652958286549, guid: d8da104e75f3ef147b53d185c5b096c8, type: 3}
   xLength: 3
+  puzzleMaterial: {fileID: 2100000, guid: c307c52c47b4847418b2b1ef15c41686, type: 2}

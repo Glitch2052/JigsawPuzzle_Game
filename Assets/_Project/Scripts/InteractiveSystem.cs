@@ -56,12 +56,10 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public void Init(PuzzleTextureData puzzleTextureData)
     {
         inputSystem = new InputSystem(this);
-        
-        
 
         gridSnapThreshold = puzzleGenerator.CellSize * 0.5f;
         neighbourSnapThreshold = puzzleGenerator.CellSize * 1.5f;
-        puzzleGenerator.Init(this);
+        puzzleGenerator.Init(this,puzzleTextureData);
     }
 
     public IEnumerator OnSceneLoad()

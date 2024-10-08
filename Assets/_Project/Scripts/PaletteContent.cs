@@ -9,7 +9,7 @@ public class PaletteContent : MonoBehaviour
     public float restLine;
     
     private PuzzlePalette palette;
-    public const float DRAG_THRESHOLD = 1.75f;
+    public const float DRAG_THRESHOLD = 1.5f;
     public const int EMPTY = -999;
     private int dragPointerId = EMPTY;
     
@@ -24,8 +24,8 @@ public class PaletteContent : MonoBehaviour
 
     private float velocity;
     private float minVelocityThreshold = 0.015f;
-    private float decelerationRate = 0.95f;
-    private float elevateOffset = 2.2f;
+    private float decelerationRate = 0.9f;
+    private float elevateOffset = 1.4f;
 
     private List<PuzzlePiece> puzzlePieces;
 
@@ -140,7 +140,9 @@ public class PaletteContent : MonoBehaviour
         offset = worldPos.x - transform.localPosition.x;
         Debug.Log($"offset is {offset}");
         lastTouchX = currentTouchX = worldPos.x;
-
+        velocity = 0;
+        targetPosition = worldPos.x - offset;
+        
         return palette;
     }
 
@@ -172,7 +174,7 @@ public class PaletteContent : MonoBehaviour
         if (dragPointerId == pointerId)
         {
             // targetPosition += 5 * (currentTouchX - lastTouchX);
-            velocity = 5 * (currentTouchX - lastTouchX);
+            velocity += 3 * (currentTouchX - lastTouchX);
             dragObject = null;
             dragPointerId = EMPTY;
             return palette;

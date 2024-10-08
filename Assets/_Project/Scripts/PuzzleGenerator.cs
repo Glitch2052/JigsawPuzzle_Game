@@ -48,12 +48,15 @@ public class PuzzleGenerator : MonoBehaviour
         }
     }
 
-    public void Init(InteractiveSystem interactiveSystem)
+    public void Init(InteractiveSystem interactiveSystem, PuzzleTextureData textureData)
     {
         iSystem = interactiveSystem;
+        
+        
         edgeShapeSO.Init(cellSize);
         edgeShapeSO.EvaluateAllPossibleSplinesCombinationOnMainThread();
-
+        edgeShapeSO.puzzleMaterial.mainTexture = textureData.sprite.texture;
+        
         if (border)
         {
             border.gameObject.SetActive(true);
