@@ -76,8 +76,8 @@ public class PuzzleGenerator : MonoBehaviour
         meshGenerationJobHandles = new NativeList<JobHandle>(Allocator.Temp);
         
         //Generate Grid with X and Y Size
-        Vector2 origin = new Vector2(-xWidth, -yWidth) * 0.5f * cellSize;
-        Vector2 cellOffset = Vector2.one * cellSize * 0.5f;
+        Vector2 origin = new Vector2(-xWidth, -yWidth) * (0.5f * cellSize);
+        Vector2 cellOffset = Vector2.one * (cellSize * 0.5f);
         puzzleBoardMinPos = origin;
         puzzleBoardMaxPos = origin + (new Vector2(xWidth, yWidth) * cellSize);
         

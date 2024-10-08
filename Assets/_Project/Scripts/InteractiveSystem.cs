@@ -27,7 +27,6 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
 
     private void Awake()
     {
-        Application.targetFrameRate = 60;
         Camera = Camera.main;
 
         iObjects = new SortedDictionary<int, IObject>();
@@ -39,11 +38,6 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
 
         halfCameraSize = cameraSize;
         cameraSize *= 2;
-    }
-
-    private void Start()
-    {
-        Init();
     }
 
     private void Update()
@@ -59,19 +53,23 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         }
     }
 
-    public void Init()
+    public void Init(PuzzleTextureData puzzleTextureData)
     {
         inputSystem = new InputSystem(this);
+        
+        
 
         gridSnapThreshold = puzzleGenerator.CellSize * 0.5f;
         neighbourSnapThreshold = puzzleGenerator.CellSize * 1.5f;
         puzzleGenerator.Init(this);
+    }
 
+    public IEnumerator OnSceneLoad()
+    {
         JSONNode configData = new JSONObject();
         if (StorageManager.IsFileExist("Puzzle.json"))
         {
             string data = StorageManager.ReadNow("Puzzle.json", string.Empty);
-            Debug.Log($"data is {data}");
             configData = JSONNode.Parse(data);
         }
 
@@ -82,17 +80,13 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         //From Json
         puzzleGenerator.FromJson(configData["grid"]);
         palette.SetUpContentData(configData["palette"]);
-        
-        OnSceneLoad(configData["items"]);
-    }
 
-    public void OnSceneLoad(JSONNode configData = null)
-    {
-        if(configData == null) return;
+        JSONNode itemConfigData = configData["items"];
+        if(itemConfigData == null) yield break;
 
-        for (int i = 0; i < configData.Count; i++)
+        for (int i = 0; i < itemConfigData.Count; i++)
         {
-            JSONNode childNode = configData[i];
+            JSONNode childNode = itemConfigData[i];
             if (childNode["GroupedPiece"])
             {
                 var groupedPiece = puzzleGenerator.GetPuzzlePiecesGroup(childNode["pos"]);

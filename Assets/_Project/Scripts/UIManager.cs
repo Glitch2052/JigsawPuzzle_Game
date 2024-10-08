@@ -19,7 +19,6 @@ public class UIManager : MonoBehaviour
     
     private void Awake()
     {
-        Application.targetFrameRate = 60;
         rootElement = mainMenuDoc.rootVisualElement;
     }
 
@@ -34,8 +33,8 @@ public class UIManager : MonoBehaviour
             var itemData2 = puzzleTextureDatabase.generalTextureData[((index * 2) + 1) % 8];
             Button button1 = element.Q<Button>("ItemButton1");
             Button button2 = element.Q<Button>("ItemButton2");
-            button1.style.backgroundImage = new StyleBackground(itemData1.texture);
-            button2.style.backgroundImage = new StyleBackground(itemData2.texture);
+            button1.style.backgroundImage = new StyleBackground(itemData1.sprite.texture);
+            button2.style.backgroundImage = new StyleBackground(itemData2.sprite.texture);
         };
         listView.itemsSource = Enumerable.Range(0, puzzleTextureDatabase.generalTextureData.Count * 200).ToList();
     }

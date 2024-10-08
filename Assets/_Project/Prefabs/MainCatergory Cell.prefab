@@ -305,8 +305,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2662960494815371906}
   - component: {fileID: 7215959899449361056}
+  - component: {fileID: 3668477352856702496}
   m_Layer: 5
-  m_Name: MainCat TemplateButton
+  m_Name: MainCatergory Cell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -341,3 +342,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8994278389714399040}
   m_CullTransparentMesh: 1
+--- !u!114 &3668477352856702496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8994278389714399040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7dfef5d3ed7439384375feda94cd6d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 2969199747706407223}
+  buttonImage: {fileID: 2841737502704765776}

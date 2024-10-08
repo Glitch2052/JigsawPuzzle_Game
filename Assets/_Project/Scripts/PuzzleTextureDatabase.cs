@@ -11,7 +11,7 @@ public class PuzzleTextureDatabase : ScriptableObject
 #if UNITY_EDITOR
     [Space(40)]
     [Header("Editor Data")]
-    [SerializeField] private Texture2D[] generalTextures;
+    [SerializeField] private Sprite[] generalTextures;
     
     [ContextMenu("Add General Textures")]
     public void AddGeneralTextures()
@@ -21,7 +21,7 @@ public class PuzzleTextureDatabase : ScriptableObject
             generalTextureData.Add(new PuzzleTextureData()
             {
                 themeName = ThemeName.General,
-                texture = texture
+                sprite = texture
             });
         }
     }
@@ -32,7 +32,7 @@ public class PuzzleTextureDatabase : ScriptableObject
 public struct PuzzleTextureData
 {
     public ThemeName themeName;
-    public Texture2D texture;
+    public Sprite sprite;
 }
 
 public enum ThemeName
