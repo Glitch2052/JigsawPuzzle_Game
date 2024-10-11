@@ -864,7 +864,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19607845, g: 0.19607845, b: 0.19607845, a: 0}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1234,7 +1234,7 @@ MonoBehaviour:
   iSystem: {fileID: 0}
   <MainCollider>k__BackingField: {fileID: 859058302}
   parent: {fileID: 0}
-  additionalSpace: 0
+  additionalSpace: 1
 --- !u!61 &859058302
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1531,6 +1531,7 @@ MonoBehaviour:
   cameraController: {fileID: 859058301}
   cameraSize: {x: 0, y: 0}
   halfCameraSize: {x: 0, y: 0}
+  puzzleSprite: {fileID: 21300000, guid: 254352e6a8f9641f1a69ecf73823ee1c, type: 3}
 --- !u!61 &963775433
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1757,9 +1758,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1caa887f28ee72943a1072034702390b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xWidth: 7
-  yWidth: 7
-  cellSize: 2
+  <XWidth>k__BackingField: 12
+  <YWidth>k__BackingField: 12
+  <CellSize>k__BackingField: 2
   piecePrefab: {fileID: 5979877976914833657, guid: 8723118e076267046908b6049405bc8f, type: 3}
   groupedPiecePrefab: {fileID: 4268751880669323509, guid: 605a72eb6341820438094a1ad59e128e, type: 3}
   edgeShapeSO: {fileID: 11400000, guid: a2a996d74e249af499628b5494026a06, type: 2}
@@ -2940,7 +2941,7 @@ Transform:
   m_GameObject: {fileID: 2032979604}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2986,9 +2987,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 243463a2b273c0d4285b5a9383668b65, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_SortingOrder: -1
+  m_Sprite: {fileID: 7482667652216324306, guid: 19875e035d9dab445afc527e266efbdd, type: 3}
+  m_Color: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2

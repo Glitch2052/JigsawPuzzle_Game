@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -86,6 +87,119 @@ public class EarClipping
     {
         return (count + index) % count;
     }
+
+#if UNITY_EDITOR
+    public static MeshData GenerateMeshDataEditorOnly(EdgeShapeSO edgeShapeSo, string edgeShape)
+    {
+        //Get Spline Points from Left > Top > Right > Bottom
+        List<float3> allSplinePoints = GetAllSplinePoints(edgeShapeSo,edgeShape);
+        
+        //Prepare Data For Job
+        //Native Vertex Container
+        var nativeVertexData = new NativeArray<float3>(allSplinePoints.Count, Allocator.TempJob);
+        for (int i = 0; i < nativeVertexData.Length; i++)
+        {
+            nativeVertexData[i] = allSplinePoints[i];
+        }
+        
+        //Native Triangles Container
+        int totalTriangleIndexCount = 3 * (nativeVertexData.Length - 2);
+        var tris = new NativeArray<int>(totalTriangleIndexCount,Allocator.TempJob);
+        var indexList = new NativeList<int>(Allocator.TempJob);
+        
+        //Native UV Container
+        var nativeMeshUvData = new NativeArray<float2>(nativeVertexData.Length, Allocator.TempJob);
+        
+        VertexTriangulationJob triangulationJob = new VertexTriangulationJob
+        {
+            vertices = nativeVertexData,
+            triangles = tris,
+            indexList = indexList,
+            meshUvs = nativeMeshUvData,
+        };
+        
+        //Wait For Job To Complete
+        JobHandle handle = triangulationJob.Schedule();
+        handle.Complete();
+        
+        //Get Data From Job
+        Vector3[] vertices = new Vector3[nativeVertexData.Length];
+        Vector2[] meshUvs = new Vector2[nativeMeshUvData.Length];
+        int[] triangles = new int[tris.Length];
+        
+        for (var i = 0; i < vertices.Length; i++)
+        {
+            vertices[i] = nativeVertexData[i];
+            meshUvs[i] = nativeMeshUvData[i];
+        }
+        for (int i = 0; i < tris.Length; i++)
+        {
+            triangles[i] = tris[i];
+        }
+        
+        nativeVertexData.Dispose();
+        nativeMeshUvData.Dispose();
+        tris.Dispose();
+        indexList.Dispose();
+        
+        //Create And Populate MeshData
+        MeshData generatedMeshData = new MeshData
+        {
+            edgeProfile = edgeShape,
+            vertices = vertices,
+            triangles = triangles,
+            uvs = meshUvs,
+        };
+        return generatedMeshData;
+    }
+
+    private static List<float3> GetAllSplinePoints(EdgeShapeSO edgeShapeSo,string edgeShape)
+    {
+        List<float3> splinePoints = new List<float3>();
+
+        //Add LeftEdge
+        var leftEdge = (EdgeType)int.Parse(edgeShape[0].ToString());
+        if(leftEdge == EdgeType.Flat)
+            splinePoints.Add(edgeShapeSo.BottomLeft);
+        else
+        {
+            splinePoints.AddRange(leftEdge == EdgeType.Knob ? edgeShapeSo.GetEvaluatedVertices(EdgeName.LeftKnob) :
+                edgeShapeSo.GetEvaluatedVertices(EdgeName.LeftSocket));
+        }
+        
+        // Add Top Edge
+        var topEdge = (EdgeType)int.Parse(edgeShape[1].ToString());
+        if (topEdge == EdgeType.Flat)
+            splinePoints.Add(edgeShapeSo.TopLeft);
+        else
+        {
+            splinePoints.AddRange(topEdge == EdgeType.Knob ? edgeShapeSo.GetEvaluatedVertices(EdgeName.TopKnob) :
+                edgeShapeSo.GetEvaluatedVertices(EdgeName.TopSocket));
+        }
+        
+        // Add Right Edge
+        var rightEdge = (EdgeType)int.Parse(edgeShape[2].ToString());
+        if (rightEdge == EdgeType.Flat)
+            splinePoints.Add(edgeShapeSo.TopRight);
+        else
+        {
+            splinePoints.AddRange(rightEdge == EdgeType.Knob ? edgeShapeSo.GetEvaluatedVertices(EdgeName.RightKnob) :
+                edgeShapeSo.GetEvaluatedVertices(EdgeName.RightSocket));
+        }
+        
+        // Add Bottom Edge
+        var bottomEdge = (EdgeType)int.Parse(edgeShape[3].ToString());
+        if (bottomEdge == EdgeType.Flat)
+            splinePoints.Add(edgeShapeSo.BottomRight);
+        else
+        {
+            splinePoints.AddRange(bottomEdge == EdgeType.Knob ? edgeShapeSo.GetEvaluatedVertices(EdgeName.BottomKnob) :
+                edgeShapeSo.GetEvaluatedVertices(EdgeName.BottomSocket));
+        }
+        
+        return splinePoints;
+    }
+#endif
 }
 
 [BurstCompile]
@@ -95,12 +209,13 @@ public struct VertexTriangulationJob : IJob
     public NativeList<int> indexList;
     [ReadOnly] public NativeArray<float3> vertices;
     [WriteOnly] public NativeArray<int> triangles;
+    [WriteOnly] public NativeArray<float3> minLocalPos;
     
     //Used For Uv Calculation
-    [ReadOnly] public float2 minBoardPosition;
-    [ReadOnly] public float2 maxBoardPosition;
-    [ReadOnly] public float4x4 localToWorldMatrix;
-    [WriteOnly] public NativeArray<float2> boardUvs;
+    // [ReadOnly] public float2 minBoardPosition;
+    // [ReadOnly] public float2 maxBoardPosition;
+    // [ReadOnly] public float4x4 localToWorldMatrix;
+    // [WriteOnly] public NativeArray<float2> boardUvs;
     [WriteOnly] public NativeArray<float2> meshUvs;
 
     private float3 minObjectPos;
@@ -115,9 +230,9 @@ public struct VertexTriangulationJob : IJob
         for (int i = 0; i < vertices.Length; i++)
         {
             float3 vertexPos = vertices[i];
-            boardUvs[i] = GetPuzzleBoardUvData(vertexPos);
+            // boardUvs[i] = GetPuzzleBoardUvData(vertexPos);
             indexList.Add(i);
-
+        
             minObjectPos = math.min(minObjectPos, vertexPos);
             maxObjectPos = math.max(maxObjectPos, vertexPos);
         }
@@ -208,12 +323,12 @@ public struct VertexTriangulationJob : IJob
         return (sp <= 0) && (tp <= 0) && (sp + tp >= d);
     }
 
-    private float2 GetPuzzleBoardUvData(float3 vertex)
-    {
-        float4 vertexPos = new float4(vertex,1.0f);
-        float4 worldPos = math.mul(localToWorldMatrix, vertexPos);
-        return math.unlerp(minBoardPosition, maxBoardPosition, new float2(worldPos.x, worldPos.y));
-    }
+    // private float2 GetPuzzleBoardUvData(float3 vertex)
+    // {
+    //     float4 vertexPos = new float4(vertex,1.0f);
+    //     float4 worldPos = math.mul(localToWorldMatrix, vertexPos);
+    //     return math.unlerp(minBoardPosition, maxBoardPosition, new float2(worldPos.x, worldPos.y));
+    // }
 
     private float2 GetLocalUvData(float3 vertex)
     {

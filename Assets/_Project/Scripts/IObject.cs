@@ -16,6 +16,9 @@ public class IObject : MonoBehaviour
     [HideInInspector] public IObject parent;
 
     private Coroutine localScaleCoroutine;
+
+    public float Width => MainCollider.bounds.size.x;
+    public float Height => MainCollider.bounds.size.y;
     
 
     public Vector3 Position
@@ -81,15 +84,6 @@ public class IObject : MonoBehaviour
             pos.x = Mathf.Lerp(pos.x, currPos.x, Time.deltaTime * speedMultiplier.x);
             pos.y = Mathf.Lerp(pos.y, currPos.y, Time.deltaTime * speedMultiplier.y);
             Position = pos;
-            // speed = currPos - prevPos;
-            // Vector3 position = transform.position;
-            // prevPos = position;
-            //
-            // Vector3 pos = position;
-            // pos.x += speed.x * speedMultiplier.x * Time.deltaTime;
-            // pos.y += speed.y * speedMultiplier.y * Time.deltaTime;
-            //
-            // Position = pos;
         }
     }
 

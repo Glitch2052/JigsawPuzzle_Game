@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using SimpleJSON;
-using Unity.Collections;
-using Unity.Jobs;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class PuzzlePiece : IObject
@@ -16,34 +13,11 @@ public class PuzzlePiece : IObject
     public Dictionary<int,Vector2Int> neighbourCoordinates;
     private Collider2D[] colliderResults;
     public ContactFilter2D contactFilter2D;
-
-    [Space(20),Header("EdgeInfo")]
-    public EdgeType leftEdge;
-    public EdgeType topEdge;
-    public EdgeType rightEdge;
-    public EdgeType bottomEdge;
+    public string EdgeShape { get; private set; }
 
     //Mesh Data
     private Mesh mesh;
-    private Vector3[] vertices;
-    private int[] triangles;
-    private Vector2[] boardUVs;
-    private Vector2[] meshUvs;
-
-    //Vertices List
-    private List<float3> allSplinePoints;
-    
-    //Native Containers For Jobs
-    private NativeArray<float3> nativeVertexData;
-    private NativeArray<int> tris;
-    private NativeArray<float2> nativeBoardUvData;
-    private NativeArray<float2> nativeMeshUvData;
-    private NativeList<int> indexList;
-
-    // public override void Init()
-    // {
-    //     colliderResults = new RaycastHit2D[10];
-    // }
+    private static readonly int GridCoord = Shader.PropertyToID("_GridCoord");
 
     public void SetData(float cellSize, int x, int y)
     {
@@ -57,112 +31,17 @@ public class PuzzlePiece : IObject
         GetNeighbouringPieceGridCoordinates();
     }
     
-    public JobHandle ScheduleMeshDataGenerationJob()
+    public void UpdateMesh(string key)
     {
-        allSplinePoints = new List<float3>();
+        EdgeShape = key;
+        MeshData data = PuzzleGenerator.Instance.edgeShapeSO.GetMeshData(key);
         
-        // Add Left Edge
-        if(leftEdge == EdgeType.Flat)
-            allSplinePoints.Add(PuzzleGenerator.Instance.edgeShapeSO.BottomLeft);
-        else
-        {
-            allSplinePoints.AddRange(leftEdge == EdgeType.Knob ? PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.LeftKnob) :
-                PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.LeftSocket));
-        }
-        
-        // Add Top Edge
-        if (topEdge == EdgeType.Flat)
-            allSplinePoints.Add(PuzzleGenerator.Instance.edgeShapeSO.TopLeft);
-        else
-        {
-            allSplinePoints.AddRange(topEdge == EdgeType.Knob ? PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.TopKnob) :
-                PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.TopSocket));
-        }
-        
-        // Add Right Edge
-        if (rightEdge == EdgeType.Flat)
-            allSplinePoints.Add(PuzzleGenerator.Instance.edgeShapeSO.TopRight);
-        else
-        {
-            allSplinePoints.AddRange(rightEdge == EdgeType.Knob ? PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.RightKnob) :
-                PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.RightSocket));
-        }
-        
-        // Add Bottom Edge
-        if (bottomEdge == EdgeType.Flat)
-            allSplinePoints.Add(PuzzleGenerator.Instance.edgeShapeSO.BottomRight);
-        else
-        {
-            allSplinePoints.AddRange(bottomEdge == EdgeType.Knob ? PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.BottomKnob) :
-                PuzzleGenerator.Instance.edgeShapeSO.GetEvaluatedVertices(EdgeName.BottomSocket));
-        }
-
-        //Native Vertex Container
-        nativeVertexData = new NativeArray<float3>(allSplinePoints.Count, Allocator.TempJob);
-        for (int i = 0; i < nativeVertexData.Length; i++)
-        {
-            nativeVertexData[i] = allSplinePoints[i];
-        }
-        
-        //Native Triangles Container
-        int totalTriangleIndexCount = 3 * (nativeVertexData.Length - 2);
-        tris = new NativeArray<int>(totalTriangleIndexCount,Allocator.TempJob);
-        indexList = new NativeList<int>(Allocator.TempJob);
-        
-        //Native UV Container
-        nativeBoardUvData = new NativeArray<float2>(nativeVertexData.Length, Allocator.TempJob);
-        nativeMeshUvData = new NativeArray<float2>(nativeVertexData.Length, Allocator.TempJob);
-        
-        VertexTriangulationJob triangulationJob = new VertexTriangulationJob
-        {
-            vertices = nativeVertexData,
-            triangles = tris,
-            indexList = indexList,
-            
-            localToWorldMatrix = transform.localToWorldMatrix,
-            minBoardPosition = PuzzleGenerator.Instance.puzzleBoardMinPos,
-            maxBoardPosition = PuzzleGenerator.Instance.puzzleBoardMaxPos,
-            boardUvs = nativeBoardUvData,
-            meshUvs = nativeMeshUvData
-        };
-        
-        return triangulationJob.Schedule();
-    }
-
-    public void GetMeshDataFromJob()
-    {
-        vertices = new Vector3[nativeVertexData.Length];
-        boardUVs = new Vector2[nativeBoardUvData.Length];
-        meshUvs = new Vector2[nativeMeshUvData.Length];
-        
-        for (var i = 0; i < vertices.Length; i++)
-        {
-            vertices[i] = nativeVertexData[i];
-            boardUVs[i] = nativeBoardUvData[i];
-            meshUvs[i] = nativeMeshUvData[i];
-        }
-
-        triangles = new int[tris.Length];
-        for (int i = 0; i < tris.Length; i++)
-        {
-            triangles[i] = tris[i];
-        }
-        
-        //Dispose All Native Containers
-        nativeVertexData.Dispose();
-        nativeBoardUvData.Dispose();
-        nativeMeshUvData.Dispose();
-        tris.Dispose();
-        indexList.Dispose();
-    }
-    
-    public void UpdateMesh()
-    {
         mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = boardUVs;
-        mesh.uv2 = meshUvs;
+        mesh.vertices = data.vertices;
+        mesh.triangles = data.triangles; 
+        mesh.uv = data.uvs;
+
+        meshRenderer.material.SetVector(GridCoord,(Vector2)gridCoordinate);
     }
 
     private void GetNeighbouringPieceGridCoordinates()
@@ -189,11 +68,6 @@ public class PuzzlePiece : IObject
     {
         Debug.Log($"Pointer drag on puzzle piece having coord {gridCoordinate}");
         return base.OnPointerDrag(worldPos, pointerId);
-    }
-
-    protected override void OnSelected()
-    {
-        base.OnSelected();
     }
 
     protected override void OnReleased()
@@ -273,8 +147,22 @@ public class PuzzlePiece : IObject
         IObject piece = GetBelowPuzzlePiece();
         if(piece)
             z = piece.Position.z - 0.05f;
+
+        Vector3 newPos = GetPositionInsideLimit(Position.SetZ(z));
         
-        Position = Position.SetZ(z);
+        MainCollider.enabled = false;
+        transform.DOMove(newPos, 0.2f).onComplete += () =>
+        {
+            MainCollider.enabled = true;
+        };
+    }
+
+    public Vector3 GetPositionInsideLimit(Vector3 pos)
+    {
+        pos.x = Mathf.Clamp(pos.x, iSystem.LeftLimit + Width * 0.5f, iSystem.RightLimit - Width * 0.5f);
+        pos.y = Mathf.Clamp(pos.y, iSystem.BottomLimit + Height * 0.5f, iSystem.TopLimit - Height * 0.5f);
+    
+        return pos;
     }
     
     private IObject GetBelowPuzzlePiece()
@@ -295,18 +183,6 @@ public class PuzzlePiece : IObject
 
     private bool TryInteractWithPalette()
     {
-        // colliderResults ??= new RaycastHit2D[10];
-        //
-        // int count = Physics2D.BoxCastNonAlloc(Position, MainCollider.size, 0, Vector2.zero,colliderResults,15f);
-        // for (int i = 0; i < count; i++)
-        // {
-        //     if (colliderResults[i].collider.TryGetComponent(out PuzzlePalette palette))
-        //     {
-        //         palette.AddObjectToPalette(this);
-        //         Debug.Log("Palette Found");
-        //         return true;
-        //     }
-        // }
         if (Mathf.Abs(Position.y - iSystem.palette.Position.y) < iSystem.palette.PaletteHeight * 0.5)
         {
             iSystem.palette.AddObjectToPalette(this);
@@ -384,10 +260,23 @@ public class PuzzlePiece : IObject
     public JSONNode EdgeTypeToJson()
     {
         JSONNode edgeNode = new JSONObject();
-        edgeNode["Left"] = (int)leftEdge;
-        edgeNode["Top"] = (int)topEdge;
-        edgeNode["Right"] = (int)rightEdge;
-        edgeNode["Bottom"] = (int)bottomEdge;
+        // edgeNode["Left"] = (int)leftEdge;
+        // edgeNode["Top"] = (int)topEdge;
+        // edgeNode["Right"] = (int)rightEdge;
+        // edgeNode["Bottom"] = (int)bottomEdge;
         return edgeNode;
     }
+    
+    #if UNITY_EDITOR
+    public void SetMeshData(MeshData data)
+    {
+        mesh = new Mesh();
+        meshFilter.mesh = mesh;
+        
+        mesh.Clear();
+        mesh.vertices = data.vertices;
+        mesh.triangles = data.triangles;
+        mesh.uv = data.uvs;
+    }
+    #endif
 }

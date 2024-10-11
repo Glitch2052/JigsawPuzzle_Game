@@ -53,8 +53,8 @@ public class GameManager : MonoBehaviour
             InteractiveSystem interactiveSystem = FindObjectOfType<InteractiveSystem>();
             if (interactiveSystem)
             {
-                interactiveSystem.Init(data);
-                yield return interactiveSystem.OnSceneLoad();
+                interactiveSystem.Init();
+                yield return interactiveSystem.OnSceneLoad(data);
             }
         }
         

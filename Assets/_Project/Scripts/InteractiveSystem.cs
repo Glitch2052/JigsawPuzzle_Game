@@ -25,6 +25,16 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public static float gridSnapThreshold;
     public static float neighbourSnapThreshold;
 
+    public float LeftLimit { get; set;}
+    public float RightLimit { get; set;}
+    public float TopLimit { get; set;}
+    public float BottomLimit { get; set;}
+    
+#if UNITY_EDITOR
+    [Space(30),Header("Editor Only Data")]
+    public Sprite puzzleSprite;
+#endif
+
     private void Awake()
     {
         Camera = Camera.main;
@@ -38,6 +48,14 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
 
         halfCameraSize = cameraSize;
         cameraSize *= 2;
+        
+// #if UNITY_EDITOR
+//         Init(new PuzzleTextureData()
+//         {
+//             sprite = puzzleSprite
+//         });
+//         StartCoroutine(OnSceneLoad());
+// #endif
     }
 
     private void Update()
@@ -53,25 +71,24 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         }
     }
 
-    public void Init(PuzzleTextureData puzzleTextureData)
+    public void Init()
     {
         inputSystem = new InputSystem(this);
 
         gridSnapThreshold = puzzleGenerator.CellSize * 0.5f;
         neighbourSnapThreshold = puzzleGenerator.CellSize * 1.5f;
-        puzzleGenerator.Init(this,puzzleTextureData);
+        puzzleGenerator.Init(this);
     }
 
-    public IEnumerator OnSceneLoad()
+    public IEnumerator OnSceneLoad(PuzzleTextureData puzzleTextureData)
     {
-        JSONNode configData = new JSONObject();
-        if (StorageManager.IsFileExist("Puzzle.json"))
-        {
-            string data = StorageManager.ReadNow("Puzzle.json", string.Empty);
-            configData = JSONNode.Parse(data);
-        }
+        ReadOperation readOperation = new ReadOperation("Puzzle.json", "{items}");
+        yield return readOperation.Read();
+        JSONNode configData = JSONNode.Parse(readOperation.data);
 
-        puzzleGenerator.GenerateGrid(configData["PuzzlePieceData"]);
+        puzzleGenerator.GenerateGrid(puzzleTextureData, configData["PuzzlePieceData"]);
+        yield return null;
+        
         cameraController.SetISystem(this);
         palette.SetISystem(this);
 

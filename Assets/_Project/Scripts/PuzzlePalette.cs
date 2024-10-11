@@ -10,7 +10,8 @@ public class PuzzlePalette : IObject
     private float newOrthoSize;
     private float oldOrthoSize;
 
-    public float PaletteHeight =>MainCollider.size.y * LocalScale.y;
+    public float PaletteHeight => MainCollider.size.y * LocalScale.y;
+    private float zoomScaleFactor;
 
     public override void Init()
     {
@@ -33,10 +34,14 @@ public class PuzzlePalette : IObject
     private void ScaleAndPositionPaletteWithCamera()
     {
         newOrthoSize = iSystem.Camera.orthographicSize;
-        LocalScale = newOrthoSize / oldOrthoSize * LocalScale.SetZ(1);
+        zoomScaleFactor = newOrthoSize / oldOrthoSize;
+        content.UpdateThresholdValues(zoomScaleFactor);
+        LocalScale = zoomScaleFactor * LocalScale.SetZ(1);
+        
         oldOrthoSize = iSystem.Camera.orthographicSize;
         iSystem.UpdateCameraSize();
-        LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 1.5f);
+        
+        LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 1.5f * LocalScale.y);
     }
 
     public void AddObjectToPalette(PuzzlePiece puzzlePiece)

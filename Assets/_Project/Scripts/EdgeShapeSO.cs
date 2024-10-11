@@ -1,30 +1,148 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
+#if UNITY_EDITOR
+using Unity.EditorCoroutines.Editor;
+#endif
 
 [CreateAssetMenu(menuName = "Puzzle Data/Edge Profile",fileName = "Edge Profile Info")]
 public class EdgeShapeSO : ScriptableObject
 {
     public SplineContainer knobProfile;
     public float xLength;
-    private float scaleFactor;
     public Material puzzleMaterial;
 
+    private float scaleFactor;
     private List<float3> flatCornerPositions;
     private Dictionary<string, List<float3>> profileVertices;
+    
+    private static readonly int Width = Shader.PropertyToID("_Width");
+    private static readonly int Height = Shader.PropertyToID("_Height");
+    private static readonly int GridCellSize = Shader.PropertyToID("_GridCellSize");
+    private static readonly int HalfObjectSize = Shader.PropertyToID("_HalfObjectSize");
 
+    #region Mesh Data
+
+    [Space(40), Header("Mesh Data For All Possible Puzzle Piece Combination")] 
+    [SerializeField] private List<MeshData> allPossibleMeshCacheList;
+    private Dictionary<string, MeshData> meshCacheDictionary;
+    
+    #endregion
+    
+    private static readonly int CurveResolution = 40;
+    
+    public void Init()
+    {
+        meshCacheDictionary = new Dictionary<string, MeshData>();
+        foreach (MeshData data in allPossibleMeshCacheList)
+        {
+            meshCacheDictionary[data.edgeProfile] = data;
+        }
+    }
+
+    public void UpdatePuzzleMaterial(Texture2D puzzleTexture, int width, int height , float gridCellSize)
+    {
+        puzzleMaterial.mainTexture = puzzleTexture;
+        puzzleMaterial.SetFloat(Width,width);
+        puzzleMaterial.SetFloat(Height,height);
+        puzzleMaterial.SetFloat(GridCellSize,gridCellSize);
+        puzzleMaterial.SetVector(HalfObjectSize,Vector2.one * (gridCellSize * 0.5f));
+    }
+
+    public MeshData GetMeshData(string key)
+    {
+        return meshCacheDictionary[key];
+    }
+
+#if UNITY_EDITOR
+    [Space(60), Header("Editor Only Data")] 
+    [SerializeField] private float cellSize;
+    [SerializeField] private PuzzlePiece puzzlePrefab;
+    [SerializeField] private bool generateGameObjects;
+    
+    private EditorCoroutine meshDataCalculationCoroutine;
     public float3 BottomLeft => flatCornerPositions[0];
     public float3 TopLeft => flatCornerPositions[1];
     public float3 TopRight => flatCornerPositions[2];
     public float3 BottomRight => flatCornerPositions[3];
-
-    private static readonly int curveResolution = 40;
-
     
-    public void Init(float cellSize)
+
+    [ContextMenu("Calculate All Possible MeshData")]
+    public void CalculateAllPossibleMeshData()
     {
-        SetScaleFactor(cellSize);
+        if (meshDataCalculationCoroutine != null)
+        {
+            Debug.LogError("Editor Coroutine is Still Running");
+            return;
+        }
+        meshDataCalculationCoroutine = EditorCoroutineUtility.StartCoroutine(CalculateMeshData(), this);
+    }
+
+    private IEnumerator CalculateMeshData()
+    {
+        SetUpScriptableEditorOnly(cellSize);
+        
+        yield return null;
+        
+        //here length is 81 because there are 4 edges each with 3 different combination
+        //so 3^4 possible combinations
+        for (int i = 4; i < 81; i++)
+        {
+            if(i == 6 || i == 9 || i == 18 || i == 27 || i == 54) continue;
+            string ternaryNum = ConvertDecimalToTernary(i);
+            MeshData generatedData = EarClipping.GenerateMeshDataEditorOnly(this, ternaryNum);
+            allPossibleMeshCacheList.Add(generatedData);
+            yield return null;
+        }
+
+        if (generateGameObjects)
+        {
+            GameObject parentObject = new GameObject("Parent")
+            {
+                transform =
+                {
+                    position = Vector3.zero
+                }
+            };
+            float x = 0;
+            float y = 0;
+            for (int i = 0; i < allPossibleMeshCacheList.Count; i++)
+            {
+                x = i % 9;
+                var piece = Instantiate(puzzlePrefab, parentObject.transform);
+                if (i % 9 == 0)
+                {
+                    y += 3;
+                }
+                piece.transform.position = new Vector3(x * 3, y, 0);
+                piece.SetMeshData(allPossibleMeshCacheList[i]);
+                yield return null;
+            }
+        }
+
+        
+        meshDataCalculationCoroutine = null;
+    }
+
+    private string ConvertDecimalToTernary(int num)
+    {
+        string ternary = string.Empty;
+        while (num > 0)
+        {
+            ternary = (num % 3) + ternary;
+            num /= 3;
+        }
+        
+        return ternary.PadLeft(4,'0');    
+    }
+    
+    private void SetUpScriptableEditorOnly(float cellSize)
+    {
+        allPossibleMeshCacheList.Clear();
+        scaleFactor = cellSize / xLength;
         
         float halfCellSize = cellSize * 0.5f;
         flatCornerPositions = new List<float3>
@@ -36,13 +154,9 @@ public class EdgeShapeSO : ScriptableObject
         };
 
         profileVertices = new Dictionary<string, List<float3>>();
+        EvaluateAllPossibleSplinesCombinationOnMainThread();
     }
     
-    private void SetScaleFactor(float cellSize)
-    {
-        scaleFactor = cellSize / xLength;
-    }
-
     public void EvaluateAllPossibleSplinesCombinationOnMainThread()
     {
         float3 scale = new float3(scaleFactor,scaleFactor,1);
@@ -77,10 +191,10 @@ public class EdgeShapeSO : ScriptableObject
     {
         NativeSpline nativeSpline = new NativeSpline(knobProfile.Spline, trsMatrix);
         
-        List<float3> splinePoints = new List<float3>(curveResolution);
-        for (int i = 0; i < curveResolution; i ++)
+        List<float3> splinePoints = new List<float3>(CurveResolution);
+        for (int i = 0; i < CurveResolution; i ++)
         {
-            float3 p = nativeSpline.EvaluatePosition((float)i/ (curveResolution));
+            float3 p = nativeSpline.EvaluatePosition((float)i/ (CurveResolution));
             splinePoints.Add(p);
         }
         nativeSpline.Dispose();
@@ -93,92 +207,8 @@ public class EdgeShapeSO : ScriptableObject
         profileVertices.TryGetValue(key, out List<float3> value);
         return value;
     }
-
-    //I Overdid it in this method. There was no need for job system here
-    //we could simply evaluate spline with normal spline evaluation method since we are only doing it for 8 times at start of game
-    /*public void EvaluateAllPossibleSplinesCombination()
-    {
-        int splinesCount = 8;
-        NativeArray<JobHandle> splineEvaluationJobHandles = new NativeArray<JobHandle>(splinesCount,Allocator.Temp);
-        List<NativeSpline> tempNativeSplinesList = new List<NativeSpline>(splinesCount);
-        Dictionary<string, NativeArray<float3>> tempSplinePosDictionary = new Dictionary<string, NativeArray<float3>>();
-
-        float3 scale = new float3(scaleFactor, scaleFactor, 1);
-        float3 negativeScale = new float3(scaleFactor, -scaleFactor, 1);
-        
-        //Left Side
-        float3 translation = flatCornerPositions[0];
-        quaternion rotation = quaternion.EulerXYZ(0,0,90);
-        splineEvaluationJobHandles[0] = EvaluateSpline(EdgeName.LeftKnob, float4x4.TRS(translation,rotation,scale), tempSplinePosDictionary, tempNativeSplinesList);
-        splineEvaluationJobHandles[1] = EvaluateSpline(EdgeName.LeftSocket, float4x4.TRS(translation,rotation,negativeScale), tempSplinePosDictionary, tempNativeSplinesList);
-        
-        //Top Side
-        translation = flatCornerPositions[1];
-        rotation = quaternion.identity;
-        splineEvaluationJobHandles[2] = EvaluateSpline(EdgeName.TopKnob, float4x4.TRS(translation,rotation,scale), tempSplinePosDictionary, tempNativeSplinesList);
-        splineEvaluationJobHandles[3] = EvaluateSpline(EdgeName.TopSocket, float4x4.TRS(translation,rotation,negativeScale), tempSplinePosDictionary, tempNativeSplinesList);
-        
-        //Right Side
-        translation = flatCornerPositions[2];
-        rotation = quaternion.EulerXYZ(0,0,270);
-        splineEvaluationJobHandles[4] = EvaluateSpline(EdgeName.RightKnob, float4x4.TRS(translation,rotation,scale), tempSplinePosDictionary, tempNativeSplinesList);
-        splineEvaluationJobHandles[5] = EvaluateSpline(EdgeName.RightSocket, float4x4.TRS(translation,rotation,negativeScale), tempSplinePosDictionary, tempNativeSplinesList);
-        
-        //Bottom Side
-        translation = flatCornerPositions[3];
-        rotation = quaternion.EulerXYZ(0,0,180);
-        splineEvaluationJobHandles[6] = EvaluateSpline(EdgeName.BottomKnob, float4x4.TRS(translation,rotation,scale), tempSplinePosDictionary, tempNativeSplinesList);
-        splineEvaluationJobHandles[7] = EvaluateSpline(EdgeName.BottomSocket, float4x4.TRS(translation,rotation,negativeScale), tempSplinePosDictionary, tempNativeSplinesList);
-        
-        JobHandle.CompleteAll(splineEvaluationJobHandles);
-
-        //dispose all native splines
-        foreach (NativeSpline spline in tempNativeSplinesList)
-        {
-            spline.Dispose();
-        }
-        //dispose all native containers in dictionary
-        foreach (var keyValuePair in tempSplinePosDictionary)
-        {
-            profileVertices.Add(keyValuePair.Key, new List<float3>(keyValuePair.Value));
-            keyValuePair.Value.Dispose();
-        }
-        
-        //dispose all handles and native containers
-        splineEvaluationJobHandles.Dispose();
-    }
-
-    private JobHandle EvaluateSpline(string key, float4x4 trsMatrix , Dictionary<string, NativeArray<float3>> posDictionary, List<NativeSpline> splinesList)
-    {
-        NativeArray<float3> nativeSplinePoints = new NativeArray<float3>(40, Allocator.TempJob);
-        NativeSpline nativeSpline = new NativeSpline(knobProfile.Spline,trsMatrix,Allocator.TempJob);
-        
-        SplineEvaluationJob splineEvaluationJob = new SplineEvaluationJob
-        {
-            nativeSpline = nativeSpline,
-            splinePoints = nativeSplinePoints
-        };
-        
-        splinesList.Add(nativeSpline);
-        posDictionary.Add(key,nativeSplinePoints);
-        
-        return splineEvaluationJob.Schedule();
-    }
-        
-    public struct SplineEvaluationJob : IJob
-    {
-        [ReadOnly] public NativeSpline nativeSpline;
-        public NativeArray<float3> splinePoints;
-        
-        public void Execute()
-        {
-            float resolution = splinePoints.Length;
-            for (int i = 0; i < splinePoints.Length; i++)
-            {
-                splinePoints[i] = nativeSpline.EvaluatePosition(i / resolution);
-            }
-        }
-    }*/
+    
+#endif
 }
 
 
@@ -202,4 +232,13 @@ public enum EdgeType
     Flat,
     Knob,
     Socket
+}
+
+[Serializable]
+public struct MeshData
+{
+    public string edgeProfile;
+    public Vector3[] vertices;
+    public int[] triangles;
+    public Vector2[] uvs;
 }

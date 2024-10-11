@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using SimpleJSON;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PaletteContent : MonoBehaviour
 {
@@ -9,7 +10,6 @@ public class PaletteContent : MonoBehaviour
     public float restLine;
     
     private PuzzlePalette palette;
-    public const float DRAG_THRESHOLD = 1.5f;
     public const int EMPTY = -999;
     private int dragPointerId = EMPTY;
     
@@ -25,7 +25,11 @@ public class PaletteContent : MonoBehaviour
     private float velocity;
     private float minVelocityThreshold = 0.015f;
     private float decelerationRate = 0.9f;
-    private float elevateOffset = 1.4f;
+    
+    //here the values are taken as reference with cam orthographic size 16
+    //at time of usage this value scale up/down based on camera zoom
+    private float elevateOffset = 2.75f;
+    private float dragThreshold = 2f;
 
     private List<PuzzlePiece> puzzlePieces;
 
@@ -150,7 +154,7 @@ public class PaletteContent : MonoBehaviour
     {
         if (dragPointerId != pointerId) return null;
 
-        if (dragObject && (worldPos - dragStart).y >= DRAG_THRESHOLD)
+        if (dragObject && (worldPos - dragStart).y >= dragThreshold)
         {
             // palette.TransferObjectToCurrentScene(dragObject);
             RemoveObjectFromPalette(dragObject);
@@ -174,7 +178,7 @@ public class PaletteContent : MonoBehaviour
         if (dragPointerId == pointerId)
         {
             // targetPosition += 5 * (currentTouchX - lastTouchX);
-            velocity += 3 * (currentTouchX - lastTouchX);
+            velocity += 1.75f * (currentTouchX - lastTouchX);
             dragObject = null;
             dragPointerId = EMPTY;
             return palette;
@@ -225,5 +229,11 @@ public class PaletteContent : MonoBehaviour
         
         node["children"] = children;
         return node;
+    }
+
+    public void UpdateThresholdValues(float zoomScaleFactor)
+    {
+        dragThreshold *= zoomScaleFactor;
+        elevateOffset *= zoomScaleFactor;
     }
 }

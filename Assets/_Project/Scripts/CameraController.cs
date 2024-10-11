@@ -7,10 +7,11 @@ public class CameraController : IObject
     
     private int firstDragPointerId = EMPTY;
     private int secondDragPointerId = EMPTY;
-
-    private float zoomSpeed = 1f;
+    
     private float minZoom = 3f;
     private float maxZoom = 20f;
+    private readonly float zoomLerpSpeed = 30f;
+    private readonly float zoomSensitivity = 1.25f;
 
     private Vector3 targetPos;
     private Vector3 zoomMidPos;
@@ -18,21 +19,21 @@ public class CameraController : IObject
     private float targetZoom;
     private float currZoomVelocity;
     private float boardWidth;
-    private float zoomLerpSpeed = 20f;
     private const float CameraZ = -150f;
 
     private Vector2 currTouchPos;
     private Vector2 lastTouchPos;
     private Vector3 dragDirection;
     
-    public float LeftLimit { get; private set; }
-    public float RightLimit { get; private set; }
-    public float TopLimit { get; private set; }
-    public float BottomLimit { get; private set; }
+    public float LeftLimit { get; protected set; }
+    public float RightLimit { get; protected set; }
+    public float TopLimit { get; protected set; }
+    public float BottomLimit { get; protected set; }
 
     public override void Init()
     {
-        boardWidth = iSystem.puzzleGenerator.BoardSize.x + 1f;
+        Vector2 boardSize = iSystem.puzzleGenerator.BoardSize;
+        boardWidth = boardSize.x + 1f;
         float startOrthographicSize = (boardWidth / iSystem.Camera.aspect) * 0.5f;
         iSystem.Camera.orthographicSize = startOrthographicSize;
 
@@ -42,19 +43,24 @@ public class CameraController : IObject
         
         targetZoom = iSystem.Camera.orthographicSize;
         targetPos = iSystem.Camera.transform.position.SetZ(CameraZ);
+        
+        additionalSpaceSize = additionalSpace ? new Vector2(10f, 5f) * maxZoom / minZoom : Vector2.zero;
 
-        LeftLimit = Mathf.Min(-boardWidth * 0.5f + iSystem.halfCameraSize.x,0);
-        RightLimit = Mathf.Max(boardWidth * 0.5f - iSystem.halfCameraSize.x,0);
-        BottomLimit = Mathf.Min(-maxZoom + iSystem.halfCameraSize.y,0) -1f;
+        LeftLimit = Mathf.Min((-boardWidth - additionalSpaceSize.x) * 0.5f + iSystem.halfCameraSize.x,0);
+        RightLimit = Mathf.Max((boardWidth + additionalSpaceSize.x) * 0.5f - iSystem.halfCameraSize.x,0);
+        BottomLimit = Mathf.Min(-maxZoom - additionalSpaceSize.y + iSystem.halfCameraSize.y,0) -1f;
         TopLimit = Mathf.Max(maxZoom - iSystem.halfCameraSize.y,0) - 1f;
 
-        
+        iSystem.LeftLimit = (-boardWidth - additionalSpaceSize.x) * 0.5f + 0.25f;
+        iSystem.RightLimit = (boardWidth + additionalSpaceSize.x) * 0.5f - 0.25f;
+        iSystem.BottomLimit = (-boardSize.y - additionalSpaceSize.y * 0.25f) * 0.5f;
+        iSystem.TopLimit = boardSize.y * 0.5f + 2f;
     }
 
     public override void IUpdate()
     {
         float currZoom = iSystem.Camera.orthographicSize;
-        float newZoom = Mathf.SmoothDamp(currZoom, targetZoom, ref currZoomVelocity, 0.175f);
+        float newZoom = Mathf.SmoothDamp(currZoom, targetZoom, ref currZoomVelocity, 0.02f);
         iSystem.Camera.orthographicSize = newZoom;
         
         Vector3 cameraPos = iSystem.Camera.transform.position;
@@ -72,9 +78,11 @@ public class CameraController : IObject
         targetPos.y = Mathf.Clamp(targetPos.y, BottomLimit, TopLimit);
         
         //Update Camera Position
-        iSystem.Camera.transform.position = Vector3.Lerp(cameraPos, targetPos, Time.deltaTime * zoomLerpSpeed);
+        float lerpValue = Time.deltaTime * zoomLerpSpeed;
+        if (firstDragPointerId != EMPTY && secondDragPointerId == EMPTY)
+            lerpValue = 1;
         
-        additionalSpaceSize = additionalSpace ? new Vector2(10f, 5f) * maxZoom / minZoom : Vector2.zero;
+        iSystem.Camera.transform.position = Vector3.Lerp(cameraPos, targetPos, lerpValue);
     }
 
     public override IObject OnPointerDown(Vector2 worldPos, int pointerId)
@@ -105,11 +113,10 @@ public class CameraController : IObject
             float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
             float touchDeltaMag = (firstPointerData.position - secondPointerData.position).magnitude;
 
-            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+            float deltaMagnitudeDiff = (prevTouchDeltaMag - touchDeltaMag) * zoomSensitivity;
 
-            targetZoom = iSystem.Camera.orthographicSize + deltaMagnitudeDiff * zoomSpeed * Time.deltaTime;
+            targetZoom = iSystem.Camera.orthographicSize + deltaMagnitudeDiff * Time.deltaTime;
             targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
-            // float newZoom = Mathf.Clamp(iSystem.Camera.orthographicSize + deltaMagnitudeDiff * zoomSpeed, minZoom, maxZoom);
             zoomMidPos = iSystem.Camera.ScreenToWorldPoint((firstPointerData.position + secondPointerData.position) / 2);
 
             // ZoomTowards(midPoint, newZoom);
@@ -120,10 +127,8 @@ public class CameraController : IObject
             dragDirection = lastTouchPos - currTouchPos;
             dragDirection.z = 0;
             targetPos += dragDirection;
-            lastTouchPos = currTouchPos;
+            lastTouchPos = worldPos + (Vector2)dragDirection;
         }
-        InputSystem.PointerEvent pointerEvent = iSystem.inputSystem.GetPointerEvent(pointerId);
-        Debug.Log($"position is {pointerEvent.eventData.position} delta is {pointerEvent.eventData.delta}");
         return this;
     }
 
