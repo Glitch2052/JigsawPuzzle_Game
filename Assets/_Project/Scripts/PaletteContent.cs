@@ -36,6 +36,12 @@ public class PaletteContent : MonoBehaviour
 
     private float endOffset;
     public float Width => gap * (puzzlePieces.Count - 1);
+
+    public Vector3 LocalPosition
+    {
+        get => transform.localPosition;
+        set =>transform.localPosition = OnPositionUpdate(value);
+    }
     
     public void Init(PuzzlePalette palette)
     {
@@ -45,7 +51,7 @@ public class PaletteContent : MonoBehaviour
         halfCellSize = PuzzleGenerator.Instance.CellSize * 0.5f + 0.5f;
         
         gap += PuzzleGenerator.Instance.CellSize;
-        targetPosition = transform.localPosition.x;
+        targetPosition = LocalPosition.x;
         endOffset = PuzzleGenerator.Instance.CellSize + 0.5f;
 
         // leftLimit = Mathf.Min(-Width * 0.5f + halfCamWidth + halfCellSize, 0);
@@ -106,12 +112,12 @@ public class PaletteContent : MonoBehaviour
             velocity = 0;
         }
         
-        Vector3 pos = transform.localPosition;
+        Vector3 pos = LocalPosition;
         
         pos.x = Mathf.Lerp(pos.x, targetPosition,dragPointerId == EMPTY ? 0.3f : 1f);
         pos.x = Mathf.Clamp(pos.x, leftLimitSoft, rightLimitSoft);
         
-        transform.localPosition = pos;
+        LocalPosition = pos;
     }
 
     private void UpdatePositions()
@@ -130,6 +136,17 @@ public class PaletteContent : MonoBehaviour
             x += gap;
         }
     }
+
+    private Vector3 OnPositionUpdate(Vector3 newPosition)
+    { 
+        return LocalPosition + OnValueChanged(newPosition - LocalPosition);
+    }
+
+    private Vector3 OnValueChanged(Vector3 direction)
+    {
+        Debug.Log($"moved in the direction {direction}");
+        return direction;
+    }
     
     public IObject OnPointerDown(Vector2 worldPos, int pointerId)
     {
@@ -141,7 +158,7 @@ public class PaletteContent : MonoBehaviour
         dragStart = worldPos;
         dragPointerId = pointerId;
         worldPos = palette.transform.InverseTransformPoint(worldPos);
-        offset = worldPos.x - transform.localPosition.x;
+        offset = worldPos.x - LocalPosition.x;
         Debug.Log($"offset is {offset}");
         lastTouchX = currentTouchX = worldPos.x;
         velocity = 0;
