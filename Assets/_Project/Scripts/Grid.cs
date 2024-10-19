@@ -53,22 +53,18 @@ public class Grid<T>
             }
         }
     }
-    
-    public void IterateHorizontallyOverGridObjects(Action<int,int,T> action)
-    {
-        for (int j = 0; j < height; j++)
-        {
-            for (int i = 0; i < width; i++)
-            {
-                action?.Invoke(i,j,GetGridObject(i,j));
-            }
-        }
-    }
 
     public T GetGridObject(int x, int y)
     {
         if(x >= 0 && x < width && y >= 0 && y < height)
             return gridArray[x, y];
+        return default;
+    }
+
+    public T GetGridObject(Vector2Int gridCoord)
+    {
+        if(gridCoord.x >= 0 && gridCoord.x < width && gridCoord.y >= 0 && gridCoord.y < height)
+            return gridArray[gridCoord.x, gridCoord.y];
         return default;
     }
 

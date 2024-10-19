@@ -1117,6 +1117,7 @@ MonoBehaviour:
   zOrder: 0.5
   gap: 1.25
   restLine: 0
+  prototypeCell: {fileID: 5979877976914833657, guid: 8723118e076267046908b6049405bc8f, type: 3}
 --- !u!1 &833970383
 GameObject:
   m_ObjectHideFlags: 0
@@ -1234,7 +1235,7 @@ MonoBehaviour:
   iSystem: {fileID: 0}
   <MainCollider>k__BackingField: {fileID: 859058302}
   parent: {fileID: 0}
-  additionalSpace: 1
+  additionalSpace: 0
 --- !u!61 &859058302
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1531,7 +1532,6 @@ MonoBehaviour:
   cameraController: {fileID: 859058301}
   cameraSize: {x: 0, y: 0}
   halfCameraSize: {x: 0, y: 0}
-  puzzleSprite: {fileID: 21300000, guid: 254352e6a8f9641f1a69ecf73823ee1c, type: 3}
 --- !u!61 &963775433
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1758,20 +1758,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1caa887f28ee72943a1072034702390b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <XWidth>k__BackingField: 12
-  <YWidth>k__BackingField: 12
+  <XWidth>k__BackingField: 6
+  <YWidth>k__BackingField: 6
   <CellSize>k__BackingField: 2
   piecePrefab: {fileID: 5979877976914833657, guid: 8723118e076267046908b6049405bc8f, type: 3}
   groupedPiecePrefab: {fileID: 4268751880669323509, guid: 605a72eb6341820438094a1ad59e128e, type: 3}
   edgeShapeSO: {fileID: 11400000, guid: a2a996d74e249af499628b5494026a06, type: 2}
   border: {fileID: 2032979606}
   refImage: {fileID: 1485848462}
-  puzzleBoardMinPos:
-    x: 0
-    y: 0
-  puzzleBoardMaxPos:
-    x: 0
-    y: 0
 --- !u!4 &1162083982
 Transform:
   m_ObjectHideFlags: 0

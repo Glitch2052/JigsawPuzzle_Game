@@ -55,6 +55,8 @@ public class CameraController : IObject
         iSystem.RightLimit = (boardWidth + additionalSpaceSize.x) * 0.5f - 0.25f;
         iSystem.BottomLimit = (-boardSize.y - additionalSpaceSize.y * 0.25f) * 0.5f;
         iSystem.TopLimit = boardSize.y * 0.5f + 2f;
+        
+        iSystem.UpdateCameraSize();
     }
 
     public override void IUpdate()
@@ -62,6 +64,7 @@ public class CameraController : IObject
         float currZoom = iSystem.Camera.orthographicSize;
         float newZoom = Mathf.SmoothDamp(currZoom, targetZoom, ref currZoomVelocity, 0.02f);
         iSystem.Camera.orthographicSize = newZoom;
+        iSystem.UpdateCameraSize();
         
         Vector3 cameraPos = iSystem.Camera.transform.position;
         Vector3 zoomDir = zoomMidPos - cameraPos;

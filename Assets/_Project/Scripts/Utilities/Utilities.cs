@@ -43,7 +43,11 @@ public static class Utilities
         }
         return array;
     }
-    
+
+    public static int ConvertTo1DIndex(int x, int y, int width)
+    {
+        return x + (y * width);
+    }
     // public static bool IsConvex(float3 prev, float3 next)
     // {
     //     return prev.x * next.y - prev.y * next.x > 0;

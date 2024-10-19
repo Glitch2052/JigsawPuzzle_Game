@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Puzzle Data/Puzzle Texture Database",fileName = "puzzleTexture Database")]
-public class PuzzleTextureDatabase : ScriptableObject
+[CreateAssetMenu(menuName = "Puzzle Data/Puzzle Collection Data",fileName = "Puzzle Collection Data")]
+public class PuzzleCollectionData : ScriptableObject
 {
     public List<PuzzleTextureData> generalTextureData;
     

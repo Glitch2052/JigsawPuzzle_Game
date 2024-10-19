@@ -4,6 +4,9 @@
     public int X { get; set; }
     public int Y { get; set; }
 
+    public string desiredEdgeShape;
+    public string TargetEdgeShape { get; private set; }
+
     public PuzzlePiece desiredPuzzlePiece;
     public PuzzlePiece targetPuzzlePiece { get; private set; }
 

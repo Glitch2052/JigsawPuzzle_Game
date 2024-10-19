@@ -59,7 +59,8 @@ public class IOGroupedPiece : IObject
                 int sideIndex = neighbourKeyValue.Key;
                 Vector2Int neighbourGridPos = neighbourKeyValue.Value;
             
-                if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y, out GridObject gridObject))
+                if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y, 
+                        out GridObject gridObject) || gridObject.desiredPuzzlePiece == null)
                     continue;
                 
                 Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * sideIndex) * Vector2.left;
@@ -165,7 +166,7 @@ public class IOGroupedPiece : IObject
     {
         node = base.ToJson(node);
         
-        node["GroupedPiece"] = 1;
+        node[StringID.GroupedPiece] = 1;
 
         JSONArray children = new JSONArray();
         int i = 0;
@@ -175,7 +176,7 @@ public class IOGroupedPiece : IObject
             i++;
         }
 
-        node["Pieces"] = children;
+        node[StringID.Pieces] = children;
         
         return node;
     }
@@ -184,17 +185,13 @@ public class IOGroupedPiece : IObject
     {
         base.FromJson(node);
 
-        JSONNode children = node["Pieces"];
+        JSONNode children = node[StringID.Pieces];
         for (int i = 0; i < children.Count; i++)
         {
-            JSONNode childNode = children[i];
-            int index = childNode["Index"];
-            GridObject gridObject = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(index);
-            if (gridObject != null)
-            {
-                AddPuzzlePieceToGroup(gridObject.desiredPuzzlePiece);
-                gridObject.desiredPuzzlePiece.FromJson(childNode);
-            }
+            var unSolvedPiece = Instantiate(PuzzleGenerator.Instance.piecePrefab, iSystem.transform);
+            unSolvedPiece.SetISystem(iSystem);
+            unSolvedPiece.FromJson(children[i]);
+            AddPuzzlePieceToGroup(unSolvedPiece);
         }
     }
 }

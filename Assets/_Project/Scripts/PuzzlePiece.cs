@@ -13,46 +13,36 @@ public class PuzzlePiece : IObject
     public Dictionary<int,Vector2Int> neighbourCoordinates;
     private Collider2D[] colliderResults;
     public ContactFilter2D contactFilter2D;
+
+    public PuzzlePieceData currentAssignedPieceData;
     public string EdgeShape { get; private set; }
+    
 
     //Mesh Data
     private Mesh mesh;
     private static readonly int GridCoord = Shader.PropertyToID("_GridCoord");
 
-    public void SetData(float cellSize, int x, int y)
+    public void SetData()
     {
         mesh = new Mesh();
         meshFilter.mesh = mesh;
-
-        MainCollider.size = Vector2.one * cellSize;
-        gridCoordinate = new Vector2Int(x, y);
-        
-        //Get Neighbouring Grid Coordinates
-        GetNeighbouringPieceGridCoordinates();
     }
     
-    public void UpdateMesh(string key)
+    public void UpdateData(PuzzlePieceData puzzlePieceData)
     {
-        EdgeShape = key;
-        MeshData data = PuzzleGenerator.Instance.edgeShapeSO.GetMeshData(key);
-        
+        currentAssignedPieceData = puzzlePieceData;
+        gridCoordinate = puzzlePieceData.gridCoordinate;
         mesh.Clear();
-        mesh.vertices = data.vertices;
-        mesh.triangles = data.triangles; 
-        mesh.uv = data.uvs;
+        
+        EdgeShape = puzzlePieceData.meshData.edgeProfile;
+        
+        mesh.vertices = puzzlePieceData.meshData.vertices;
+        mesh.triangles = puzzlePieceData.meshData.triangles; 
+        mesh.uv = puzzlePieceData.meshData.uvs;
 
         meshRenderer.material.SetVector(GridCoord,(Vector2)gridCoordinate);
-    }
 
-    private void GetNeighbouringPieceGridCoordinates()
-    {
-        neighbourCoordinates = new Dictionary<int, Vector2Int>
-        {
-            {0, new (gridCoordinate.x - 1, gridCoordinate.y)}, 
-            {1, new (gridCoordinate.x, gridCoordinate.y + 1)},
-            {2, new (gridCoordinate.x + 1, gridCoordinate.y)},
-            {3, new (gridCoordinate.x, gridCoordinate.y - 1)}
-        };
+        neighbourCoordinates = puzzlePieceData.neighbourCoordinates;
     }
 
     public override IObject OnPointerDown(Vector2 worldPos, int pointerId)
@@ -64,19 +54,16 @@ public class PuzzlePiece : IObject
         return base.OnPointerDown(worldPos, pointerId);
     }
 
-    public override IObject OnPointerDrag(Vector2 worldPos, int pointerId)
-    {
-        Debug.Log($"Pointer drag on puzzle piece having coord {gridCoordinate}");
-        return base.OnPointerDrag(worldPos, pointerId);
-    }
-
     protected override void OnReleased()
     {
         if (TryInteractWithPalette())
         {
             return;
         }
-
+        
+        var gridObj = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(gridCoordinate.x, gridCoordinate.y);
+        gridObj.desiredPuzzlePiece = this;
+        
         // base.OnReleased();
 
         //Try Placement With Puzzle Board
@@ -101,7 +88,7 @@ public class PuzzlePiece : IObject
             Vector2Int neighbourGridPos = neighbourKeyValue.Value;
 
             if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(neighbourGridPos.x, neighbourGridPos.y,
-                    out GridObject gridObject))
+                    out GridObject gridObject) || gridObject.desiredPuzzlePiece == null)
                 continue;
 
             Vector2 requiredDir = Quaternion.Euler(0, 0, -90 * sideIndex) * Vector2.left;
@@ -223,7 +210,7 @@ public class PuzzlePiece : IObject
     public override JSONNode ToJson(JSONNode node = null)
     {
         node = base.ToJson(node);
-        node["Index"] = gridCoordinate.x + gridCoordinate.y * PuzzleGenerator.Instance.PuzzleGrid.Width;
+        node[StringID.GridIndex] = gridCoordinate.x + gridCoordinate.y * PuzzleGenerator.Instance.PuzzleGrid.Width;
         
         JSONArray neighbours = new JSONArray();
         List<int> neighboursKeys = new List<int>{ 0, 1, 2, 3 };
@@ -239,7 +226,7 @@ public class PuzzlePiece : IObject
         {
             neighbours.Add(remainingKey);
         }
-        node["RemovedNeighbourCoord"] = neighbours;
+        node[StringID.RemovedNeighbourCoord] = neighbours;
         
         return node;
     }
@@ -247,27 +234,21 @@ public class PuzzlePiece : IObject
     public override void FromJson(JSONNode node)
     {
         base.FromJson(node);
-        
         if(node == null) return;
-
-        JSONArray neighbours = node["RemovedNeighbourCoord"] as JSONArray;
+        var pieceData = PuzzleGenerator.Instance.GetPuzzlePieceData(node[StringID.GridIndex]);
+        SetData();
+        UpdateData(pieceData);
+        var gridObj = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(gridCoordinate.x, gridCoordinate.y);
+        gridObj.desiredPuzzlePiece = this;
+        
+        JSONArray neighbours = node[StringID.RemovedNeighbourCoord] as JSONArray;
         foreach (var childrenKeyValue in neighbours)
         {
             neighbourCoordinates.Remove(childrenKeyValue.Value);
         }
     }
-
-    public JSONNode EdgeTypeToJson()
-    {
-        JSONNode edgeNode = new JSONObject();
-        // edgeNode["Left"] = (int)leftEdge;
-        // edgeNode["Top"] = (int)topEdge;
-        // edgeNode["Right"] = (int)rightEdge;
-        // edgeNode["Bottom"] = (int)bottomEdge;
-        return edgeNode;
-    }
     
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     public void SetMeshData(MeshData data)
     {
         mesh = new Mesh();
@@ -278,5 +259,6 @@ public class PuzzlePiece : IObject
         mesh.triangles = data.triangles;
         mesh.uv = data.uvs;
     }
-    #endif
+
+#endif
 }

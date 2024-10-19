@@ -17,6 +17,11 @@ public class IObject : MonoBehaviour
 
     private Coroutine localScaleCoroutine;
 
+    public float Left => MainCollider.bounds.min.x;
+    public float Right => MainCollider.bounds.max.x;
+    public float Top => MainCollider.bounds.max.y;
+    public float Bottom => MainCollider.bounds.min.y;
+
     public float Width => MainCollider.bounds.size.x;
     public float Height => MainCollider.bounds.size.y;
     
@@ -225,10 +230,10 @@ public class IObject : MonoBehaviour
         {
             for (int j = i + 1; j <= to; j++)
             {
-                float dist_i = (Position - colliders[i].transform.position).sqrMagnitude;
-                float dist_j = (Position - colliders[j].transform.position).sqrMagnitude;
+                float distI = (Position - colliders[i].transform.position).sqrMagnitude;
+                float distJ = (Position - colliders[j].transform.position).sqrMagnitude;
 
-                if (dist_j < dist_i)
+                if (distJ < distI)
                 {
                     (colliders[i], colliders[j]) = (colliders[j], colliders[i]);
                 }
@@ -241,8 +246,8 @@ public class IObject : MonoBehaviour
         if (node == null)
             node = new JSONObject();
 
-        node["pos"] = Position;
-        node["rot"] = transform.rotation;
+        node[StringID.Position] = Position;
+        node[StringID.Rotation] = transform.rotation;
         return node;
     }
 
@@ -250,7 +255,7 @@ public class IObject : MonoBehaviour
     {
         if(node == null) return;
         
-        Position = node["pos"];
-        transform.rotation = node["rot"];
+        Position = node[StringID.Position];
+        transform.rotation = node[StringID.Rotation];
     }
 }

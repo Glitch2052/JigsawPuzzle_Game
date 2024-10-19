@@ -29,11 +29,6 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public float RightLimit { get; set;}
     public float TopLimit { get; set;}
     public float BottomLimit { get; set;}
-    
-#if UNITY_EDITOR
-    [Space(30),Header("Editor Only Data")]
-    public Sprite puzzleSprite;
-#endif
 
     private void Awake()
     {
@@ -48,14 +43,6 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
 
         halfCameraSize = cameraSize;
         cameraSize *= 2;
-        
-// #if UNITY_EDITOR
-//         Init(new PuzzleTextureData()
-//         {
-//             sprite = puzzleSprite
-//         });
-//         StartCoroutine(OnSceneLoad());
-// #endif
     }
 
     private void Update()
@@ -86,37 +73,36 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         yield return readOperation.Read();
         JSONNode configData = JSONNode.Parse(readOperation.data);
 
-        puzzleGenerator.GenerateGrid(puzzleTextureData, configData["PuzzlePieceData"]);
-        yield return null;
+        puzzleGenerator.GenerateGrid(puzzleTextureData, configData[StringID.BoardData]);
         
         cameraController.SetISystem(this);
         palette.SetISystem(this);
+        palette.SetUpContentData();
 
         //From Json
-        puzzleGenerator.FromJson(configData["grid"]);
-        palette.SetUpContentData(configData["palette"]);
+        yield return puzzleGenerator.FromJson(configData[StringID.BoardData]);
 
-        JSONNode itemConfigData = configData["items"];
-        if(itemConfigData == null) yield break;
-
-        for (int i = 0; i < itemConfigData.Count; i++)
-        {
-            JSONNode childNode = itemConfigData[i];
-            if (childNode["GroupedPiece"])
-            {
-                var groupedPiece = puzzleGenerator.GetPuzzlePiecesGroup(childNode["pos"]);
-                groupedPiece.FromJson(childNode);
-            }
-            else
-            {
-                int index = childNode["Index"];
-                GridObject gridObject = puzzleGenerator.PuzzleGrid.GetGridObject(index);
-                if (gridObject != null)
-                {
-                    gridObject.desiredPuzzlePiece.FromJson(childNode);
-                }
-            }
-        }
+        // JSONNode itemConfigData = configData["items"];
+        // if(itemConfigData == null) yield break;
+        //
+        // for (int i = 0; i < itemConfigData.Count; i++)
+        // {
+        //     JSONNode childNode = itemConfigData[i];
+        //     if (childNode["GroupedPiece"])
+        //     {
+        //         var groupedPiece = puzzleGenerator.GetPuzzlePiecesGroup(childNode["pos"]);
+        //         groupedPiece.FromJson(childNode);
+        //     }
+        //     else
+        //     {
+        //         int index = childNode["Index"];
+        //         GridObject gridObject = puzzleGenerator.PuzzleGrid.GetGridObject(index);
+        //         if (gridObject != null)
+        //         {
+        //             gridObject.desiredPuzzlePiece.FromJson(childNode);
+        //         }
+        //     }
+        // }
     }
 
     public void UpdateCameraSize()
@@ -179,26 +165,8 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     private JSONNode ExportJson()
     {
         JSONNode parent = new JSONObject();
-        JSONArray children = new JSONArray();
-        SerializeChildren(children);
-        parent["items"] = children;
-        parent["palette"] = palette.ToJson();
-        parent["grid"] = puzzleGenerator.ToJson();
-        parent["PuzzlePieceData"] = puzzleGenerator.GetAllPuzzlePieceNode();
+        parent[StringID.BoardData] = puzzleGenerator.ToJson();
         return parent;
-    }
-
-    private void SerializeChildren(JSONArray children)
-    {
-        foreach (IObject obj in iObjects.Values)
-        {
-            JSONNode node = null;
-            if (((obj is PuzzlePiece piece && piece.group == null) || obj is IOGroupedPiece) && obj.parent is not PuzzlePalette)
-            {
-                node = obj.ToJson();
-            }
-            if(node != null) children.Add(node);
-        }
     }
 
     private void SaveAll(JSONNode data)

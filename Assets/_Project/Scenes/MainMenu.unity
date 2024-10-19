@@ -1333,7 +1333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenuDoc: {fileID: 664415207}
   itemElementAsset: {fileID: 9197481963319205126, guid: 8c36cf519aef67d4b8e9e17a87f57a25, type: 3}
-  puzzleTextureDatabase: {fileID: 11400000, guid: 007642e17efc1fe4db8056abb191bb9c, type: 2}
+  puzzleCollectionData: {fileID: 11400000, guid: 007642e17efc1fe4db8056abb191bb9c, type: 2}
 --- !u!1 &898051533
 GameObject:
   m_ObjectHideFlags: 0
@@ -2142,7 +2142,7 @@ MonoBehaviour:
   mainCategoryScrollRect: {fileID: 629081395}
   content: {fileID: 838036455}
   mainCategoryCell: {fileID: 3668477352856702496, guid: 2f26b040317628f46a93a9f7c3fb797c, type: 3}
-  puzzleTextureDatabase: {fileID: 11400000, guid: 007642e17efc1fe4db8056abb191bb9c, type: 2}
+  puzzleCollectionData: {fileID: 11400000, guid: 007642e17efc1fe4db8056abb191bb9c, type: 2}
 --- !u!4 &1784055563
 Transform:
   m_ObjectHideFlags: 0

@@ -18,11 +18,12 @@ public class PuzzlePalette : IObject
         content.Init(this);
         //here the ref orthographic size is assumed 16 because the palette scale and size were designed with orthographic size 16
         newOrthoSize = oldOrthoSize = 16;
+        ScaleAndPositionPaletteWithCamera();
     }
 
-    public void SetUpContentData(JSONNode node = null)
+    public void SetUpContentData()
     {
-        content.SetUpData(node);
+        content.SetUpData();
     }
     
     public override void IUpdate()
@@ -39,8 +40,6 @@ public class PuzzlePalette : IObject
         LocalScale = zoomScaleFactor * LocalScale.SetZ(1);
         
         oldOrthoSize = iSystem.Camera.orthographicSize;
-        iSystem.UpdateCameraSize();
-        
         LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 1.5f * LocalScale.y);
     }
 
@@ -62,10 +61,5 @@ public class PuzzlePalette : IObject
     public override IObject OnPointerUp(Vector2 worldPos, int pointerId)
     {
         return content.OnPointerUp(worldPos, pointerId);
-    }
-
-    public override JSONNode ToJson(JSONNode node = null)
-    {
-        return content.ToJson(node);
     }
 }

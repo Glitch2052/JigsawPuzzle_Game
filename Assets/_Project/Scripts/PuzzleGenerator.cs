@@ -1,5 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using SimpleJSON;
-using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,7 +12,7 @@ public class PuzzleGenerator : MonoBehaviour
     [field: SerializeField] public float CellSize {get; private set;}
 
     [Space(25), Header("Puzzle Data")]
-    [SerializeField] private PuzzlePiece piecePrefab;
+    public PuzzlePiece piecePrefab;
     [SerializeField] private IOGroupedPiece groupedPiecePrefab;
     public EdgeShapeSO edgeShapeSO;
 
@@ -21,15 +23,15 @@ public class PuzzleGenerator : MonoBehaviour
     public Vector2Int GridSize => new Vector2Int(XWidth, YWidth);
     public Vector2 BoardSize => new Vector2(XWidth, YWidth) * CellSize;
     public Grid<GridObject> PuzzleGrid { get; private set; }
+    public List<PuzzlePieceData> puzzlePieceDataSource;
+    private Dictionary<int, PuzzlePieceData> puzzleBoardDataDict;
 
     private InteractiveSystem iSystem;
-
-    [HideInInspector] public float2 puzzleBoardMinPos;
-    [HideInInspector] public float2 puzzleBoardMaxPos;
     
     public static PuzzleGenerator Instance;
 
-    private JSONNode configData;
+    private JSONNode boardConfigData;
+    private JSONNode gridConfigData;
 
     private void Awake()
     {
@@ -68,62 +70,80 @@ public class PuzzleGenerator : MonoBehaviour
 
     public void GenerateGrid(PuzzleTextureData textureData, JSONNode configDataNode = null)
     {
-        configData = configDataNode;
+        //Assign Json Node Loaded From File
+        boardConfigData = configDataNode;
+        if (boardConfigData != null)
+        {
+            gridConfigData = boardConfigData[StringID.GridData];
+        }
+
+        puzzlePieceDataSource = new List<PuzzlePieceData>();
+        puzzleBoardDataDict = new Dictionary<int, PuzzlePieceData>();
         
         //Generate Grid with X and Y Size
         Vector2 origin = new Vector2(-XWidth, -YWidth) * (0.5f * CellSize);
         Vector2 cellOffset = Vector2.one * (CellSize * 0.5f);
-        puzzleBoardMinPos = origin;
-        puzzleBoardMaxPos = origin + (new Vector2(XWidth, YWidth) * CellSize);
-        
         edgeShapeSO.UpdatePuzzleMaterial(textureData.sprite.texture,XWidth,YWidth,CellSize);
         PuzzleGrid = new Grid<GridObject>(XWidth, YWidth, CellSize, origin, cellOffset,OnGridObjectCreated);
+
+        //Load Puzzle Pieces From Json If Present
+        if (boardConfigData != null && boardConfigData[StringID.PalettePieces] != null)
+        {
+            JSONNode palettePieceNode = boardConfigData[StringID.PalettePieces];
+            int palettePiecesCount = palettePieceNode.Count;
+            for (int i = 0; i < palettePiecesCount; i++)
+            {
+                puzzlePieceDataSource.Add(puzzleBoardDataDict[palettePieceNode[i]]);
+            }
+        }
+        else
+            puzzlePieceDataSource = puzzleBoardDataDict.Values.ToList();
     }
 
     private GridObject OnGridObjectCreated(Grid<GridObject> grid, int x, int y)
     {
         GridObject gridObject = new GridObject(grid, x, y);
-        Vector3 puzzlePos = grid.GetWorldPosition(x, y) + grid.cellOffset;
-        gridObject.desiredPuzzlePiece = Instantiate(piecePrefab, puzzlePos, Quaternion.identity,iSystem.transform);
-        
-        //Init Puzzle Piece
-        gridObject.desiredPuzzlePiece.SetISystem(iSystem);
-        gridObject.desiredPuzzlePiece.SetData(CellSize,x,y);
         
         //Choose all 4 EdgeType for Puzzle Piece
-        // if(configData != null)
-        //     GetEdges(configData,gridObject.desiredPuzzlePiece,x,y);
-        // else
-        gridObject.desiredPuzzlePiece.UpdateMesh(CalculateEdges(gridObject.desiredPuzzlePiece, grid ,x, y));
-        
+        if (gridConfigData != null)
+            gridObject.desiredEdgeShape = gridConfigData[Utilities.ConvertTo1DIndex(x, y, XWidth).ToString()];
+        else
+            gridObject.desiredEdgeShape = CalculateEdges(grid, x, y);
+
+        Vector2Int gridCoordinate = new Vector2Int(x, y);
+        var pieceData = new PuzzlePieceData
+        {
+            gridCoordinate = gridCoordinate,
+            meshData = edgeShapeSO.GetMeshData(gridObject.desiredEdgeShape),
+            neighbourCoordinates = new Dictionary<int, Vector2Int>
+            {
+                { 0, new(gridCoordinate.x - 1, gridCoordinate.y) },
+                { 1, new(gridCoordinate.x, gridCoordinate.y + 1) },
+                { 2, new(gridCoordinate.x + 1, gridCoordinate.y) },
+                { 3, new(gridCoordinate.x, gridCoordinate.y - 1) }
+            }
+        };
+        // puzzlePieceDataSource.Add(pieceData);
+        puzzleBoardDataDict[Utilities.ConvertTo1DIndex(x, y, XWidth)] = pieceData;
         return gridObject;
     }
 
     #region Helper Methods
 
-    private string CalculateEdges(PuzzlePiece puzzlePiece,Grid<GridObject> grid ,int x, int y)
+    private string CalculateEdges(Grid<GridObject> grid ,int x, int y)
     {
         //Here Edge Shape is
         // 0 = left, 1 = top, 2 = right, 3 = bottom
         //EdgeType is
         // 0 = flat, 1 = knob, 2 = socket
-        char left = x == 0 ? '0' : GetComplimentaryEdge(grid.GetGridObject(x - 1, y).desiredPuzzlePiece.EdgeShape[2]);
+        char left = x == 0 ? '0' : GetComplimentaryEdge(grid.GetGridObject(x - 1, y).desiredEdgeShape[2]);
         char top = (y == YWidth - 1) ? '0' : GetRandomEdge();
         char right = (x == XWidth - 1) ? '0' : GetRandomEdge();
-        char bottom = y == 0 ? '0' : GetComplimentaryEdge(grid.GetGridObject(x, y - 1).desiredPuzzlePiece.EdgeShape[1]);
+        char bottom = y == 0 ? '0' : GetComplimentaryEdge(grid.GetGridObject(x, y - 1).desiredEdgeShape[1]);
 
         // return "0000";
         return $"{left}{top}{right}{bottom}";
     }
-    
-    // private void GetEdges(JSONNode dataNode, PuzzlePiece puzzlePiece ,int x, int y)
-    // {
-    //     JSONNode node = dataNode[(x + y * xWidth).ToString()];
-    //     puzzlePiece.leftEdge = (EdgeType)(int)node["Left"];
-    //     puzzlePiece.topEdge = (EdgeType)(int)node["Top"];
-    //     puzzlePiece.rightEdge = (EdgeType)(int)node["Right"];
-    //     puzzlePiece.bottomEdge = (EdgeType)(int)node["Bottom"];
-    // }
 
     private EdgeType GetComplimentaryEdgeType(EdgeType edgeType)
     {
@@ -139,11 +159,6 @@ public class PuzzleGenerator : MonoBehaviour
     {
         return Random.Range(0f,1f) < 0.5f ? '1' : '2'; // Randomly returns Knob or Socket
     }
-    
-    EdgeType GetRandomEdgeType()
-    {
-        return (EdgeType)Random.Range(1, 3); // Randomly returns Knob or Socket
-    }
 
     private void UpdateRefImage()
     {
@@ -154,19 +169,6 @@ public class PuzzleGenerator : MonoBehaviour
     }
     #endregion
 
-    public IOGroupedPiece AddPuzzlePieceToGroup(PuzzlePiece puzzlePiece, IOGroupedPiece group = null)
-    {
-        if (group == null)
-        {
-            group = Instantiate(groupedPiecePrefab, puzzlePiece.Position, Quaternion.identity, iSystem.transform);
-            group.SetISystem(iSystem);
-        }
-
-        puzzlePiece.group = group;
-        puzzlePiece.transform.parent = group.transform;
-        return group;
-    }
-
     public IOGroupedPiece GetPuzzlePiecesGroup(Vector3 pos)
     {
         IOGroupedPiece group = Instantiate(groupedPiecePrefab, pos, Quaternion.identity, iSystem.transform);
@@ -174,55 +176,113 @@ public class PuzzleGenerator : MonoBehaviour
         return group;
     }
 
+    public PuzzlePieceData GetPuzzlePieceData(int index)
+    {
+        return puzzleBoardDataDict[index];
+    }
+
     public JSONNode ToJson(JSONNode node = null)
     {
         if (node == null)
             node = new JSONObject();
 
-        JSONArray children = new JSONArray();
+        //Board Data Saving
+        //Save All Board Pieces With key as 1D Index and Value as Edge Profile
+        JSONNode boardPiecesJsonNode = new JSONObject();
+        foreach (var boardData in puzzleBoardDataDict)
+        {
+            boardPiecesJsonNode[boardData.Key.ToString()] = boardData.Value.meshData.edgeProfile;
+        }
+        
+        //Palette Saving
+        //Save 1D index as pieces in palette
+        JSONArray paletteChildren = new JSONArray();
+        foreach (var pieceData in puzzlePieceDataSource)
+        {
+            paletteChildren.Add(Utilities.ConvertTo1DIndex(pieceData.gridCoordinate.x, pieceData.gridCoordinate.y, XWidth).ToString());
+        }
 
-        int i = 0;
+        //Solved Puzzle Saving
+        //Save Solved Puzzle Pieces as 1D Index
+        JSONArray solvedPieces = new JSONArray();
         PuzzleGrid.IterateOverGridObjects((x, y, gridObj) =>
         {
             if (gridObj.targetPuzzlePiece != null)
             {
-                children[i] = gridObj.targetPuzzlePiece.ToJson();
-                i++;
+                solvedPieces.Add(Utilities.ConvertTo1DIndex(x, y, XWidth).ToString());
             }
         });
         
-        node["children"] = children;
-
+        //Unsolved Puzzle Saving
+        //Save UnSolved Puzzle Pieces with 1D Index and Position
+        JSONArray children = new JSONArray();
+        SerializeChildren(children);
+        
+        node[StringID.GridData] = boardPiecesJsonNode;
+        node[StringID.PalettePieces] = paletteChildren;
+        node[StringID.SolvedPieces] = solvedPieces;
+        node[StringID.UnSolvedPieces] = children;
         return node;
     }
 
-    public void FromJson(JSONNode node)
+    public IEnumerator FromJson(JSONNode node)
     {
         if(node == null)
-            return;
+            yield break;
 
-        JSONArray children = node["children"] as JSONArray;
-        if(children == null) return;
-        foreach (var childNode in children)
+        int solvedPiecesCount = node[StringID.SolvedPieces].Count;
+        JSONNode solvedPiecesJsonNode = node[StringID.SolvedPieces];
+        for (int i = 0; i < solvedPiecesCount; i++)
         {
-            int index = childNode.Value["Index"];
-            GridObject gridObject = PuzzleGrid.GetGridObject(index);
-            if (gridObject != null)
+            var data = puzzleBoardDataDict[solvedPiecesJsonNode[i]];
+            var solvedPiece = Instantiate(piecePrefab, transform);
+            solvedPiece.SetData();
+            solvedPiece.UpdateData(data);
+            solvedPiece.Position = PuzzleGrid.GetWorldPositionWithCellOffset(data.gridCoordinate.x, data.gridCoordinate.y);
+            
+            var gridObject = PuzzleGrid.GetGridObject(data.gridCoordinate.x, data.gridCoordinate.y);
+            gridObject.AssignTargetPuzzlePiece(solvedPiece);
+        }
+
+        yield return null;
+        
+        int unSolvedPiecesCount = node[StringID.UnSolvedPieces].Count;
+        JSONNode unSolvedPiecesJsonNode = node[StringID.UnSolvedPieces];
+        for (int i = 0; i < unSolvedPiecesCount; i++)
+        {
+            JSONNode childNode = unSolvedPiecesJsonNode[i];
+            if (childNode[StringID.GroupedPiece])
             {
-                gridObject.AssignTargetPuzzlePiece(gridObject.desiredPuzzlePiece);
+                var groupedPiece = GetPuzzlePiecesGroup(childNode[StringID.Position]);
+                groupedPiece.FromJson(childNode);
+            }
+            else
+            {
+                var unSolvedPiece = Instantiate(piecePrefab, iSystem.transform);
+                unSolvedPiece.SetISystem(iSystem);
+                unSolvedPiece.FromJson(childNode);
             }
         }
     }
     
-    
-    public JSONNode GetAllPuzzlePieceNode()
+    private void SerializeChildren(JSONArray children)
     {
-        JSONNode node = new JSONObject();
-        
-        PuzzleGrid.IterateHorizontallyOverGridObjects((x, y, gridObj) =>
+        var unSolvedPieces = iSystem.iObjects.Values;
+        foreach (IObject obj in unSolvedPieces)
         {
-            node[(x + y * XWidth).ToString()] = gridObj.desiredPuzzlePiece.EdgeTypeToJson();
-        });
-        return node;
+            JSONNode node = null;
+            if (((obj is PuzzlePiece piece && piece.group == null) || obj is IOGroupedPiece) && obj.parent is not PuzzlePalette)
+            {
+                node = obj.ToJson();
+            }
+            if(node != null) children.Add(node);
+        }
     }
+}
+
+public class PuzzlePieceData
+{
+    public Vector2Int gridCoordinate;
+    public MeshData meshData;
+    public Dictionary<int,Vector2Int> neighbourCoordinates;
 }

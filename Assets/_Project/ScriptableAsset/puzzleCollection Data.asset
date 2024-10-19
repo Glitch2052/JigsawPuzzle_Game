@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe4fa2d64b94c4c239d1c0f024ba7d9d, type: 3}
-  m_Name: puzzleTexture Database
+  m_Name: puzzleCollection Data
   m_EditorClassIdentifier: 
   generalTextureData:
   - themeName: 0
