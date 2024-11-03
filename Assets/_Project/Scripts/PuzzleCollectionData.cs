@@ -5,22 +5,23 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Puzzle Data/Puzzle Collection Data",fileName = "Puzzle Collection Data")]
 public class PuzzleCollectionData : ScriptableObject
 {
-    public List<PuzzleTextureData> generalTextureData;
+    public ThemeName themeName;
+    public List<PuzzleTextureData> textureData;
     
     
 #if UNITY_EDITOR
     [Space(40)]
     [Header("Editor Data")]
-    [SerializeField] private Sprite[] generalTextures;
+    [SerializeField] private Sprite[] spritesList;
     
-    [ContextMenu("Add General Textures")]
-    public void AddGeneralTextures()
+    [ContextMenu("Add Texture Data")]
+    public void AddTextures()
     {
-        foreach (var texture in generalTextures)
+        foreach (var texture in spritesList)
         {
-            generalTextureData.Add(new PuzzleTextureData()
+            textureData.Add(new PuzzleTextureData()
             {
-                themeName = ThemeName.General,
+                themeName = themeName,
                 sprite = texture
             });
         }
@@ -37,5 +38,10 @@ public struct PuzzleTextureData
 
 public enum ThemeName
 {
-    General = 0,
+    General,
+    Animals,
+    Cities,
+    Landmarks,
+    Nature,
+    Vehicles
 }

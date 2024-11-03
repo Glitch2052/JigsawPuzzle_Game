@@ -63,10 +63,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _GridCellSize: 2
-    - _Height: 30
+    - _Height: 8
     - _QueueControl: 1
     - _QueueOffset: 0
-    - _Width: 30
+    - _Width: 8
     m_Colors:
     - _GridCoord: {r: 0, g: 0, b: 0, a: 0}
     - _HalfObjectSize: {r: 1, g: 1, b: 0, a: 0}

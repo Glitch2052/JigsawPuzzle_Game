@@ -12,4 +12,7 @@ public static class StringID
     public static readonly string Position = "Position";
     public static readonly string Rotation = "Rotation";
     public static readonly string RemovedNeighbourCoord = "RemovedNeighbourCoord";
+    public static readonly string BoardSize = "BoardSize";
+    public static readonly string PuzzleSceneID = "PuzzleSceneID";
+    public static readonly string NewGame = "NewGame";
 }

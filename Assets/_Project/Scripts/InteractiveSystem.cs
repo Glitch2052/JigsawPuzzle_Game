@@ -19,6 +19,10 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public Vector2 cameraSize;
     public Vector2 halfCameraSize;
     protected Vector3 cameraPosition;
+
+    private string sceneID;
+    
+    
     public Camera Camera { get; protected set; }
     
     public static readonly float DRAG_Z_ORDER = -145f;
@@ -51,11 +55,6 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         {
             iObject.IUpdate();
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SaveAll(ExportJson());
-        }
     }
 
     public void Init()
@@ -67,42 +66,36 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         puzzleGenerator.Init(this);
     }
 
-    public IEnumerator OnSceneLoad(PuzzleTextureData puzzleTextureData)
+    public IEnumerator OnSceneLoad(PuzzleTextureData puzzleTextureData, JSONNode configData)
     {
-        ReadOperation readOperation = new ReadOperation("Puzzle.json", "{items}");
-        yield return readOperation.Read();
-        JSONNode configData = JSONNode.Parse(readOperation.data);
+        sceneID = configData[StringID.PuzzleSceneID];
+        JSONNode node = new JSONObject();
+        int squaredSize;
 
-        puzzleGenerator.GenerateGrid(puzzleTextureData, configData[StringID.BoardData]);
+        if (configData[StringID.NewGame])
+        {
+            squaredSize = configData[StringID.BoardSize];
+        }
+        else
+        {
+            ReadOperation readOperation = new ReadOperation(sceneID, "{items}");
+            yield return readOperation.Read();
+            node = JSONNode.Parse(readOperation.data);
+            squaredSize = node[StringID.BoardData][StringID.BoardSize];
+        }
+        
+        int size = (int)Mathf.Sqrt(squaredSize);
+        puzzleGenerator.SetGridSize(size,size);
+        puzzleGenerator.UpdateBackGroundData(puzzleTextureData);
+        
+        puzzleGenerator.GenerateGrid(puzzleTextureData, node[StringID.BoardData]);
         
         cameraController.SetISystem(this);
         palette.SetISystem(this);
         palette.SetUpContentData();
 
         //From Json
-        yield return puzzleGenerator.FromJson(configData[StringID.BoardData]);
-
-        // JSONNode itemConfigData = configData["items"];
-        // if(itemConfigData == null) yield break;
-        //
-        // for (int i = 0; i < itemConfigData.Count; i++)
-        // {
-        //     JSONNode childNode = itemConfigData[i];
-        //     if (childNode["GroupedPiece"])
-        //     {
-        //         var groupedPiece = puzzleGenerator.GetPuzzlePiecesGroup(childNode["pos"]);
-        //         groupedPiece.FromJson(childNode);
-        //     }
-        //     else
-        //     {
-        //         int index = childNode["Index"];
-        //         GridObject gridObject = puzzleGenerator.PuzzleGrid.GetGridObject(index);
-        //         if (gridObject != null)
-        //         {
-        //             gridObject.desiredPuzzlePiece.FromJson(childNode);
-        //         }
-        //     }
-        // }
+        yield return puzzleGenerator.FromJson(node[StringID.BoardData]);
     }
 
     public void UpdateCameraSize()
@@ -161,6 +154,12 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     {
         inputSystem?.OnPointerUp(eventData);
     }
+    
+    public void OnBack()
+    {
+        SaveAll(ExportJson());
+        GameManager.Instance.LoadScene(GameManager.MainMenuScene);
+    }
 
     private JSONNode ExportJson()
     {
@@ -171,9 +170,9 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
 
     private void SaveAll(JSONNode data)
     {
-        string output = data.ToString();
-        Debug.Log($"node is {output}");
         string json = data.ToString();
-        StorageManager.Write( "Puzzle.json", json);
+        StorageManager.Write( sceneID, json);
+        
+        Debug.Log($"node is {json}");
     }
 }

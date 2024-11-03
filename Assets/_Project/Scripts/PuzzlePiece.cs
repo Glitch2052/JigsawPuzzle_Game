@@ -170,11 +170,11 @@ public class PuzzlePiece : IObject
 
     private bool TryInteractWithPalette()
     {
-        if (Mathf.Abs(Position.y - iSystem.palette.Position.y) < iSystem.palette.PaletteHeight * 0.5)
-        {
-            iSystem.palette.AddObjectToPalette(this);
-            return true;
-        }
+        // if (Mathf.Abs(Position.y - iSystem.palette.Position.y) < iSystem.palette.PaletteHeight * 0.5)
+        // {
+        //     iSystem.palette.AddObjectToPalette(this);
+        //     return true;
+        // }
         return false;
     }
 

@@ -48,25 +48,29 @@ public class PuzzleGenerator : MonoBehaviour
     public void Init(InteractiveSystem interactiveSystem)
     {
         iSystem = interactiveSystem;
-        
-        
         edgeShapeSO.Init();
+    }
+
+    public void SetGridSize(int xSize, int ySize)
+    {
+        XWidth = xSize;
+        YWidth = ySize;
         
+    }
+
+    public void UpdateBackGroundData(PuzzleTextureData data)
+    {
         if (border)
         {
             border.gameObject.SetActive(true);
-            border.size = new Vector2(XWidth, YWidth) * 2/* + new Vector2(0.27f, 0.27f)*/;
+            border.size = new Vector2(XWidth, YWidth) * 2;
         }
-        
-        UpdateRefImage();
+        if (refImage)
+        {
+            refImage.GetComponent<MeshRenderer>().material.mainTexture = data.sprite.texture;
+            refImage.localScale = new Vector3(XWidth * 2, YWidth * 2, 1);
+        }
     }
-
-    // public void GenerateGrid(int xSize, int ySize)
-    // {
-    //     xWidth = xSize;
-    //     yWidth = ySize;
-    //     GenerateGrid();
-    // }
 
     public void GenerateGrid(PuzzleTextureData textureData, JSONNode configDataNode = null)
     {
@@ -160,13 +164,7 @@ public class PuzzleGenerator : MonoBehaviour
         return Random.Range(0f,1f) < 0.5f ? '1' : '2'; // Randomly returns Knob or Socket
     }
 
-    private void UpdateRefImage()
-    {
-        if (refImage)
-        {
-            refImage.localScale = new Vector3(XWidth * 2, YWidth * 2, 1);
-        }
-    }
+    
     #endregion
 
     public IOGroupedPiece GetPuzzlePiecesGroup(Vector3 pos)
@@ -222,6 +220,7 @@ public class PuzzleGenerator : MonoBehaviour
         node[StringID.PalettePieces] = paletteChildren;
         node[StringID.SolvedPieces] = solvedPieces;
         node[StringID.UnSolvedPieces] = children;
+        node[StringID.BoardSize] = XWidth * YWidth;
         return node;
     }
 
@@ -241,6 +240,7 @@ public class PuzzleGenerator : MonoBehaviour
             solvedPiece.Position = PuzzleGrid.GetWorldPositionWithCellOffset(data.gridCoordinate.x, data.gridCoordinate.y);
             
             var gridObject = PuzzleGrid.GetGridObject(data.gridCoordinate.x, data.gridCoordinate.y);
+            gridObject.desiredPuzzlePiece = solvedPiece;
             gridObject.AssignTargetPuzzlePiece(solvedPiece);
         }
 
@@ -278,6 +278,15 @@ public class PuzzleGenerator : MonoBehaviour
             if(node != null) children.Add(node);
         }
     }
+
+    #region Helper Methods
+
+    public void ToggleReferenceImage(bool value)
+    {
+        refImage.gameObject.SetActive(value);
+    }
+
+    #endregion
 }
 
 public class PuzzlePieceData

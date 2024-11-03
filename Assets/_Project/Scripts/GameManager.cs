@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,8 +8,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    private const string GameSceneName = "GameScene";
+    public static readonly string MainMenuScene = "MainMenu";
+    private static readonly string GameSceneName = "GameScene";
     private Coroutine loadingCoroutine;
+    public JSONNode currentConfigData;
 
     private void Awake()
     {
@@ -25,21 +29,24 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
     }
 
-    public void LoadScene(PuzzleTextureData puzzleTextureData)
+    private void Start()
     {
-        if(IsSceneLoading()) return;
-        
-        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(puzzleTextureData,GameSceneName));
+        UIManager.Instance.Init();
     }
 
+    public void LoadScene(PuzzleTextureData puzzleTextureData, JSONNode configData)
+    {
+        if(IsSceneLoading()) return;
+        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(GameSceneName, puzzleTextureData, configData));
+    }
+    
     public void LoadScene(string sceneName)
     {
         if(IsSceneLoading()) return;
-        
-        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(new PuzzleTextureData(),sceneName));
+        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(sceneName));
     }
 
-    private IEnumerator LoadSceneCoroutine(PuzzleTextureData data, string sceneName)
+    private IEnumerator LoadSceneCoroutine(string sceneName, PuzzleTextureData textureData = default, JSONNode configData = null)
     {
         AsyncOperation handle = SceneManager.LoadSceneAsync(sceneName);
         while (!handle.isDone)
@@ -53,8 +60,16 @@ public class GameManager : MonoBehaviour
             InteractiveSystem interactiveSystem = FindObjectOfType<InteractiveSystem>();
             if (interactiveSystem)
             {
+                UIManager.Instance.ToggleLevelSelectPanel(false);
+                UIManager.Instance.ToggleGameplayOptionsPanel(true);
                 interactiveSystem.Init();
-                yield return interactiveSystem.OnSceneLoad(data);
+                yield return interactiveSystem.OnSceneLoad(textureData, configData);
+            }
+            else if (UIManager.Instance != null)
+            {
+                UIManager.Instance.ToggleLevelSelectPanel(true);
+                UIManager.Instance.ToggleGameplayOptionsPanel(false);
+                UIManager.Instance.Init();
             }
         }
         

@@ -136,7 +136,7 @@ public class PaletteContent : MonoBehaviour
         LocalPosition = pos;
         
         UpdatePositions();
-        Debug.Log($"Current Index Count is {currentItemCount} with Data Count {dataSource.Count}");
+        Debug.Log($"CIndex is {currentItemCount} with DC {dataSource.Count} and LIndex {leftMostCellIndex}, RIndex {rightMostCellIndex}");
     }
 
     private void UpdatePositions()
@@ -354,6 +354,8 @@ public class PaletteContent : MonoBehaviour
     
     private void RemoveObjectFromPalette(PuzzlePiece piece)
     {
+        isRearranging = true;
+        
         int removedIndex = cachedCells.IndexOf(piece);
         cachedCells.RemoveAt(removedIndex);
         piece.SetParent(null);
@@ -364,16 +366,30 @@ public class PaletteContent : MonoBehaviour
         
         leftMostCellIndex = Mathf.Clamp(leftMostCellIndex, 0, dataSource.Count - 1);
         rightMostCellIndex = Mathf.Clamp(rightMostCellIndex, 0, dataSource.Count - 1);
-        
-        if((isRecycling && !recyclingSystemInitialized) || dataSource.Count <= cachedCells.Count) return;
+        currentItemCount--;
 
-        isRearranging = true;
+        if (isRecycling && !recyclingSystemInitialized)
+        {
+            isRearranging = false;
+            return;
+        }
+        if (dataSource.Count <= cachedCells.Count)
+        {
+            if (cachedCells.Count > 0)
+            {
+                if (leftMostCellIndex > removedIndex)
+                    leftMostCellIndex--;
+                rightMostCellIndex = (leftMostCellIndex - 1 + cachedCells.Count) % cachedCells.Count;
+            }
+            
+            isRearranging = false;
+            return;
+        }
         
         var newCachePiece = Instantiate(prototypeCell,Vector3.down * 50, Quaternion.identity, transform);
         newCachePiece.SetISystem(palette.iSystem);
         newCachePiece.SetParent(palette, transform);
 
-        currentItemCount--;
         if(currentItemCount == dataSource.Count)
             RecoverFromLeft(removedIndex,newCachePiece);
         else
@@ -419,25 +435,37 @@ public class PaletteContent : MonoBehaviour
     public void AddObjectToPalette(PuzzlePiece piece)
     {
         isRearranging = true;
-        
-        //Destroy Old Right Most Cell
-        PuzzlePiece rightMostPiece = cachedCells[rightMostCellIndex];
-        cachedCells.RemoveAt(rightMostCellIndex);
-        rightMostPiece.SetParent(null);
-        Destroy(rightMostPiece.gameObject);
+        //Caching For Deleting Later
+        PuzzlePiece oldRightMostPiece = null;
+        if (cachedCells.Count >= minPoolSizeRecommended)
+            oldRightMostPiece = cachedCells[rightMostCellIndex];
         
         //Insert Piece At Correct Cached Cell Index
         piece.SetParent(palette,transform);
         piece.LocalScaleLerped = Vector3.one;
-        float xDist = piece.Position.x - transform.position.x;
         int index = Mathf.Clamp(Mathf.CeilToInt(piece.LocalPosition.x / gap), 0, cachedCells.Count);
-        //here index is wrapped by (count + 1) because old cell is removed from the list above
         int cacheInsertIndex = (leftMostCellIndex + index) % (cachedCells.Count + 1);
         cachedCells.Insert(cacheInsertIndex,piece);
 
         //Insert Piece Data At Correct Index
+        currentItemCount++;
         int dataSourceInsertIndex = currentItemCount - cachedCells.Count + index;
         dataSource.Insert(dataSourceInsertIndex,piece.currentAssignedPieceData);
+        
+        //Destroy Old Right Most Cell Cached at This Method Start
+        if (cachedCells.Count >= minPoolSizeRecommended && oldRightMostPiece != null)
+        {
+            cachedCells.Remove(oldRightMostPiece);
+            oldRightMostPiece.SetParent(null);
+            Destroy(oldRightMostPiece.gameObject);
+        }
+        else
+        {
+            if (rightMostCellIndex + 1 >= cacheInsertIndex)
+                rightMostCellIndex++;
+
+            leftMostCellIndex = (rightMostCellIndex + 1) % cachedCells.Count;
+        }
         
         var gridObj = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(piece.currentAssignedPieceData.gridCoordinate);
         gridObj.desiredPuzzlePiece = null;
