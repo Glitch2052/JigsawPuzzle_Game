@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using PolyAndCode.UI;
 using SimpleJSON;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,19 +10,29 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PuzzleCollectionData generalCollectionData;
     [SerializeField] private List<PuzzleCollectionData> themesCollectionData;
     
-    [Space(10)]
+    [Space(20)]
     [SerializeField] private Canvas canvas;
     [SerializeField] private RectTransform levelSelectPanel;
     [SerializeField] private RectTransform gamePlayOptionsPanel;
     
-    [Space(10)]
+    [Space(20)]
     [SerializeField] private RecyclableScrollRect mainCategoryScrollRect;
+    [SerializeField] private RecyclableScrollRect themeCategoryScrollRect;
+    [SerializeField] private RecyclableScrollRect customCategoryScrollRect;
+    [SerializeField] private ScrollRect themesScrollRect;
+
+    [Space(20)] 
+    public TabButton firstCategory;
+    [SerializeField] private Button themeButtonPrefab;
+    [SerializeField] private Button backButton;
     [SerializeField] private RectTransform continuePanel;
     [SerializeField] private RectTransform sizeOptionsPanel;
-    [SerializeField] private Image continuePuzzleDisplay;
-    [SerializeField] private Image newPuzzleDisplay;
+    [SerializeField] private RawImage continuePuzzleDisplay;
+    [SerializeField] private RawImage newPuzzleDisplay;
 
     private PuzzleCategoryDataSource mainCategoryContentDataSource;
+    private PuzzleCategoryDataSource themeCategoryContentDataSource;
+    private CustomPuzzleCategoryDataSource customCategoryContentDataSource;
     private PuzzleTextureData currentTextureData;
 
     private readonly int[] sizeOptions =
@@ -48,21 +59,87 @@ public class UIManager : MonoBehaviour
 
     public void Init()
     {
-        LoadMainCategory();
+        
     }
     
-    
-
-    private void LoadMainCategory()
+    public void LoadMainCategory()
     {
         mainCategoryContentDataSource ??= new PuzzleCategoryDataSource(ThemeName.General, generalCollectionData.textureData);
         mainCategoryScrollRect.Initialize(mainCategoryContentDataSource);
     }
 
+    public void UnloadMainCategory()
+    {
+        mainCategoryScrollRect.ClearData();
+    }
+
+    public void LoadThemeOptions()
+    {
+        foreach (PuzzleCollectionData data in themesCollectionData)
+        {
+            Button button = Instantiate(themeButtonPrefab,themesScrollRect.content);
+            TextMeshProUGUI btnText = button.GetComponentInChildren<TextMeshProUGUI>();
+            btnText.text = data.themeName.ToString();
+            button.onClick.AddListener(() =>
+            {
+                LoadThemeCategory(data);
+            });
+        }
+    }
+
+    public void UnloadThemeOptions()
+    {
+        themeCategoryScrollRect.ClearData();
+        themeCategoryScrollRect.gameObject.SetActive(false);
+        foreach (Transform child in themesScrollRect.content)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void LoadCustomCategory()
+    {
+        customCategoryScrollRect.gameObject.SetActive(true);
+        customCategoryContentDataSource ??= new CustomPuzzleCategoryDataSource(ThemeName.Custom);
+        customCategoryScrollRect.Initialize(customCategoryContentDataSource);
+    }
+
+    public void UnloadCustomCategory()
+    {
+        customCategoryScrollRect.ClearData();
+        customCategoryScrollRect.gameObject.SetActive(false);
+    }
+
+    public void AddCustomTexturePath(string path, Texture2D savedTexture)
+    {
+        if (path != string.Empty && path != "" && customCategoryContentDataSource != null)
+        {
+            customCategoryContentDataSource.AddNewPath(path, savedTexture);
+        }
+        customCategoryScrollRect.ReloadData();
+    }
+
+    private void LoadThemeCategory(PuzzleCollectionData puzzleCollectionData)
+    {
+        backButton.gameObject.SetActive(true);
+        themeCategoryScrollRect.gameObject.SetActive(true);
+        themeCategoryContentDataSource ??= new PuzzleCategoryDataSource(puzzleCollectionData.themeName);
+        
+        themeCategoryContentDataSource.UpdateTextureCollection(puzzleCollectionData.textureData);
+        themeCategoryScrollRect.Initialize(themeCategoryContentDataSource);
+    }
+    
+    public void UnLoadThemeCategory()
+    {
+        themeCategoryScrollRect.ClearData();
+        themeCategoryScrollRect.gameObject.SetActive(false);
+        backButton.gameObject.SetActive(false);
+    }
+
     public void EnableContinuePanel(PuzzleTextureData textureData)
     {
         currentTextureData = textureData;
-        continuePuzzleDisplay.sprite = currentTextureData.sprite;
+        continuePuzzleDisplay.texture = currentTextureData.texture;
         continuePanel.gameObject.SetActive(true);
     }
 
@@ -74,7 +151,7 @@ public class UIManager : MonoBehaviour
     public void EnableSizeOption(PuzzleTextureData textureData)
     {
         currentTextureData = textureData;
-        newPuzzleDisplay.sprite = currentTextureData.sprite;
+        newPuzzleDisplay.texture = currentTextureData.texture;
         sizeOptionsPanel.gameObject.SetActive(true);
     }
 
@@ -91,9 +168,10 @@ public class UIManager : MonoBehaviour
 
     public void StartNewGame()
     {
+        DisableSizeOption();
         JSONNode configData = new JSONObject();
         configData[StringID.BoardSize] = sizeOptions[selectedSizeIndex];
-        configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.sprite.name}.json";
+        configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
         configData[StringID.NewGame] = 1;
         GameManager.Instance.LoadScene(currentTextureData, configData);
     }
@@ -102,7 +180,7 @@ public class UIManager : MonoBehaviour
     {
         CancelContinuePanel();
         JSONNode configData = new JSONObject();
-        configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.sprite.name}.json";
+        configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
         GameManager.Instance.LoadScene(currentTextureData, configData);
     }
 

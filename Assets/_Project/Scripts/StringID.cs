@@ -15,4 +15,6 @@ public static class StringID
     public static readonly string BoardSize = "BoardSize";
     public static readonly string PuzzleSceneID = "PuzzleSceneID";
     public static readonly string NewGame = "NewGame";
+    public static readonly string CustomFolderName = "Custom";
+    public static readonly string Texture = "texture_";
 }

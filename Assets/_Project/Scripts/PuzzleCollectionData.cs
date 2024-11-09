@@ -12,7 +12,7 @@ public class PuzzleCollectionData : ScriptableObject
 #if UNITY_EDITOR
     [Space(40)]
     [Header("Editor Data")]
-    [SerializeField] private Sprite[] spritesList;
+    [SerializeField] private Texture2D[] spritesList;
     
     [ContextMenu("Add Texture Data")]
     public void AddTextures()
@@ -22,7 +22,7 @@ public class PuzzleCollectionData : ScriptableObject
             textureData.Add(new PuzzleTextureData()
             {
                 themeName = themeName,
-                sprite = texture
+                texture = texture
             });
         }
     }
@@ -30,18 +30,21 @@ public class PuzzleCollectionData : ScriptableObject
 }
 
 [Serializable]
-public struct PuzzleTextureData
+public class PuzzleTextureData
 {
     public ThemeName themeName;
-    public Sprite sprite;
+    public Texture2D texture;
 }
 
 public enum ThemeName
 {
-    General,
-    Animals,
-    Cities,
-    Landmarks,
-    Nature,
-    Vehicles
+    General = 0,
+    Animals = 1,
+    Cities = 2,
+    Landmarks = 3,
+    Nature = 4,
+    Vehicles = 5,
+    
+    
+    Custom = 1000
 }

@@ -21,6 +21,36 @@ public class StorageManager
             Directory.CreateDirectory(ExternalLocation);
     }
 
+    public static bool IsDirectoryPresent(string path, out string fullPath)
+    {
+        fullPath = String.Empty;
+        if (Directory.Exists(ExternalLocation + path))
+        {
+            fullPath = ExternalLocation + path;
+            return true;
+        }
+        if (Directory.Exists(InternalLocation + path))
+        {
+            fullPath = InternalLocation + path;
+            return true;
+        }
+        if (Directory.Exists(path))
+        {
+            fullPath = path;
+            return true;
+        }
+        return false;
+    }
+
+    public static string[] GetFilesInDirectory(string directoryPath)
+    {
+        if (IsDirectoryPresent(directoryPath,out string fullPath))
+        {
+            return Directory.GetFiles(fullPath);
+        }
+        return Array.Empty<string>();
+    }
+
     public static void TouchPath(string storageLocation)
     {
         storageLocation = storageLocation.Substring(0, storageLocation.LastIndexOf('/'));

@@ -37,7 +37,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 9c70c4bb85db34f829cdc476f8d44d6d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 254352e6a8f9641f1a69ecf73823ee1c, type: 3}
         m_Scale: {x: 0.05, y: 0.05}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_b343267ca24c4aa39016a2f4339fe0d7_Texture_1_Texture2D:
@@ -63,10 +63,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _GridCellSize: 2
-    - _Height: 8
+    - _Height: 6
     - _QueueControl: 1
     - _QueueOffset: 0
-    - _Width: 8
+    - _Width: 6
     m_Colors:
     - _GridCoord: {r: 0, g: 0, b: 0, a: 0}
     - _HalfObjectSize: {r: 1, g: 1, b: 0, a: 0}

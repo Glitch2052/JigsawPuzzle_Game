@@ -67,7 +67,7 @@ public class PuzzleGenerator : MonoBehaviour
         }
         if (refImage)
         {
-            refImage.GetComponent<MeshRenderer>().material.mainTexture = data.sprite.texture;
+            refImage.GetComponent<MeshRenderer>().material.mainTexture = data.texture;
             refImage.localScale = new Vector3(XWidth * 2, YWidth * 2, 1);
         }
     }
@@ -87,7 +87,7 @@ public class PuzzleGenerator : MonoBehaviour
         //Generate Grid with X and Y Size
         Vector2 origin = new Vector2(-XWidth, -YWidth) * (0.5f * CellSize);
         Vector2 cellOffset = Vector2.one * (CellSize * 0.5f);
-        edgeShapeSO.UpdatePuzzleMaterial(textureData.sprite.texture,XWidth,YWidth,CellSize);
+        edgeShapeSO.UpdatePuzzleMaterial(textureData.texture,XWidth,YWidth,CellSize);
         PuzzleGrid = new Grid<GridObject>(XWidth, YWidth, CellSize, origin, cellOffset,OnGridObjectCreated);
 
         //Load Puzzle Pieces From Json If Present

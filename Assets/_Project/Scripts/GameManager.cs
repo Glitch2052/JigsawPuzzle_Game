@@ -78,7 +78,9 @@ public class GameManager : MonoBehaviour
 
     public void OnBack()
     {
-        
+        InteractiveSystem interactiveSystem = FindObjectOfType<InteractiveSystem>();
+        if(interactiveSystem)
+            interactiveSystem.OnBack();
     }
 
     #region Helper Methods

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Recyclable_Scroll_Rect.Custom_Scroll_Rect;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PolyAndCode.UI
 {
@@ -366,6 +367,15 @@ namespace PolyAndCode.UI
             rectTransform.sizeDelta = new Vector2(width, height);
         }
 
+        public override void ClearData()
+        {
+            if (_cellPool != null)
+            {
+                _cellPool.ForEach((RectTransform item) => Object.Destroy(item.gameObject));
+                _cellPool.Clear();
+                _cachedCells.Clear();
+            }
+        }
         #endregion
 
         #region  TESTING

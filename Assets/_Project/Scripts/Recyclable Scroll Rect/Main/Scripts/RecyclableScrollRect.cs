@@ -132,6 +132,12 @@ namespace PolyAndCode.UI
             }
         }
 
+        public void ClearData()
+        {
+            if(_recyclingSystem != null) 
+                _recyclingSystem.ClearData();
+        }
+
         #region Testing
         private void OnDrawGizmos()
         {

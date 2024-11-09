@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PuzzleCategoryCell : MonoBehaviour, ICell
 {
     [SerializeField] private Button button;
-    [SerializeField] private Image buttonImage;
+    [SerializeField] private RawImage buttonImage;
 
     private ThemeName themeName;
     private PuzzleTextureData puzzleTextureData;
@@ -21,7 +21,7 @@ public class PuzzleCategoryCell : MonoBehaviour, ICell
     public void SetCell(PuzzleTextureData data)
     {
         puzzleTextureData = data;
-        buttonImage.sprite = data.sprite;
+        buttonImage.texture = data.texture;
     }
 
     private void LoadPuzzleScene()
@@ -40,7 +40,7 @@ public class PuzzleCategoryCell : MonoBehaviour, ICell
 
     private bool CheckForSavedScene()
     {
-        string jsonPath = $"{themeName}/{puzzleTextureData.sprite.name}.json";
+        string jsonPath = $"{themeName}/{puzzleTextureData.texture.name}.json";
         return StorageManager.IsFileExist(jsonPath);
     }
 }

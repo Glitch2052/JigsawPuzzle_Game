@@ -389,6 +389,16 @@ namespace PolyAndCode.UI
             //Reapply size
             rectTransform.sizeDelta = new Vector2(width, height);
         }
+
+        public override void ClearData()
+        {
+            if (_cellPool != null)
+            {
+                _cellPool.ForEach((RectTransform item) => Object.Destroy(item.gameObject));
+                _cellPool.Clear();
+                _cachedCells.Clear();
+            }
+        }
         #endregion
 
         #region TESTING

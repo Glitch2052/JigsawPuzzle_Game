@@ -15,21 +15,21 @@ MonoBehaviour:
   themeName: 5
   textureData:
   - themeName: 5
-    sprite: {fileID: 21300000, guid: 6e468d374511a0d4a9d5c4eed255f895, type: 3}
+    texture: {fileID: 2800000, guid: 6e468d374511a0d4a9d5c4eed255f895, type: 3}
   - themeName: 5
-    sprite: {fileID: 21300000, guid: 7035aa12b8b4c3249a228e4ed3f2e672, type: 3}
+    texture: {fileID: 2800000, guid: 7035aa12b8b4c3249a228e4ed3f2e672, type: 3}
   - themeName: 5
-    sprite: {fileID: 21300000, guid: 8ef296ecd33f59a4bad71349d4cf1803, type: 3}
+    texture: {fileID: 2800000, guid: 8ef296ecd33f59a4bad71349d4cf1803, type: 3}
   - themeName: 5
-    sprite: {fileID: 21300000, guid: 04e029a1512d57a49b14c0bbb45c3616, type: 3}
+    texture: {fileID: 2800000, guid: 04e029a1512d57a49b14c0bbb45c3616, type: 3}
   - themeName: 5
-    sprite: {fileID: 21300000, guid: 69bf63fc966ac3444baeaaa488280dde, type: 3}
+    texture: {fileID: 2800000, guid: 69bf63fc966ac3444baeaaa488280dde, type: 3}
   - themeName: 5
-    sprite: {fileID: 21300000, guid: 07c158ba24da2f4449e0e698997f09c8, type: 3}
+    texture: {fileID: 2800000, guid: 07c158ba24da2f4449e0e698997f09c8, type: 3}
   spritesList:
-  - {fileID: 21300000, guid: 6e468d374511a0d4a9d5c4eed255f895, type: 3}
-  - {fileID: 21300000, guid: 7035aa12b8b4c3249a228e4ed3f2e672, type: 3}
-  - {fileID: 21300000, guid: 8ef296ecd33f59a4bad71349d4cf1803, type: 3}
-  - {fileID: 21300000, guid: 04e029a1512d57a49b14c0bbb45c3616, type: 3}
-  - {fileID: 21300000, guid: 69bf63fc966ac3444baeaaa488280dde, type: 3}
-  - {fileID: 21300000, guid: 07c158ba24da2f4449e0e698997f09c8, type: 3}
+  - {fileID: 2800000, guid: 6e468d374511a0d4a9d5c4eed255f895, type: 3}
+  - {fileID: 2800000, guid: 7035aa12b8b4c3249a228e4ed3f2e672, type: 3}
+  - {fileID: 2800000, guid: 8ef296ecd33f59a4bad71349d4cf1803, type: 3}
+  - {fileID: 2800000, guid: 04e029a1512d57a49b14c0bbb45c3616, type: 3}
+  - {fileID: 2800000, guid: 69bf63fc966ac3444baeaaa488280dde, type: 3}
+  - {fileID: 2800000, guid: 07c158ba24da2f4449e0e698997f09c8, type: 3}

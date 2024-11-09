@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using PolyAndCode.UI;
 using UnityEngine;
@@ -11,6 +10,16 @@ public class PuzzleCategoryDataSource : IRecyclableScrollRectDataSource
     public PuzzleCategoryDataSource(ThemeName themeName, List<PuzzleTextureData> textureData)
     {
         this.themeName = themeName;
+        puzzleTextureData = textureData;
+    }
+    
+    public PuzzleCategoryDataSource(ThemeName themeName)
+    {
+        this.themeName = themeName;
+    }
+
+    public void UpdateTextureCollection(List<PuzzleTextureData> textureData)
+    {
         puzzleTextureData = textureData;
     }
     
