@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using SimpleJSON;
 using UnityEngine;
@@ -7,11 +6,10 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
-    public static readonly string MainMenuScene = "MainMenu";
-    private static readonly string GameSceneName = "GameScene";
+    
     private Coroutine loadingCoroutine;
     public JSONNode currentConfigData;
+    public static SceneType SceneType = SceneType.None;
 
     private void Awake()
     {
@@ -23,33 +21,30 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
-        
         DontDestroyOnLoad(gameObject);
-
-        Application.targetFrameRate = 60;
     }
 
-    private void Start()
+    public void Init()
     {
-        UIManager.Instance.Init();
+        
     }
 
     public void LoadScene(PuzzleTextureData puzzleTextureData, JSONNode configData)
     {
         if(IsSceneLoading()) return;
-        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(GameSceneName, puzzleTextureData, configData));
+        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(StringID.GameScene, configData, puzzleTextureData));
     }
     
-    public void LoadScene(string sceneName)
+    public void LoadScene(string sceneName, JSONNode node)
     {
         if(IsSceneLoading()) return;
-        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(sceneName));
+        loadingCoroutine = StartCoroutine(LoadSceneCoroutine(sceneName, node));
     }
 
-    private IEnumerator LoadSceneCoroutine(string sceneName, PuzzleTextureData textureData = default, JSONNode configData = null)
+    private IEnumerator LoadSceneCoroutine(string sceneName, JSONNode configData = null, PuzzleTextureData textureData = default)
     {
         AsyncOperation handle = SceneManager.LoadSceneAsync(sceneName);
-        while (!handle.isDone)
+        while (handle is { isDone: false })
         {
             yield return null;
         }
@@ -65,22 +60,10 @@ public class GameManager : MonoBehaviour
                 interactiveSystem.Init();
                 yield return interactiveSystem.OnSceneLoad(textureData, configData);
             }
-            else if (UIManager.Instance != null)
-            {
-                UIManager.Instance.ToggleLevelSelectPanel(true);
-                UIManager.Instance.ToggleGameplayOptionsPanel(false);
-                UIManager.Instance.Init();
-            }
+            yield return UIManager.Instance.OnSceneLoad(configData);
         }
         
         loadingCoroutine = null;
-    }
-
-    public void OnBack()
-    {
-        InteractiveSystem interactiveSystem = FindObjectOfType<InteractiveSystem>();
-        if(interactiveSystem)
-            interactiveSystem.OnBack();
     }
 
     #region Helper Methods
@@ -91,4 +74,12 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+    
+}
+
+public enum SceneType
+{
+    None,
+    LevelSelect,
+    GameScene
 }

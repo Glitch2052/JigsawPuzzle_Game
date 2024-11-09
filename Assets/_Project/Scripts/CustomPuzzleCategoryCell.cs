@@ -8,8 +8,7 @@ public class CustomPuzzleCategoryCell : MonoBehaviour, ICell
     [SerializeField] private RawImage buttonImage;
 
     private ThemeName themeName;
-    private PuzzleTextureData puzzleTextureData;
-
+    private CustomPuzzleTexData puzzleTextureData;
     private CustomPuzzleCategoryDataSource dataSource;
 
     public void InitCell(ThemeName theme, CustomPuzzleCategoryDataSource categoryDataSource)
@@ -20,10 +19,20 @@ public class CustomPuzzleCategoryCell : MonoBehaviour, ICell
         button.onClick.AddListener(LoadPuzzleScene);
     }
 
-    public void SetCell(Texture2D texture, string path)
+    public void SetCell(CustomPuzzleTexData data)
     {
-        // puzzleTextureData = data;
-        buttonImage.texture = texture;
+        puzzleTextureData = data;
+        if(data.isTextureLoaded)
+            buttonImage.texture = data.texture;
+        else
+        {
+            byte[] bytes = StorageManager.ReadBytesNow(data.texturePath);
+            Texture2D texToLoad = new Texture2D(0, 0);
+            texToLoad.LoadImage(bytes);
+            data.texture = texToLoad;
+            data.isTextureLoaded = true;
+            buttonImage.texture = data.texture;
+        }
     }
 
     private void LoadPuzzleScene()
@@ -42,7 +51,7 @@ public class CustomPuzzleCategoryCell : MonoBehaviour, ICell
 
     private bool CheckForSavedScene()
     {
-        string jsonPath = $"{themeName}/{puzzleTextureData.texture.name}.json";
-        return StorageManager.IsFileExist(jsonPath);
+        if (puzzleTextureData.jsonPath == string.Empty || puzzleTextureData.jsonPath == "") return false;
+        return StorageManager.IsFileExist(puzzleTextureData.jsonPath);
     }
 }

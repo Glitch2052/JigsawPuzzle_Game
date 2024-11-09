@@ -16,5 +16,9 @@ public static class StringID
     public static readonly string PuzzleSceneID = "PuzzleSceneID";
     public static readonly string NewGame = "NewGame";
     public static readonly string CustomFolderName = "Custom";
-    public static readonly string Texture = "texture_";
+    public static readonly string TextureID = "texture_";
+    public static readonly string Textures = "Textures";
+    public static readonly string GameScene = "GameScene";
+    public static readonly string LevelSelectScene = "MainMenu";
+    public static readonly string CustomTextureFolder = CustomFolderName + "/" + Textures;
 }

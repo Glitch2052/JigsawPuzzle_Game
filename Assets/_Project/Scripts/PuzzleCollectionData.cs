@@ -36,6 +36,13 @@ public class PuzzleTextureData
     public Texture2D texture;
 }
 
+public class CustomPuzzleTexData : PuzzleTextureData
+{
+    public string texturePath = String.Empty;
+    public string jsonPath = StringID.Empty;
+    public bool isTextureLoaded = false;
+}
+
 public enum ThemeName
 {
     General = 0,

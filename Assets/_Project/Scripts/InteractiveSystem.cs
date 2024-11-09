@@ -158,7 +158,9 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public void OnBack()
     {
         SaveAll(ExportJson());
-        GameManager.Instance.LoadScene(GameManager.MainMenuScene);
+        JSONNode node = new JSONObject();
+        node.SetNextSceneType(SceneType.LevelSelect);
+        GameManager.Instance.LoadScene(StringID.LevelSelectScene, node);
     }
 
     private JSONNode ExportJson()

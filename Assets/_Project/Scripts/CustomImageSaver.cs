@@ -36,9 +36,9 @@ public class CustomImageSaver : MonoBehaviour
         if (!result) return;
         byte[] textureBytesData = croppedImage.EncodeToPNG();
 
-        int count = StorageManager.GetFilesInDirectory(StringID.CustomFolderName).Length + 1;
+        int count = StorageManager.GetFilesInDirectory(StringID.CustomTextureFolder).Length + 1;
 
-        string savePath = $"{StringID.CustomFolderName}/{StringID.Texture + count.ToString().PadLeft(4, '0')}.png";
+        string savePath = $"{StringID.CustomTextureFolder}/{StringID.TextureID + count.ToString().PadLeft(4, '0')}.png";
         StorageManager.Write(savePath, textureBytesData);
         UIManager.Instance.AddCustomTexturePath(savePath,croppedImage);
     }

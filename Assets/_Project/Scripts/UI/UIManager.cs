@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using PolyAndCode.UI;
 using SimpleJSON;
@@ -171,8 +172,16 @@ public class UIManager : MonoBehaviour
         DisableSizeOption();
         JSONNode configData = new JSONObject();
         configData[StringID.BoardSize] = sizeOptions[selectedSizeIndex];
-        configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
+        if (currentTextureData is CustomPuzzleTexData customPuzzleTexData)
+        {
+            configData[StringID.PuzzleSceneID] = customPuzzleTexData.jsonPath;
+        }
+        else
+        {
+            configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
+        }
         configData[StringID.NewGame] = 1;
+        configData.SetNextSceneType(SceneType.GameScene);
         GameManager.Instance.LoadScene(currentTextureData, configData);
     }
 
@@ -180,7 +189,15 @@ public class UIManager : MonoBehaviour
     {
         CancelContinuePanel();
         JSONNode configData = new JSONObject();
-        configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
+        if (currentTextureData is CustomPuzzleTexData customPuzzleTexData)
+        {
+            configData[StringID.PuzzleSceneID] = customPuzzleTexData.jsonPath;
+        }
+        else
+        {
+            configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
+        }
+        configData.SetNextSceneType(SceneType.GameScene);
         GameManager.Instance.LoadScene(currentTextureData, configData);
     }
 
@@ -203,5 +220,27 @@ public class UIManager : MonoBehaviour
     public void ToggleReferenceImage(bool value)
     {
         PuzzleGenerator.Instance.ToggleReferenceImage(value);
+    }
+    
+    public void OnBack()
+    {
+        InteractiveSystem interactiveSystem = FindObjectOfType<InteractiveSystem>();
+        if(interactiveSystem)
+            interactiveSystem.OnBack();
+    }
+
+    public IEnumerator OnSceneLoad(JSONNode configData)
+    {
+        if (configData.GetNextSceneType() == SceneType.LevelSelect)
+        {
+            ToggleLevelSelectPanel(true);
+            ToggleGameplayOptionsPanel(false);
+        }
+        if (configData.GetNextSceneType() == SceneType.GameScene)
+        {
+            ToggleLevelSelectPanel(false);
+            ToggleGameplayOptionsPanel(true);
+        }
+        yield return null;
     }
 }

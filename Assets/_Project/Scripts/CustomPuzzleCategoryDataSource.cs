@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PolyAndCode.UI;
@@ -5,22 +6,38 @@ using UnityEngine;
 
 public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 {
-    private ThemeName themeName;
-    private List<PuzzleTextureData> puzzleTextureData;
-    private List<Texture2D> textureList;
+    private readonly ThemeName themeName;
+    private List<CustomPuzzleTexData> puzzleTextureDataList;
     private List<string> pathToTextureList;
 
     public CustomPuzzleCategoryDataSource(ThemeName themeName)
     {
         this.themeName = themeName;
-        textureList = new List<Texture2D>();
-        pathToTextureList = StorageManager.GetFilesInDirectory(StringID.CustomFolderName).ToList();
+        pathToTextureList = StorageManager.GetFilesInDirectory(StringID.CustomTextureFolder).ToList();
+        puzzleTextureDataList = new List<CustomPuzzleTexData>();
+        foreach (string texturePath in pathToTextureList)
+        {
+            var customData = new CustomPuzzleTexData
+            {
+                themeName = themeName,
+                isTextureLoaded = false,
+                texturePath = texturePath[texturePath.IndexOf(StringID.CustomFolderName, StringComparison.Ordinal)..].Replace('\\','/'),
+            };
+            customData.jsonPath = customData.texturePath.Replace(StringID.Textures + "/", "").Replace(".png",".json");
+            puzzleTextureDataList.Add(customData);
+        }
     }
 
     public void AddNewPath(string path,Texture2D texture)
     {
-        pathToTextureList.Add(path);
-        textureList.Add(texture);
+        puzzleTextureDataList.Insert(0,new CustomPuzzleTexData
+        {
+            themeName = themeName,
+            texture = texture,
+            texturePath = path,
+            isTextureLoaded = true
+        });
+        pathToTextureList.Insert(0, path);
     }
 
     public int GetItemCount()
@@ -35,6 +52,6 @@ public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 
     public void SetCell(ICell cell, int index)
     {
-        ((CustomPuzzleCategoryCell)cell).SetCell(textureList[index], pathToTextureList[index]);
+        ((CustomPuzzleCategoryCell)cell).SetCell(puzzleTextureDataList[index]);
     }
 }
