@@ -11,18 +11,21 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PuzzleCollectionData generalCollectionData;
     [SerializeField] private List<PuzzleCollectionData> themesCollectionData;
     
-    [Space(20)]
+    [Space(30)]
     [SerializeField] private Canvas canvas;
     [SerializeField] private RectTransform levelSelectPanel;
     [SerializeField] private RectTransform gamePlayOptionsPanel;
+    [SerializeField] private RectTransform headerTransform;
+    [SerializeField] private RectTransform bodyTransform;
+    [SerializeField] private RectTransform footerTransform;
     
-    [Space(20)]
+    [Space(30)]
     [SerializeField] private RecyclableScrollRect mainCategoryScrollRect;
     [SerializeField] private RecyclableScrollRect themeCategoryScrollRect;
     [SerializeField] private RecyclableScrollRect customCategoryScrollRect;
     [SerializeField] private ScrollRect themesScrollRect;
 
-    [Space(20)] 
+    [Space(30)] 
     public TabButton firstCategory;
     [SerializeField] private Button themeButtonPrefab;
     [SerializeField] private Button backButton;
@@ -35,6 +38,8 @@ public class UIManager : MonoBehaviour
     private PuzzleCategoryDataSource themeCategoryContentDataSource;
     private CustomPuzzleCategoryDataSource customCategoryContentDataSource;
     private PuzzleTextureData currentTextureData;
+
+    private Vector2 canvasRefResolution;
 
     private readonly int[] sizeOptions =
     {
@@ -60,7 +65,11 @@ public class UIManager : MonoBehaviour
 
     public void Init()
     {
-        
+        Vector2 bodySizeDelta = bodyTransform.sizeDelta;
+        bodySizeDelta.y = Screen.height - headerTransform.sizeDelta.y - footerTransform.sizeDelta.y;
+        bodyTransform.sizeDelta = bodySizeDelta;
+        canvasRefResolution = canvas.GetComponent<CanvasScaler>().referenceResolution;
+        Debug.Log($"scaling factor is {Screen.width/canvasRefResolution.x}");
     }
     
     public void LoadMainCategory()
