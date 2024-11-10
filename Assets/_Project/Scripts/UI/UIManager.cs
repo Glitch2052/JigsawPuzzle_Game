@@ -39,8 +39,6 @@ public class UIManager : MonoBehaviour
     private CustomPuzzleCategoryDataSource customCategoryContentDataSource;
     private PuzzleTextureData currentTextureData;
 
-    private Vector2 canvasRefResolution;
-
     private readonly int[] sizeOptions =
     {
         36, 64, 81, 100, 144, 225
@@ -68,8 +66,6 @@ public class UIManager : MonoBehaviour
         Vector2 bodySizeDelta = bodyTransform.sizeDelta;
         bodySizeDelta.y = Screen.height - headerTransform.sizeDelta.y - footerTransform.sizeDelta.y;
         bodyTransform.sizeDelta = bodySizeDelta;
-        canvasRefResolution = canvas.GetComponent<CanvasScaler>().referenceResolution;
-        Debug.Log($"scaling factor is {Screen.width/canvasRefResolution.x}");
     }
     
     public void LoadMainCategory()

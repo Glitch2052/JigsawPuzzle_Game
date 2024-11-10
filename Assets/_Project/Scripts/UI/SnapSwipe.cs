@@ -29,10 +29,10 @@ public class SnapSwipe : MonoBehaviour
             childImages[i] = content.transform.GetChild(i).GetComponent<Image>();
         }
 
-        if (TryGetComponent(out HorizontalLayoutGroup horizontalLayoutGroup))
-        {
-            horizontalLayoutGroup.padding.left = horizontalLayoutGroup.padding.right = (int)((RectTransform)scrollRect.transform).rect.width / 2 - 50;
-        }
+        // if (TryGetComponent(out HorizontalLayoutGroup horizontalLayoutGroup))
+        // {
+        //     horizontalLayoutGroup.padding.left = horizontalLayoutGroup.padding.right = (int)((RectTransform)scrollRect.transform).rect.width / 2 - 50;
+        // }
         // scrollRect.onValueChanged.AddListener((a) =>
         // {
         //     Debug.Log(a);
