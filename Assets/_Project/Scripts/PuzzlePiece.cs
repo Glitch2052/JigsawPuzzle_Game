@@ -55,7 +55,7 @@ public class PuzzlePiece : IObject
         return base.OnPointerDown(worldPos, pointerId);
     }
 
-    protected override void OnReleased()
+    public override void OnReleased()
     {
         if (TryInteractWithPalette())
         {

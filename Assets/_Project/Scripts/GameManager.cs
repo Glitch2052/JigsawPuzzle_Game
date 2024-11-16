@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    
+
+    public InteractiveSystem iSystem;
     private Coroutine loadingCoroutine;
     public JSONNode currentConfigData;
     public static SceneType SceneType = SceneType.None;
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LoadSceneCoroutine(string sceneName, JSONNode configData = null, PuzzleTextureData textureData = default)
     {
+        iSystem = null;
         AsyncOperation handle = SceneManager.LoadSceneAsync(sceneName);
         while (handle is { isDone: false })
         {
@@ -52,13 +54,13 @@ public class GameManager : MonoBehaviour
         var newScene = SceneManager.GetSceneByName(sceneName);
         if (newScene.IsValid())
         {
-            InteractiveSystem interactiveSystem = FindObjectOfType<InteractiveSystem>();
-            if (interactiveSystem)
+            iSystem = FindObjectOfType<InteractiveSystem>();
+            if (iSystem)
             {
                 UIManager.Instance.ToggleLevelSelectPanel(false);
                 UIManager.Instance.ToggleGameplayOptionsPanel(true);
-                interactiveSystem.Init();
-                yield return interactiveSystem.OnSceneLoad(textureData, configData);
+                iSystem.Init();
+                yield return iSystem.OnSceneLoad(textureData, configData);
             }
             yield return UIManager.Instance.OnSceneLoad(configData);
         }

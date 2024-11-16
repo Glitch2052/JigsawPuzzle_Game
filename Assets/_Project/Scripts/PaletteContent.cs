@@ -488,6 +488,19 @@ public class PaletteContent : MonoBehaviour
         dragThreshold *= zoomScaleFactor;
         elevateOffset *= zoomScaleFactor;
     }
+
+    public bool RemoveRandomPieceFromPalette(out PuzzlePiece puzzlePiece)
+    {
+        if (cachedCells.Count <= 0)
+        {
+            puzzlePiece = null;
+            return false;
+        }
+        PuzzlePiece randomPiece = cachedCells[^1];
+        RemoveObjectFromPalette(randomPiece);
+        puzzlePiece = randomPiece;
+        return true;
+    }
     
 #if UNITY_EDITOR
     public void OnDrawGizmos()

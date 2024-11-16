@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RecyclableScrollRect themeCategoryScrollRect;
     [SerializeField] private RecyclableScrollRect customCategoryScrollRect;
     [SerializeField] private ScrollRect themesScrollRect;
+    [SerializeField] private ScrollRect bgOptionsScrollRect;
 
     [Space(30)] 
     public TabButton firstCategory;
@@ -33,6 +34,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform sizeOptionsPanel;
     [SerializeField] private RawImage continuePuzzleDisplay;
     [SerializeField] private RawImage newPuzzleDisplay;
+    [SerializeField] private BGTextureCell bgTextureCellPrefab;
+    [SerializeField] private Toggle changeBgToggleBtn;
 
     private PuzzleCategoryDataSource mainCategoryContentDataSource;
     private PuzzleCategoryDataSource themeCategoryContentDataSource;
@@ -45,6 +48,7 @@ public class UIManager : MonoBehaviour
     };
 
     private int selectedSizeIndex = 0;
+    private static bool firstTimeLoad = false;
     
     public static UIManager Instance { get; private set; }
 
@@ -172,6 +176,42 @@ public class UIManager : MonoBehaviour
         sizeOptionsPanel.gameObject.SetActive(false);
     }
 
+    private void LoadBgOptions()
+    {
+        var iSystem = GameManager.Instance.iSystem;
+        if (iSystem != null)
+        {
+            var bgSprites = GameManager.Instance.iSystem.puzzleGenerator.backGroundSpriteOptions;
+            bgOptionsScrollRect.content.TryGetComponent(out ToggleGroup toggleGroup);
+
+            int selectedIndex = iSystem.puzzleGenerator.selectedBGIndex;
+            for (var i = 0; i < bgSprites.Count; i++)
+            {
+                var bgTexCell = Instantiate(bgTextureCellPrefab, bgOptionsScrollRect.content).SetToggleGroup(toggleGroup);
+                bgTexCell.UpdateCell(bgSprites[i], iSystem);
+                if(selectedIndex == i)
+                    bgTexCell.ToggleClick(true);
+            }
+        }
+    }
+
+    private void ClearBgOptions()
+    {
+        foreach (Transform child in bgOptionsScrollRect.content.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void OnHintButtonClicked()
+    {
+        var iSystem = GameManager.Instance.iSystem;
+        if (iSystem != null && iSystem.palette.AssignPuzzlePieceOnGrid())
+        {
+            
+        }
+    }
+
     public void StartNewGame()
     {
         DisableSizeOption();
@@ -229,9 +269,14 @@ public class UIManager : MonoBehaviour
     
     public void OnBack()
     {
-        InteractiveSystem interactiveSystem = FindObjectOfType<InteractiveSystem>();
-        if(interactiveSystem)
-            interactiveSystem.OnBack();
+        if (changeBgToggleBtn.isOn)
+        {
+            changeBgToggleBtn.isOn = false;
+            return;
+        }
+        InteractiveSystem iSystem = GameManager.Instance.iSystem;
+        if(iSystem)
+            iSystem.OnBack();
     }
 
     public IEnumerator OnSceneLoad(JSONNode configData)
@@ -240,11 +285,19 @@ public class UIManager : MonoBehaviour
         {
             ToggleLevelSelectPanel(true);
             ToggleGameplayOptionsPanel(false);
+            ClearBgOptions();
+
+            if (!firstTimeLoad)
+            {
+                firstCategory.OnPointerClick(new PointerEventData(EventSystem.current));
+                firstTimeLoad = true;
+            }
         }
         if (configData.GetNextSceneType() == SceneType.GameScene)
         {
             ToggleLevelSelectPanel(false);
             ToggleGameplayOptionsPanel(true);
+            LoadBgOptions();
         }
         yield return null;
     }

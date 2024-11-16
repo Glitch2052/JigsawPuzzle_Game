@@ -62,4 +62,18 @@ public class PuzzlePalette : IObject
     {
         return content.OnPointerUp(worldPos, pointerId);
     }
+
+    public bool AssignPuzzlePieceOnGrid()
+    {
+        if (content.RemoveRandomPieceFromPalette(out PuzzlePiece puzzlePiece))
+        {
+            //TODO : Assign Piece to Grid
+            Vector2Int gridPos = puzzlePiece.gridCoordinate;
+            Vector3 worldPos = iSystem.puzzleGenerator.PuzzleGrid.GetWorldPositionWithCellOffset(gridPos.x, gridPos.y);
+            puzzlePiece.Position = worldPos.SetZ(-2);
+            puzzlePiece.OnReleased();
+            return true;
+        }
+        return false;
+    }
 }

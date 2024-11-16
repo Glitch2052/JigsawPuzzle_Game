@@ -29,7 +29,7 @@ public class IOGroupedPiece : IObject
         puzzlePieces.AddRange(puzzlePiece);
     }
 
-    protected override void OnReleased()
+    public override void OnReleased()
     {
         base.OnReleased();
         

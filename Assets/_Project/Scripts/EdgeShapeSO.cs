@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
-using Object = UnityEngine.Object;
 #if UNITY_EDITOR
+using System.Linq;
+using Object = UnityEngine.Object;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 #endif
@@ -273,9 +273,4 @@ public struct MeshData
     public Vector3[] vertices;
     public int[] triangles;
     public Vector2[] uvs;
-
-    public void AssignNormalTex(Texture2D texture)
-    {
-        normalTex = texture;
-    }
 }

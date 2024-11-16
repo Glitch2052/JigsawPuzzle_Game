@@ -19,6 +19,9 @@ public class PuzzleGenerator : MonoBehaviour
     [Space(25), Header("Additional Data")] 
     [SerializeField] private SpriteRenderer border;
     [SerializeField] private Transform refImage;
+    [SerializeField] private SpriteRenderer backGround;
+    public int selectedBGIndex;
+    public List<Sprite> backGroundSpriteOptions;
 
     public Vector2Int GridSize => new Vector2Int(XWidth, YWidth);
     public Vector2 BoardSize => new Vector2(XWidth, YWidth) * CellSize;
@@ -70,6 +73,11 @@ public class PuzzleGenerator : MonoBehaviour
             refImage.GetComponent<MeshRenderer>().material.mainTexture = data.texture;
             refImage.localScale = new Vector3(XWidth * 2, YWidth * 2, 1);
         }
+    }
+
+    public void UpdateBackgroundSprite(Sprite sprite)
+    {
+        backGround.sprite = sprite;
     }
 
     public void GenerateGrid(PuzzleTextureData textureData, JSONNode configDataNode = null)
@@ -221,6 +229,7 @@ public class PuzzleGenerator : MonoBehaviour
         node[StringID.SolvedPieces] = solvedPieces;
         node[StringID.UnSolvedPieces] = children;
         node[StringID.BoardSize] = XWidth * YWidth;
+        node[StringID.BackGroundID] = backGroundSpriteOptions.IndexOf(backGround.sprite);
         return node;
     }
 
@@ -263,6 +272,8 @@ public class PuzzleGenerator : MonoBehaviour
                 unSolvedPiece.FromJson(childNode);
             }
         }
+
+        selectedBGIndex = Mathf.Clamp(node[StringID.BackGroundID],0,backGroundSpriteOptions.Count);
     }
     
     private void SerializeChildren(JSONArray children)

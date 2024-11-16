@@ -151,7 +151,7 @@ public class IObject : MonoBehaviour
         Position = Position.SetZ(InteractiveSystem.DRAG_Z_ORDER);
     }
 
-    protected virtual void OnReleased()
+    public virtual void OnReleased()
     {
         Position = Position.SetZ(0);
     }
