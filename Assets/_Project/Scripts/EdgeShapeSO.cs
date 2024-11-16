@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
+using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
+using UnityEditor;
 #endif
 
 [CreateAssetMenu(menuName = "Puzzle Data/Edge Profile",fileName = "Edge Profile Info")]
@@ -62,6 +65,8 @@ public class EdgeShapeSO : ScriptableObject
     [SerializeField] private float cellSize;
     [SerializeField] private PuzzlePiece puzzlePrefab;
     [SerializeField] private bool generateGameObjects;
+
+    public Object normalMapsFolder;
     
     private EditorCoroutine meshDataCalculationCoroutine;
     public float3 BottomLeft => flatCornerPositions[0];
@@ -207,6 +212,32 @@ public class EdgeShapeSO : ScriptableObject
         profileVertices.TryGetValue(key, out List<float3> value);
         return value;
     }
+
+    [ContextMenu("Assign Normal Maps")]
+    private void AssignNormalMaps()
+    {
+        string folderPath = AssetDatabase.GetAssetPath(normalMapsFolder);
+        string[] assetGuids = AssetDatabase.FindAssets("t:Texture", new[] { folderPath });
+        string[] assetPaths = new string[assetGuids.Length];
+        for (var i = 0; i < assetGuids.Length; i++)
+        {
+            var guid = assetGuids[i];
+            assetPaths[i] = AssetDatabase.GUIDToAssetPath(guid);
+        }
+
+        List<MeshData> updatedMeshData = new List<MeshData>();
+        foreach (MeshData meshData in allPossibleMeshCacheList)
+        {
+            MeshData newMeshData = meshData;
+            string path = assetPaths.FirstOrDefault(p => p.Contains(meshData.edgeProfile));
+            if (path == String.Empty || path == "") continue;
+            newMeshData.normalTex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            updatedMeshData.Add(newMeshData);
+        }
+        allPossibleMeshCacheList.Clear();
+        allPossibleMeshCacheList = updatedMeshData;
+        EditorUtility.SetDirty(this);
+    }
     
 #endif
 }
@@ -238,7 +269,13 @@ public enum EdgeType
 public struct MeshData
 {
     public string edgeProfile;
+    public Texture2D normalTex;
     public Vector3[] vertices;
     public int[] triangles;
     public Vector2[] uvs;
+
+    public void AssignNormalTex(Texture2D texture)
+    {
+        normalTex = texture;
+    }
 }

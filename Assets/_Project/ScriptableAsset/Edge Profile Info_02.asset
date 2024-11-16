@@ -17,6 +17,7 @@ MonoBehaviour:
   puzzleMaterial: {fileID: 2100000, guid: c307c52c47b4847418b2b1ef15c41686, type: 2}
   allPossibleMeshCacheList:
   - edgeProfile: 0011
+    normalTex: {fileID: 2800000, guid: 4991558c4f8ee4359953b396d62d458f, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -184,8 +185,8 @@ MonoBehaviour:
     - {x: 0.08907796, y: 0.21818076}
     - {x: 0.059376504, y: 0.21677992}
     - {x: 0.029663706, y: 0.21480495}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0012
+    normalTex: {fileID: 2800000, guid: 91252fab8a6a5422daaa607ba14529ff, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -353,8 +354,8 @@ MonoBehaviour:
     - {x: 0.08907796, y: 0.0011461758}
     - {x: 0.059376504, y: 0.0029140203}
     - {x: 0.029663706, y: 0.0054064943}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 0021
+    normalTex: {fileID: 2800000, guid: f7532a3190bc749c5a5561c82522a990, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -522,8 +523,8 @@ MonoBehaviour:
     - {x: 0.11241612, y: 0.21818076}
     - {x: 0.07493298, y: 0.21677992}
     - {x: 0.03743551, y: 0.21480495}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0022
+    normalTex: {fileID: 2800000, guid: 7b94eae5f9f4847fcbc1fddd1bfb1b70, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -691,8 +692,8 @@ MonoBehaviour:
     - {x: 0.11241612, y: 0.0011461758}
     - {x: 0.07493298, y: 0.0029140203}
     - {x: 0.03743551, y: 0.0054064943}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 0101
+    normalTex: {fileID: 2800000, guid: f73c1f8a819e34e30999f707ed064550, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -860,8 +861,8 @@ MonoBehaviour:
     - {x: 0.113236666, y: 0.17981726}
     - {x: 0.075479925, y: 0.17866273}
     - {x: 0.03770876, y: 0.17703503}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0102
+    normalTex: {fileID: 2800000, guid: 651eeef3987cd441d985979bcc741f71, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -1029,8 +1030,8 @@ MonoBehaviour:
     - {x: 0.113236666, y: 0.00090303854}
     - {x: 0.075479925, y: 0.0022958717}
     - {x: 0.03770876, y: 0.0042596194}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 0110
+    normalTex: {fileID: 2800000, guid: 7ad549e000f8340619c4ffede30cb3dd, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -1198,8 +1199,8 @@ MonoBehaviour:
     - {x: 0.7832201, y: 0.059376545}
     - {x: 0.7851951, y: 0.02966375}
     - {x: 0.7866529, y: 0}
-    centerOffset: {x: 1, y: 1}
   - edgeProfile: 0111
+    normalTex: {fileID: 2800000, guid: c14d1950c1f1a48b8b3a2a05cc60fd2a, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -1445,8 +1446,8 @@ MonoBehaviour:
     - {x: 0.08907796, y: 0.17981726}
     - {x: 0.059376504, y: 0.17866273}
     - {x: 0.029663706, y: 0.17703503}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0112
+    normalTex: {fileID: 2800000, guid: 89aa4035b2cbd4b84a2883b29dad4313, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -1692,8 +1693,8 @@ MonoBehaviour:
     - {x: 0.08907796, y: 0.00090303854}
     - {x: 0.059376504, y: 0.0022958717}
     - {x: 0.029663706, y: 0.0042596194}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 0120
+    normalTex: {fileID: 2800000, guid: 797db15d7c315429c9ba799fc9b12cf7, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -1861,8 +1862,8 @@ MonoBehaviour:
     - {x: 0.9970861, y: 0.059376523}
     - {x: 0.9945935, y: 0.029663727}
     - {x: 0.9927537, y: 0}
-    centerOffset: {x: 1, y: 1}
   - edgeProfile: 0121
+    normalTex: {fileID: 2800000, guid: cc3d08d52df1a4bf3a68aa8a7d266cb6, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -2108,8 +2109,8 @@ MonoBehaviour:
     - {x: 0.11241612, y: 0.17981726}
     - {x: 0.07493298, y: 0.17866273}
     - {x: 0.03743551, y: 0.17703503}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0122
+    normalTex: {fileID: 2800000, guid: 61f4242f8d8d644cda029eca15debe45, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -2355,8 +2356,8 @@ MonoBehaviour:
     - {x: 0.11241612, y: 0.00090303854}
     - {x: 0.07493298, y: 0.0022958717}
     - {x: 0.03743551, y: 0.0042596194}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 0201
+    normalTex: {fileID: 2800000, guid: c94e3e52746b74033afc1a9d5b13f5fe, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -2524,8 +2525,8 @@ MonoBehaviour:
     - {x: 0.113236666, y: 0.21693513}
     - {x: 0.075479925, y: 0.2155423}
     - {x: 0.03770876, y: 0.2135786}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0202
+    normalTex: {fileID: 2800000, guid: 08241f6749f0b4abea888affc6cade67, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -2693,8 +2694,8 @@ MonoBehaviour:
     - {x: 0.113236666, y: 0.0011379301}
     - {x: 0.075479925, y: 0.0028930565}
     - {x: 0.03770876, y: 0.005367599}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 0210
+    normalTex: {fileID: 2800000, guid: 53812280d50064393b900756b32735a1, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -2862,8 +2863,8 @@ MonoBehaviour:
     - {x: 0.7832201, y: 0.07493304}
     - {x: 0.7851951, y: 0.03743557}
     - {x: 0.7866529, y: 0}
-    centerOffset: {x: 1, y: 1}
   - edgeProfile: 0211
+    normalTex: {fileID: 2800000, guid: 28fcc3924f193443ea8f03449f7f71b4, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -3109,8 +3110,8 @@ MonoBehaviour:
     - {x: 0.08907796, y: 0.21693513}
     - {x: 0.059376504, y: 0.2155423}
     - {x: 0.029663706, y: 0.2135786}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0212
+    normalTex: {fileID: 2800000, guid: 9aaffd16fcfa745f780ad2afbc4e1556, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -3356,8 +3357,8 @@ MonoBehaviour:
     - {x: 0.08907796, y: 0.0011379301}
     - {x: 0.059376504, y: 0.0028930565}
     - {x: 0.029663706, y: 0.005367599}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 0220
+    normalTex: {fileID: 2800000, guid: 5f9904c84e10249dd98300b2cf95d5b4, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -3525,8 +3526,8 @@ MonoBehaviour:
     - {x: 0.9970861, y: 0.07493301}
     - {x: 0.9945935, y: 0.03743554}
     - {x: 0.9927537, y: 0}
-    centerOffset: {x: 1, y: 1}
   - edgeProfile: 0221
+    normalTex: {fileID: 2800000, guid: 6f861247a25614e60ad5bbd4733f2d21, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -3772,8 +3773,8 @@ MonoBehaviour:
     - {x: 0.11241612, y: 0.21693513}
     - {x: 0.07493298, y: 0.2155423}
     - {x: 0.03743551, y: 0.2135786}
-    centerOffset: {x: 1, y: 1.5424175}
   - edgeProfile: 0222
+    normalTex: {fileID: 2800000, guid: b80c157ccfab94efe8daf2283879bb1b, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1, y: 1, z: 0}
@@ -4019,8 +4020,8 @@ MonoBehaviour:
     - {x: 0.11241612, y: 0.0011379301}
     - {x: 0.07493298, y: 0.0028930565}
     - {x: 0.03743551, y: 0.005367599}
-    centerOffset: {x: 1, y: 1.0145985}
   - edgeProfile: 1001
+    normalTex: {fileID: 2800000, guid: 7688720b04ec14984bbe842ac0fc9800, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -4188,8 +4189,8 @@ MonoBehaviour:
     - {x: 0.302425, y: 0.21818076}
     - {x: 0.27272356, y: 0.21677992}
     - {x: 0.24301076, y: 0.21480495}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1002
+    normalTex: {fileID: 2800000, guid: 221739ae0d8bf4958b02adfa98f42c4c, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -4357,8 +4358,8 @@ MonoBehaviour:
     - {x: 0.302425, y: 0.0011461758}
     - {x: 0.27272356, y: 0.0029140203}
     - {x: 0.24301076, y: 0.0054064943}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1010
+    normalTex: {fileID: 2800000, guid: 547037563ce5042b8a500d3d5325ec8f, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -4526,8 +4527,8 @@ MonoBehaviour:
     - {x: 0.8213372, y: 0.075479984}
     - {x: 0.82296497, y: 0.03770882}
     - {x: 0.8241664, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1011
+    normalTex: {fileID: 2800000, guid: 5b43a4f2cb5b3423c999227ee9d38d7c, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -4773,8 +4774,8 @@ MonoBehaviour:
     - {x: 0.24924853, y: 0.21818076}
     - {x: 0.22476959, y: 0.21677992}
     - {x: 0.2002813, y: 0.21480495}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1012
+    normalTex: {fileID: 2800000, guid: c0f1e2d3b1f4c4463883b8c501a523d6, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -5020,8 +5021,8 @@ MonoBehaviour:
     - {x: 0.24924853, y: 0.0011461758}
     - {x: 0.22476959, y: 0.0029140203}
     - {x: 0.2002813, y: 0.0054064943}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1020
+    normalTex: {fileID: 2800000, guid: 11c7f47f4ef744dc0aab2674a9f5e8f9, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -5189,8 +5190,8 @@ MonoBehaviour:
     - {x: 0.99770415, y: 0.075479954}
     - {x: 0.99574035, y: 0.03770879}
     - {x: 0.99429077, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1021
+    normalTex: {fileID: 2800000, guid: 023bf0b284cc343498214bd58c76a2b4, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -5436,8 +5437,8 @@ MonoBehaviour:
     - {x: 0.3006984, y: 0.21818076}
     - {x: 0.2711665, y: 0.21677992}
     - {x: 0.24162334, y: 0.21480495}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1022
+    normalTex: {fileID: 2800000, guid: b6f1203bea11840f1a938a7a4f9691e3, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -5683,8 +5684,8 @@ MonoBehaviour:
     - {x: 0.3006984, y: 0.0011461758}
     - {x: 0.2711665, y: 0.0029140203}
     - {x: 0.24162334, y: 0.0054064943}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1100
+    normalTex: {fileID: 2800000, guid: d5a7f7f4d13264a85985b677e099e26b, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -5852,8 +5853,8 @@ MonoBehaviour:
     - {x: 0.9703363, y: 0.785195}
     - {x: 1, y: 0.78665286}
     - {x: 1, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1101
+    normalTex: {fileID: 2800000, guid: 2fa40f6856096476293eb479f42de1c4, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -6099,8 +6100,8 @@ MonoBehaviour:
     - {x: 0.302425, y: 0.17981726}
     - {x: 0.27272356, y: 0.17866273}
     - {x: 0.24301076, y: 0.17703503}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1102
+    normalTex: {fileID: 2800000, guid: 446f1efbddd9740788023e86d8a8c454, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -6346,8 +6347,8 @@ MonoBehaviour:
     - {x: 0.302425, y: 0.00090303854}
     - {x: 0.27272356, y: 0.0022958717}
     - {x: 0.24301076, y: 0.0042596194}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1110
+    normalTex: {fileID: 2800000, guid: 63f6d00b3ca474342a3b5c6d3e743b53, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -6593,8 +6594,8 @@ MonoBehaviour:
     - {x: 0.8213372, y: 0.059376545}
     - {x: 0.82296497, y: 0.02966375}
     - {x: 0.8241664, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1111
+    normalTex: {fileID: 2800000, guid: 41b0bbdc6b4944cf8882bb5744309f05, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -6918,8 +6919,8 @@ MonoBehaviour:
     - {x: 0.24924853, y: 0.17981726}
     - {x: 0.22476959, y: 0.17866273}
     - {x: 0.2002813, y: 0.17703503}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1112
+    normalTex: {fileID: 2800000, guid: 3ae04b114c31947ba850a8bf8ea4d425, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -7243,8 +7244,8 @@ MonoBehaviour:
     - {x: 0.24924853, y: 0.00090303854}
     - {x: 0.22476959, y: 0.0022958717}
     - {x: 0.2002813, y: 0.0042596194}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1120
+    normalTex: {fileID: 2800000, guid: 7b9ac9067b6b84115bf6aef3a2e19118, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -7490,8 +7491,8 @@ MonoBehaviour:
     - {x: 0.99770415, y: 0.059376523}
     - {x: 0.99574035, y: 0.029663727}
     - {x: 0.99429077, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1121
+    normalTex: {fileID: 2800000, guid: 8709cfcb03302432c9fd025464093c33, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -7815,8 +7816,8 @@ MonoBehaviour:
     - {x: 0.3006984, y: 0.17981726}
     - {x: 0.2711665, y: 0.17866273}
     - {x: 0.24162334, y: 0.17703503}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1122
+    normalTex: {fileID: 2800000, guid: 4b5aa95f0c6444d538af332cadf5b1f5, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -8140,8 +8141,8 @@ MonoBehaviour:
     - {x: 0.3006984, y: 0.00090303854}
     - {x: 0.2711665, y: 0.0022958717}
     - {x: 0.24162334, y: 0.0042596194}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1200
+    normalTex: {fileID: 2800000, guid: c15c6c1fe1ec44d6482f45b1fec80535, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -8309,8 +8310,8 @@ MonoBehaviour:
     - {x: 0.9703363, y: 0.9945935}
     - {x: 1, y: 0.9927537}
     - {x: 1, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1201
+    normalTex: {fileID: 2800000, guid: 502d9da59e4a64298a9551f51ac721c2, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -8556,8 +8557,8 @@ MonoBehaviour:
     - {x: 0.302425, y: 0.21693513}
     - {x: 0.27272356, y: 0.2155423}
     - {x: 0.24301076, y: 0.2135786}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1202
+    normalTex: {fileID: 2800000, guid: acf39053eef7b4c4ebc76699a4734311, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -8803,8 +8804,8 @@ MonoBehaviour:
     - {x: 0.302425, y: 0.0011379301}
     - {x: 0.27272356, y: 0.0028930565}
     - {x: 0.24301076, y: 0.005367599}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1210
+    normalTex: {fileID: 2800000, guid: e9b8e4e4354bd4341926fe4ccce866f1, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -9050,8 +9051,8 @@ MonoBehaviour:
     - {x: 0.8213372, y: 0.07493304}
     - {x: 0.82296497, y: 0.03743557}
     - {x: 0.8241664, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1211
+    normalTex: {fileID: 2800000, guid: 7212fb2adca5c4b55be9f7e7b9b5575d, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -9375,8 +9376,8 @@ MonoBehaviour:
     - {x: 0.24924853, y: 0.21693513}
     - {x: 0.22476959, y: 0.2155423}
     - {x: 0.2002813, y: 0.2135786}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1212
+    normalTex: {fileID: 2800000, guid: 5cfc48351f4fa4a5bad40a587932d8e9, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -9700,8 +9701,8 @@ MonoBehaviour:
     - {x: 0.24924853, y: 0.0011379301}
     - {x: 0.22476959, y: 0.0028930565}
     - {x: 0.2002813, y: 0.005367599}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 1220
+    normalTex: {fileID: 2800000, guid: 2b8d17fe531944bda938de23857caf3a, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -9947,8 +9948,8 @@ MonoBehaviour:
     - {x: 0.99770415, y: 0.07493301}
     - {x: 0.99574035, y: 0.03743554}
     - {x: 0.99429077, y: 0}
-    centerOffset: {x: 1.5424172, y: 1}
   - edgeProfile: 1221
+    normalTex: {fileID: 2800000, guid: e0ca966b0c29048cb976c8f388c25929, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -10272,8 +10273,8 @@ MonoBehaviour:
     - {x: 0.3006984, y: 0.21693513}
     - {x: 0.2711665, y: 0.2155423}
     - {x: 0.24162334, y: 0.2135786}
-    centerOffset: {x: 1.5424172, y: 1.5424175}
   - edgeProfile: 1222
+    normalTex: {fileID: 2800000, guid: 6ff92ee24d88640e59262fadd683d631, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -0.99523854, y: -0.9246265, z: -0.000000040576044}
@@ -10597,8 +10598,8 @@ MonoBehaviour:
     - {x: 0.3006984, y: 0.0011379301}
     - {x: 0.2711665, y: 0.0028930565}
     - {x: 0.24162334, y: 0.005367599}
-    centerOffset: {x: 1.5424172, y: 1.0145985}
   - edgeProfile: 2001
+    normalTex: {fileID: 2800000, guid: 99011e87604854659ae0ec9085540957, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -10766,8 +10767,8 @@ MonoBehaviour:
     - {x: 0.11966241, y: 0.21818076}
     - {x: 0.08217927, y: 0.21677992}
     - {x: 0.044681802, y: 0.21480495}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2002
+    normalTex: {fileID: 2800000, guid: 2d536fdc0f2d4419c882c57b8383052a, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -10935,8 +10936,8 @@ MonoBehaviour:
     - {x: 0.11966241, y: 0.0011461758}
     - {x: 0.08217927, y: 0.0029140203}
     - {x: 0.044681802, y: 0.0054064943}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2010
+    normalTex: {fileID: 2800000, guid: eda3e19aee3a240bd96350e7e0c21789, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -11104,8 +11105,8 @@ MonoBehaviour:
     - {x: 0.7844578, y: 0.075479984}
     - {x: 0.7864214, y: 0.03770882}
     - {x: 0.78787094, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2011
+    normalTex: {fileID: 2800000, guid: 6ee9bfe1430aa433f9ddcad8f48b45c6, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -11351,8 +11352,8 @@ MonoBehaviour:
     - {x: 0.09427854, y: 0.21818076}
     - {x: 0.064746656, y: 0.21677992}
     - {x: 0.035203494, y: 0.21480495}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2012
+    normalTex: {fileID: 2800000, guid: 465a7d190c5b7478bac047027cc35f8b, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -11598,8 +11599,8 @@ MonoBehaviour:
     - {x: 0.09427854, y: 0.0011461758}
     - {x: 0.064746656, y: 0.0029140203}
     - {x: 0.035203494, y: 0.0054064943}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2020
+    normalTex: {fileID: 2800000, guid: 323ce1db740824f998c6278cafdbdc31, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -11767,8 +11768,8 @@ MonoBehaviour:
     - {x: 0.9971071, y: 0.075479954}
     - {x: 0.9946324, y: 0.03770879}
     - {x: 0.99280584, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2021
+    normalTex: {fileID: 2800000, guid: 8cfa0b98d58fa4dc2b4baff0c6b4e146, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -12014,8 +12015,8 @@ MonoBehaviour:
     - {x: 0.11880154, y: 0.21818076}
     - {x: 0.08158806, y: 0.21677992}
     - {x: 0.044360355, y: 0.21480495}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2022
+    normalTex: {fileID: 2800000, guid: e9b4bbf7372dc4e3ca54db84f728b26e, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -12261,8 +12262,8 @@ MonoBehaviour:
     - {x: 0.11880154, y: 0.0011461758}
     - {x: 0.08158806, y: 0.0029140203}
     - {x: 0.044360355, y: 0.0054064943}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2100
+    normalTex: {fileID: 2800000, guid: b411eb2292b32477b9745911b2c61365, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -12430,8 +12431,8 @@ MonoBehaviour:
     - {x: 0.96256447, y: 0.785195}
     - {x: 1, y: 0.78665286}
     - {x: 1, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2101
+    normalTex: {fileID: 2800000, guid: 73b9d4fabf6d34ea2be5784e5368e736, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -12677,8 +12678,8 @@ MonoBehaviour:
     - {x: 0.11966241, y: 0.17981726}
     - {x: 0.08217927, y: 0.17866273}
     - {x: 0.044681802, y: 0.17703503}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2102
+    normalTex: {fileID: 2800000, guid: c6fe6e47238f84c0785e04afd08e2d79, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -12924,8 +12925,8 @@ MonoBehaviour:
     - {x: 0.11966241, y: 0.00090303854}
     - {x: 0.08217927, y: 0.0022958717}
     - {x: 0.044681802, y: 0.0042596194}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2110
+    normalTex: {fileID: 2800000, guid: 8ec2925b7756e45cc9854ea44de9f389, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -13171,8 +13172,8 @@ MonoBehaviour:
     - {x: 0.7844578, y: 0.059376545}
     - {x: 0.7864214, y: 0.02966375}
     - {x: 0.78787094, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2111
+    normalTex: {fileID: 2800000, guid: 1c292d3b25a464b20898b6873d0ab4fe, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -13496,8 +13497,8 @@ MonoBehaviour:
     - {x: 0.09427854, y: 0.17981726}
     - {x: 0.064746656, y: 0.17866273}
     - {x: 0.035203494, y: 0.17703503}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2112
+    normalTex: {fileID: 2800000, guid: aa372874d0a0d45ba81ca31536ed1b4f, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -13821,8 +13822,8 @@ MonoBehaviour:
     - {x: 0.09427854, y: 0.00090303854}
     - {x: 0.064746656, y: 0.0022958717}
     - {x: 0.035203494, y: 0.0042596194}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2120
+    normalTex: {fileID: 2800000, guid: 0096981292e214c738494126dba9d22b, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -14068,8 +14069,8 @@ MonoBehaviour:
     - {x: 0.9971071, y: 0.059376523}
     - {x: 0.9946324, y: 0.029663727}
     - {x: 0.99280584, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2121
+    normalTex: {fileID: 2800000, guid: 54d0c1989825d41429f182ac60ff37e3, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -14393,8 +14394,8 @@ MonoBehaviour:
     - {x: 0.11880154, y: 0.17981726}
     - {x: 0.08158806, y: 0.17866273}
     - {x: 0.044360355, y: 0.17703503}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2122
+    normalTex: {fileID: 2800000, guid: 303807bb92304444cb7fdc6d99b7c69d, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -14718,8 +14719,8 @@ MonoBehaviour:
     - {x: 0.11880154, y: 0.00090303854}
     - {x: 0.08158806, y: 0.0022958717}
     - {x: 0.044360355, y: 0.0042596194}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2200
+    normalTex: {fileID: 2800000, guid: 473e4deca2b8a43d1a10ea31cf44f3ab, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -14887,8 +14888,8 @@ MonoBehaviour:
     - {x: 0.96256447, y: 0.9945935}
     - {x: 1, y: 0.9927537}
     - {x: 1, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2201
+    normalTex: {fileID: 2800000, guid: 45b4446884b284f4c979a52f05d78bc4, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -15134,8 +15135,8 @@ MonoBehaviour:
     - {x: 0.11966241, y: 0.21693513}
     - {x: 0.08217927, y: 0.2155423}
     - {x: 0.044681802, y: 0.2135786}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2202
+    normalTex: {fileID: 2800000, guid: 0b2a18e4c553e43ac9a6d402c5adfc7f, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -15381,8 +15382,8 @@ MonoBehaviour:
     - {x: 0.11966241, y: 0.0011379301}
     - {x: 0.08217927, y: 0.0028930565}
     - {x: 0.044681802, y: 0.005367599}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2210
+    normalTex: {fileID: 2800000, guid: 62d47c6317c644c01bc748a1718e2e42, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -15628,8 +15629,8 @@ MonoBehaviour:
     - {x: 0.7844578, y: 0.07493304}
     - {x: 0.7864214, y: 0.03743557}
     - {x: 0.78787094, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2211
+    normalTex: {fileID: 2800000, guid: e6b3ea7a6c04e4c62a871d60dc96fe16, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -15953,8 +15954,8 @@ MonoBehaviour:
     - {x: 0.09427854, y: 0.21693513}
     - {x: 0.064746656, y: 0.2155423}
     - {x: 0.035203494, y: 0.2135786}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2212
+    normalTex: {fileID: 2800000, guid: 4d4f0494b5bf048368641f6ba18154c3, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -16278,8 +16279,8 @@ MonoBehaviour:
     - {x: 0.09427854, y: 0.0011379301}
     - {x: 0.064746656, y: 0.0028930565}
     - {x: 0.035203494, y: 0.005367599}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   - edgeProfile: 2220
+    normalTex: {fileID: 2800000, guid: 931008b74710a40938bc9f92268e3767, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -16525,8 +16526,8 @@ MonoBehaviour:
     - {x: 0.9971071, y: 0.07493301}
     - {x: 0.9946324, y: 0.03743554}
     - {x: 0.99280584, y: 0}
-    centerOffset: {x: 1.0145984, y: 1}
   - edgeProfile: 2221
+    normalTex: {fileID: 2800000, guid: 3324635f33ac64541bca81497e72f64d, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -16850,8 +16851,8 @@ MonoBehaviour:
     - {x: 0.11880154, y: 0.21693513}
     - {x: 0.08158806, y: 0.2155423}
     - {x: 0.044360355, y: 0.2135786}
-    centerOffset: {x: 1.0145984, y: 1.5424175}
   - edgeProfile: 2222
+    normalTex: {fileID: 2800000, guid: 78c8d6e5189f9408c9003762b882e15b, type: 3}
     vertices:
     - {x: -1, y: -1, z: 0}
     - {x: -1.0047615, y: -0.9246265, z: -0.000000047002487}
@@ -17175,7 +17176,7 @@ MonoBehaviour:
     - {x: 0.11880154, y: 0.0011379301}
     - {x: 0.08158806, y: 0.0028930565}
     - {x: 0.044360355, y: 0.005367599}
-    centerOffset: {x: 1.0145984, y: 1.0145985}
   cellSize: 2
   puzzlePrefab: {fileID: 5979877976914833657, guid: 8723118e076267046908b6049405bc8f, type: 3}
   generateGameObjects: 0
+  normalMapsFolder: {fileID: 102900000, guid: af4573480575140b4b09a7e175abf3b6, type: 3}

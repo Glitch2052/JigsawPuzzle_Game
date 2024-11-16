@@ -21,6 +21,7 @@ public class PuzzlePiece : IObject
     //Mesh Data
     private Mesh mesh;
     private static readonly int GridCoord = Shader.PropertyToID("_GridCoord");
+    private static readonly int NormalTex = Shader.PropertyToID("_NormalTex");
 
     public void SetData()
     {
@@ -41,7 +42,7 @@ public class PuzzlePiece : IObject
         mesh.uv = puzzlePieceData.meshData.uvs;
 
         meshRenderer.material.SetVector(GridCoord,(Vector2)gridCoordinate);
-
+        meshRenderer.material.SetTexture(NormalTex, puzzlePieceData.meshData.normalTex);
         neighbourCoordinates = puzzlePieceData.neighbourCoordinates;
     }
 
