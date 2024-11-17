@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using PolyAndCode.UI;
 using SimpleJSON;
 using TMPro;
@@ -35,6 +36,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform sizeOptionsPanel;
     [SerializeField] private RawImage continuePuzzleDisplay;
     [SerializeField] private RawImage newPuzzleDisplay;
+
+    [Space(30)] 
+    [SerializeField] private RectTransform gameHeaderPanel;
     [SerializeField] private BGTextureCell bgTextureCellPrefab;
     [SerializeField] private Toggle changeBgToggleBtn;
 
@@ -213,6 +217,15 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ToggleCornerSortingOption(bool value)
+    {
+        var iSystem = GameManager.Instance.iSystem;
+        if (iSystem != null)
+        {
+            iSystem.palette.SortByCorners(value);
+        }
+    }
+
     public void StartNewGame()
     {
         DisableSizeOption();
@@ -301,5 +314,13 @@ public class UIManager : MonoBehaviour
             LoadBgOptions();
         }
         yield return null;
+    }
+
+    public Tween FadeUIOnSceneComplete()
+    {
+        Tween tween = gameHeaderPanel.DOAnchorPosY(gameHeaderPanel.sizeDelta.y, 1f);
+        tween.SetDelay(0.4f);
+        tween.SetEase(Ease.OutQuad);
+        return tween;
     }
 }

@@ -85,6 +85,7 @@ public class IOGroupedPiece : IObject
                             AddPuzzlePieceToGroup(neighbour);
                             neighbour.SetISystem(iSystem);
                             isMoving = false;
+                            PlayAllBlinkEffect();
                         };
                     }
                     //case 4 : both are in different group
@@ -102,6 +103,7 @@ public class IOGroupedPiece : IObject
                             }
 
                             neighbour.group.isMoving = false;
+                            neighbour.group.PlayAllBlinkEffect();
                             isMoving = false;
                             Destroy(gameObject);
                         };
@@ -111,7 +113,7 @@ public class IOGroupedPiece : IObject
             }
         }
 
-        float z = 0;
+        float z = -1f;
         foreach (PuzzlePiece piece in puzzlePieces)
         {
             IObject overlappingPiece = GetBelowPuzzlePiece(piece.MainCollider);
@@ -132,9 +134,26 @@ public class IOGroupedPiece : IObject
         }
         
         //Play PopSound To Let Know Puzzle Piece is fitted
-        
+        PlayAllBlinkEffectIncludingNeighbour();
         
         Destroy(gameObject);
+    }
+    
+    public void PlayAllBlinkEffect()
+    {
+        foreach (var piece in puzzlePieces)
+        {
+            piece.PlayBlinkEffect();
+        }
+    }
+    
+    public void PlayAllBlinkEffectIncludingNeighbour()
+    {
+        foreach (var piece in puzzlePieces)
+        {
+            piece.PlayBlinkEffect();
+            piece.PlayNeighbourBlinkEffect();
+        }
     }
     
     private bool IsNeighbourWithinRange(PuzzlePiece piece, PuzzlePiece neighbour, Vector2 dirRef)

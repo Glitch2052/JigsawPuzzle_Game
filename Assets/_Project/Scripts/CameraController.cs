@@ -1,5 +1,7 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class CameraController : IObject
 {
@@ -147,5 +149,12 @@ public class CameraController : IObject
             currTouchPos = lastTouchPos = iSystem.inputSystem.GetPointerEvent(firstDragPointerId).currentWorldPos;
         }
         return this;
+    }
+
+    public Tween ZoomOutOnLevelComplete()
+    {
+        Tween tween = DOTween.To(x => targetZoom = x, targetZoom, maxZoom + 2f, 1f);
+        tween.SetDelay(0.4f);
+        return tween;
     }
 }

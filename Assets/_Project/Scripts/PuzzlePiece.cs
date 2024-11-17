@@ -16,12 +16,14 @@ public class PuzzlePiece : IObject
 
     public PuzzlePieceData currentAssignedPieceData;
     public string EdgeShape { get; private set; }
-    
+
+    private Sequence blinkSequence;
 
     //Mesh Data
     private Mesh mesh;
     private static readonly int GridCoord = Shader.PropertyToID("_GridCoord");
     private static readonly int NormalTex = Shader.PropertyToID("_NormalTex");
+    private static readonly int Blink = Shader.PropertyToID("_Blink");
 
     public void SetData()
     {
@@ -130,8 +132,8 @@ public class PuzzlePiece : IObject
                 return;
             }
         }
-
-        float z = 0;
+        
+        float z = -1f;
         IObject piece = GetBelowPuzzlePiece();
         if(piece)
             z = piece.Position.z - 0.05f;
@@ -182,12 +184,15 @@ public class PuzzlePiece : IObject
     private void OnPuzzlePiecePlacedOnBoard()
     {
         transform.parent = PuzzleGenerator.Instance.transform;
+        PlayBlinkEffect();
+        PlayNeighbourBlinkEffect();
         //Play PopSound To Let Know Puzzle Piece is fitted
     }
 
     private void OnPuzzlePiecePlacedWithNeighbour()
     {
         SetISystem(group.iSystem);
+        group.PlayAllBlinkEffect();
     }
 
     private bool IsNeighbourWithinRange(PuzzlePiece neighbour, Vector2 dirRef)
@@ -206,6 +211,25 @@ public class PuzzlePiece : IObject
     public static int GetOppositeSideIndex(int index)
     {
         return (index + 2) % 4;
+    }
+
+    public void PlayBlinkEffect()
+    {
+        blinkSequence?.Kill(true);
+        blinkSequence = DOTween.Sequence();
+        blinkSequence.Append(meshRenderer.material.DOFloat(0.75f, Blink, 0.1f).SetEase(Ease.OutQuad));
+        blinkSequence.Append(meshRenderer.material.DOFloat(0, Blink, 0.1f).SetEase(Ease.InQuad));
+    }
+
+    public void PlayNeighbourBlinkEffect()
+    {
+        foreach (Vector2Int adjCoordinate in neighbourCoordinates.Values)
+        {
+            if (!PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(adjCoordinate.x, adjCoordinate.y,
+                    out GridObject gridObject) || gridObject.targetPuzzlePiece == null) continue;
+            
+            gridObject.targetPuzzlePiece.PlayBlinkEffect();
+        }
     }
 
     public override JSONNode ToJson(JSONNode node = null)
