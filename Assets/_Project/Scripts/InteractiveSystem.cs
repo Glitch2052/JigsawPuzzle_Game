@@ -97,6 +97,9 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
 
         //From Json
         yield return puzzleGenerator.FromJson(node[StringID.BoardData]);
+        
+        //Start timer To keep track of time taken to complete level
+        puzzleGenerator.StartTimer();
     }
 
     public void UpdateCameraSize()
@@ -193,6 +196,7 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         currentEventSystem.gameObject.SetActive(false);
 
         StorageManager.Delete(sceneID);
+        UIManager.Instance.UpdateTotalTimerCompletionText(puzzleGenerator.StopTimer());
 
         Tween normalStrengthTween = puzzleGenerator.FadeEdgesOnLevelComplete();
         Tween zoomOutTween = cameraController.ZoomOutOnLevelComplete();

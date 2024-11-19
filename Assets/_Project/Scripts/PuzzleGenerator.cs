@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using DG.Tweening;
 using SimpleJSON;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class PuzzleGenerator : MonoBehaviour
@@ -21,7 +23,7 @@ public class PuzzleGenerator : MonoBehaviour
     [SerializeField] private SpriteRenderer border;
     [SerializeField] private Transform refImage;
     [SerializeField] private SpriteRenderer backGround;
-    public int selectedBGIndex;
+    public int selectedBgIndex;
     public List<Sprite> backGroundSpriteOptions;
 
     public Vector2Int GridSize => new Vector2Int(XWidth, YWidth);
@@ -40,6 +42,8 @@ public class PuzzleGenerator : MonoBehaviour
 
     private int totalPiecesCountNeededForCompletion;
     private int currAssignedPieceCount;
+    private Stopwatch stopwatchTimer;
+    private double initialPlayedTime;
 
     private void Awake()
     {
@@ -92,6 +96,7 @@ public class PuzzleGenerator : MonoBehaviour
         if (boardConfigData != null)
         {
             gridConfigData = boardConfigData[StringID.GridData];
+            if (boardConfigData[StringID.TotalTime]) initialPlayedTime = boardConfigData[StringID.TotalTime];
         }
 
         puzzlePieceDataSource = new List<PuzzlePieceData>();
@@ -119,6 +124,7 @@ public class PuzzleGenerator : MonoBehaviour
             puzzlePieceDataSource = puzzleBoardDataDict.Values.ToList();
 
         IsLevelCompleted = false;
+        stopwatchTimer = new Stopwatch();
     }
 
     private GridObject OnGridObjectCreated(Grid<GridObject> grid, int x, int y)
@@ -241,6 +247,7 @@ public class PuzzleGenerator : MonoBehaviour
         node[StringID.UnSolvedPieces] = children;
         node[StringID.BoardSize] = XWidth * YWidth;
         node[StringID.BackGroundID] = backGroundSpriteOptions.IndexOf(backGround.sprite);
+        node[StringID.TotalTime] = StopTimer();
         return node;
     }
 
@@ -284,7 +291,7 @@ public class PuzzleGenerator : MonoBehaviour
             }
         }
 
-        selectedBGIndex = Mathf.Clamp(node[StringID.BackGroundID],0,backGroundSpriteOptions.Count);
+        selectedBgIndex = Mathf.Clamp(node[StringID.BackGroundID],0,backGroundSpriteOptions.Count);
     }
     
     private void SerializeChildren(JSONArray children)
@@ -300,6 +307,8 @@ public class PuzzleGenerator : MonoBehaviour
             if(node != null) children.Add(node);
         }
     }
+
+    #region Helper Methods
 
     private void UpdateAssignedPiecesCount()
     {
@@ -322,12 +331,24 @@ public class PuzzleGenerator : MonoBehaviour
         tween.onUpdate += () => Shader.SetGlobalFloat(EdgeShapeSO.NormalStrength,strengthValue);
         return tween;
     }
-    
-    #region Helper Methods
 
     public void ToggleReferenceImage(bool value)
     {
         refImage.gameObject.SetActive(value);
+    }
+
+    public void StartTimer()
+    {
+        stopwatchTimer.Reset();
+        stopwatchTimer.Start();
+    }
+
+    public double StopTimer()
+    {
+        if (!stopwatchTimer.IsRunning) return initialPlayedTime;
+        
+        stopwatchTimer.Stop();
+        return initialPlayedTime + stopwatchTimer.Elapsed.TotalSeconds;
     }
 
     #endregion
