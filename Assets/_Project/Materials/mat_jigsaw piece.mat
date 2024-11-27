@@ -66,6 +66,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Blink: 0
+    - _Flash: 0
     - _GridCellSize: 2
     - _Height: 6
     - _QueueControl: 1

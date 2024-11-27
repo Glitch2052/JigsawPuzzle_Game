@@ -1,4 +1,6 @@
-﻿public class GridObject : IGridObject
+﻿using System;
+
+public class GridObject : IGridObject
 {
     private Grid<GridObject> grid;
     public int X { get; set; }
@@ -9,6 +11,8 @@
 
     public PuzzlePiece desiredPuzzlePiece;
     public PuzzlePiece targetPuzzlePiece { get; private set; }
+
+    public event Action OnCorrectPuzzlePieceAssigned;
 
     public GridObject(Grid<GridObject> grid, int x, int y)
     {
@@ -23,6 +27,8 @@
         {
             targetPuzzlePiece = puzzlePiece;
             puzzlePiece.SetISystem(null);
+            OnCorrectPuzzlePieceAssigned?.Invoke();
+            OnCorrectPuzzlePieceAssigned = null;
         }
     }
 

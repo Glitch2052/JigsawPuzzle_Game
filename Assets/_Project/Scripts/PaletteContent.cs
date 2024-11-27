@@ -74,33 +74,9 @@ public class PaletteContent : MonoBehaviour
 
     public void SetUpData()
     {
-        // if (node == null)
-        // {
-        //     PuzzleGenerator.Instance.PuzzleGrid.IterateOverGridObjects((x, y, gridObject) =>
-        //     {
-        //         puzzlePieces.Add(gridObject.desiredPuzzlePiece);
-        //         gridObject.desiredPuzzlePiece.SetParent(palette,transform);
-        //         gridObject.desiredPuzzlePiece.LocalPosition = Vector3.zero;
-        //     });
-        // }
-        // else
-        // {
-        //     JSONArray children = node["children"] as JSONArray;
-        //     foreach (var childNodeKeyValue in children)
-        //     {
-        //         int index = childNodeKeyValue.Value["Index"];
-        //         GridObject gridObject = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(index);
-        //         if (gridObject != null)
-        //         {
-        //             puzzlePieces.Add(gridObject.desiredPuzzlePiece);
-        //             gridObject.desiredPuzzlePiece.SetParent(palette,transform);
-        //             gridObject.desiredPuzzlePiece.LocalPosition = Vector3.zero;
-        //         }
-        //     }
-        // }
         dataSource = PuzzleGenerator.Instance.puzzlePieceDataSource;
         removedDataSource = new List<PuzzlePieceData>();
-        // Utilities.ShuffleArray(dataSource, Random.Range(0, 10000));
+        Utilities.ShuffleArray(dataSource, Random.Range(0, 10000));
         
         SetUpRecyclingSystem();
     }
@@ -162,8 +138,11 @@ public class PaletteContent : MonoBehaviour
 
     private void SetUpRecyclingSystem()
     {
+        recyclingSystemInitialized = false;
+        
         //New Cached Cells List
         cachedCells = new List<PuzzlePiece>();
+        currentItemCount = 0;
         
         //Set Content Pos to left;
         float effectiveCamWidth = palette.iSystem.cameraSize.x / palette.LocalScale.x;
@@ -500,6 +479,35 @@ public class PaletteContent : MonoBehaviour
         RemoveObjectFromPalette(randomPiece);
         puzzlePiece = randomPiece;
         return true;
+    }
+
+    public void SortByCorners(bool value)
+    {
+        if (value)
+        {
+            List<PuzzlePieceData> cornerPiecesDataSource = new List<PuzzlePieceData>();
+            List<PuzzlePieceData> nonCornerPieceDataSource = new List<PuzzlePieceData>();
+            foreach (PuzzlePieceData pieceData in dataSource)
+            {
+                if(pieceData.isCornerPiece)
+                    cornerPiecesDataSource.Add(pieceData);
+                else
+                    nonCornerPieceDataSource.Add(pieceData);
+            }
+            dataSource.Clear();
+            dataSource.AddRange(cornerPiecesDataSource);
+            dataSource.AddRange(nonCornerPieceDataSource);
+        }
+        else
+        {
+            Utilities.ShuffleArray(dataSource, Random.Range(0, 10000));
+        }
+
+        foreach (PuzzlePiece cell in cachedCells)
+        {
+            Destroy(cell.gameObject);
+        }
+        SetUpRecyclingSystem();
     }
     
 #if UNITY_EDITOR

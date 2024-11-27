@@ -14,6 +14,9 @@ public class SnapSwipe : MonoBehaviour
     private Button takeTheBtn;
     private float distance;
     private Image[] childImages;
+
+    private float scrollTo;
+    private float scrollToSoft;
     
     public int BtnNumber { get; private set; }
     
@@ -57,7 +60,9 @@ public class SnapSwipe : MonoBehaviour
             {
                 if (scrollPos < pos[i] + (distance / 2) && scrollPos > pos[i] - (distance / 2))
                 {
-                    scrollbar.value = Mathf.Lerp(scrollbar.value, pos[i], 0.1f);
+                    scrollTo = pos[i];
+                    scrollToSoft = Mathf.Lerp(scrollToSoft, scrollTo, Time.deltaTime * 10f);
+                    scrollbar.value = Mathf.Lerp(scrollbar.value, scrollToSoft, Time.deltaTime * 10f);
                 }
             }
         }
@@ -83,5 +88,10 @@ public class SnapSwipe : MonoBehaviour
         }
         
         Debug.Log($"button number is {BtnNumber}");
+    }
+
+    public void SelectSizeOnTap(int index)
+    {
+        scrollPos = (float)index / (pos.Length - 1);
     }
 }

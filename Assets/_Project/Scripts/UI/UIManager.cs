@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using DG.Tweening;
 using PolyAndCode.UI;
 using SimpleJSON;
 using TMPro;
@@ -35,6 +38,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform sizeOptionsPanel;
     [SerializeField] private RawImage continuePuzzleDisplay;
     [SerializeField] private RawImage newPuzzleDisplay;
+
+    [Space(30)] 
+    [SerializeField] private RectTransform gameHeaderPanel;
+    [SerializeField] private RectTransform timerPanel;
+    [SerializeField] private TextMeshProUGUI totalTimeText;
     [SerializeField] private BGTextureCell bgTextureCellPrefab;
     [SerializeField] private Toggle changeBgToggleBtn;
 
@@ -185,7 +193,7 @@ public class UIManager : MonoBehaviour
             var bgSprites = GameManager.Instance.iSystem.puzzleGenerator.backGroundSpriteOptions;
             bgOptionsScrollRect.content.TryGetComponent(out ToggleGroup toggleGroup);
 
-            int selectedIndex = iSystem.puzzleGenerator.selectedBGIndex;
+            int selectedIndex = iSystem.puzzleGenerator.selectedBgIndex;
             for (var i = 0; i < bgSprites.Count; i++)
             {
                 var bgTexCell = Instantiate(bgTextureCellPrefab, bgOptionsScrollRect.content).SetToggleGroup(toggleGroup);
@@ -210,6 +218,15 @@ public class UIManager : MonoBehaviour
         if (iSystem != null && iSystem.palette.AssignPuzzlePieceOnGrid())
         {
             
+        }
+    }
+
+    public void ToggleCornerSortingOption(bool value)
+    {
+        var iSystem = GameManager.Instance.iSystem;
+        if (iSystem != null)
+        {
+            iSystem.palette.SortByCorners(value);
         }
     }
 
@@ -300,6 +317,39 @@ public class UIManager : MonoBehaviour
             ToggleGameplayOptionsPanel(true);
             LoadBgOptions();
         }
+        timerPanel.gameObject.SetActive(false);
+        timerPanel.anchoredPosition = timerPanel.anchoredPosition.SetY(-500f);
         yield return null;
+    }
+
+    public Tween FadeUIOnSceneComplete()
+    {
+        timerPanel.gameObject.SetActive(true);
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(gameHeaderPanel.DOAnchorPosY(gameHeaderPanel.sizeDelta.y, 1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
+        sequence.Append(timerPanel.DOAnchorPosY(0f,1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
+        return sequence;
+    }
+
+    public void UpdateTotalTimerCompletionText(double timeInSeconds)
+    {
+        //format time
+        totalTimeText.text = $"Total Time: {FormatSecondsToHms(timeInSeconds)}";
+    }
+    
+    private static string FormatSecondsToHms(double totalSeconds)
+    {
+        TimeSpan timeSpan = TimeSpan.FromSeconds(totalSeconds);
+
+        // Display only the relevant parts:
+        if (timeSpan.Hours > 0)
+        {
+            return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+        }
+        if (timeSpan.Minutes > 0)
+        {
+            return $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+        }
+        return timeSpan.Seconds + " seconds";
     }
 }

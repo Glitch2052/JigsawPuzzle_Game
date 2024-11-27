@@ -24,4 +24,18 @@ public static class Vector3Extension
         newPos.z = z;
         return newPos;
     }
+    
+    public static Vector2 SetX(this Vector2 pos,float x)
+    {
+        Vector2 newPos = pos;
+        newPos.x = x;
+        return newPos;
+    }
+    
+    public static Vector2 SetY(this Vector2 pos,float y)
+    {
+        Vector3 newPos = pos;
+        newPos.y = y;
+        return newPos;
+    }
 }

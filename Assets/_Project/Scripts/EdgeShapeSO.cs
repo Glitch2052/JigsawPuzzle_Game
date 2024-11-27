@@ -22,10 +22,13 @@ public class EdgeShapeSO : ScriptableObject
     private List<float3> flatCornerPositions;
     private Dictionary<string, List<float3>> profileVertices;
     
+    
     private static readonly int Width = Shader.PropertyToID("_Width");
     private static readonly int Height = Shader.PropertyToID("_Height");
     private static readonly int GridCellSize = Shader.PropertyToID("_GridCellSize");
     private static readonly int HalfObjectSize = Shader.PropertyToID("_HalfObjectSize");
+    public static readonly int NormalStrength = Shader.PropertyToID("_NormalStrength");
+    public static float normalStrengthValue = 0.65f;
 
     #region Mesh Data
 
@@ -53,6 +56,7 @@ public class EdgeShapeSO : ScriptableObject
         puzzleMaterial.SetFloat(Height,height);
         puzzleMaterial.SetFloat(GridCellSize,gridCellSize);
         puzzleMaterial.SetVector(HalfObjectSize,Vector2.one * (gridCellSize * 0.5f));
+        Shader.SetGlobalFloat(NormalStrength, normalStrengthValue);
     }
 
     public MeshData GetMeshData(string key)

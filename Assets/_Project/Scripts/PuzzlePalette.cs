@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using SimpleJSON;
 using UnityEngine;
 
@@ -40,7 +41,9 @@ public class PuzzlePalette : IObject
         LocalScale = zoomScaleFactor * LocalScale.SetZ(1);
         
         oldOrthoSize = iSystem.Camera.orthographicSize;
-        LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 1.5f * LocalScale.y);
+        
+        if(!iSystem.puzzleGenerator.IsLevelCompleted)
+            LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 1.5f * LocalScale.y);
     }
 
     public void AddObjectToPalette(PuzzlePiece puzzlePiece)
@@ -75,5 +78,18 @@ public class PuzzlePalette : IObject
             return true;
         }
         return false;
+    }
+
+    public void SortByCorners(bool value)
+    {
+        content.SortByCorners(value);
+    }
+
+    public Tween FadeOutPaletteOnLevelComplete()
+    {
+        Tween tween = transform.DOLocalMoveY(-newOrthoSize - (PaletteHeight * 0.5f) - 3f, 1f);
+        tween.SetDelay(0.4f);
+        tween.SetEase(Ease.OutQuad);
+        return tween;
     }
 }

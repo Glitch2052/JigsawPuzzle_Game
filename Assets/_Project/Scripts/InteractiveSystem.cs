@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using SimpleJSON;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -96,6 +97,9 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
 
         //From Json
         yield return puzzleGenerator.FromJson(node[StringID.BoardData]);
+        
+        //Start timer To keep track of time taken to complete level
+        puzzleGenerator.StartTimer();
     }
 
     public void UpdateCameraSize()
@@ -157,7 +161,10 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     
     public void OnBack()
     {
-        SaveAll(ExportJson());
+        if (!puzzleGenerator.IsLevelCompleted)
+        {
+            SaveAll(ExportJson());
+        }
         JSONNode node = new JSONObject();
         node.SetNextSceneType(SceneType.LevelSelect);
         GameManager.Instance.LoadScene(StringID.LevelSelectScene, node);
@@ -176,5 +183,31 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         StorageManager.Write( sceneID, json);
         
         Debug.Log($"node is {json}");
+    }
+
+    public void OnLevelCompleted()
+    {
+        StartCoroutine(PlayLevelComplete());
+    }
+
+    private IEnumerator PlayLevelComplete()
+    {
+        EventSystem currentEventSystem = EventSystem.current;
+        currentEventSystem.gameObject.SetActive(false);
+
+        StorageManager.Delete(sceneID);
+        UIManager.Instance.UpdateTotalTimerCompletionText(puzzleGenerator.StopTimer());
+
+        Tween normalStrengthTween = puzzleGenerator.FadeEdgesOnLevelComplete();
+        Tween zoomOutTween = cameraController.ZoomOutOnLevelComplete();
+        Tween fadeOutPalette = palette.FadeOutPaletteOnLevelComplete();
+        Tween fadeOutUi = UIManager.Instance.FadeUIOnSceneComplete();
+        
+        yield return normalStrengthTween.WaitForCompletion();
+        yield return zoomOutTween.WaitForCompletion();
+        yield return fadeOutPalette.WaitForCompletion();
+        yield return fadeOutUi.WaitForCompletion();
+        
+        currentEventSystem.gameObject.SetActive(true);
     }
 }

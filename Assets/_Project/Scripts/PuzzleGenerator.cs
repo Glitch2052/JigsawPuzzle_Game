@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using DG.Tweening;
 using SimpleJSON;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class PuzzleGenerator : MonoBehaviour
@@ -20,7 +23,7 @@ public class PuzzleGenerator : MonoBehaviour
     [SerializeField] private SpriteRenderer border;
     [SerializeField] private Transform refImage;
     [SerializeField] private SpriteRenderer backGround;
-    public int selectedBGIndex;
+    public int selectedBgIndex;
     public List<Sprite> backGroundSpriteOptions;
 
     public Vector2Int GridSize => new Vector2Int(XWidth, YWidth);
@@ -28,6 +31,7 @@ public class PuzzleGenerator : MonoBehaviour
     public Grid<GridObject> PuzzleGrid { get; private set; }
     public List<PuzzlePieceData> puzzlePieceDataSource;
     private Dictionary<int, PuzzlePieceData> puzzleBoardDataDict;
+    public bool IsLevelCompleted { get; private set; }
 
     private InteractiveSystem iSystem;
     
@@ -35,6 +39,11 @@ public class PuzzleGenerator : MonoBehaviour
 
     private JSONNode boardConfigData;
     private JSONNode gridConfigData;
+
+    private int totalPiecesCountNeededForCompletion;
+    private int currAssignedPieceCount;
+    private Stopwatch stopwatchTimer;
+    private double initialPlayedTime;
 
     private void Awake()
     {
@@ -87,10 +96,13 @@ public class PuzzleGenerator : MonoBehaviour
         if (boardConfigData != null)
         {
             gridConfigData = boardConfigData[StringID.GridData];
+            if (boardConfigData[StringID.TotalTime]) initialPlayedTime = boardConfigData[StringID.TotalTime];
         }
 
         puzzlePieceDataSource = new List<PuzzlePieceData>();
         puzzleBoardDataDict = new Dictionary<int, PuzzlePieceData>();
+        totalPiecesCountNeededForCompletion = XWidth * YWidth;
+        currAssignedPieceCount = 0;
         
         //Generate Grid with X and Y Size
         Vector2 origin = new Vector2(-XWidth, -YWidth) * (0.5f * CellSize);
@@ -110,11 +122,15 @@ public class PuzzleGenerator : MonoBehaviour
         }
         else
             puzzlePieceDataSource = puzzleBoardDataDict.Values.ToList();
+
+        IsLevelCompleted = false;
+        stopwatchTimer = new Stopwatch();
     }
 
     private GridObject OnGridObjectCreated(Grid<GridObject> grid, int x, int y)
     {
         GridObject gridObject = new GridObject(grid, x, y);
+        gridObject.OnCorrectPuzzlePieceAssigned += UpdateAssignedPiecesCount;
         
         //Choose all 4 EdgeType for Puzzle Piece
         if (gridConfigData != null)
@@ -133,7 +149,8 @@ public class PuzzleGenerator : MonoBehaviour
                 { 1, new(gridCoordinate.x, gridCoordinate.y + 1) },
                 { 2, new(gridCoordinate.x + 1, gridCoordinate.y) },
                 { 3, new(gridCoordinate.x, gridCoordinate.y - 1) }
-            }
+            },
+            isCornerPiece = x == 0 || y == 0 || x == XWidth - 1 || y == YWidth - 1,
         };
         // puzzlePieceDataSource.Add(pieceData);
         puzzleBoardDataDict[Utilities.ConvertTo1DIndex(x, y, XWidth)] = pieceData;
@@ -230,6 +247,7 @@ public class PuzzleGenerator : MonoBehaviour
         node[StringID.UnSolvedPieces] = children;
         node[StringID.BoardSize] = XWidth * YWidth;
         node[StringID.BackGroundID] = backGroundSpriteOptions.IndexOf(backGround.sprite);
+        node[StringID.TotalTime] = StopTimer();
         return node;
     }
 
@@ -273,7 +291,7 @@ public class PuzzleGenerator : MonoBehaviour
             }
         }
 
-        selectedBGIndex = Mathf.Clamp(node[StringID.BackGroundID],0,backGroundSpriteOptions.Count);
+        selectedBgIndex = Mathf.Clamp(node[StringID.BackGroundID],0,backGroundSpriteOptions.Count);
     }
     
     private void SerializeChildren(JSONArray children)
@@ -292,9 +310,45 @@ public class PuzzleGenerator : MonoBehaviour
 
     #region Helper Methods
 
+    private void UpdateAssignedPiecesCount()
+    {
+        currAssignedPieceCount++;
+        CheckForLevelCompletion();
+    }
+
+    private void CheckForLevelCompletion()
+    {
+        if (currAssignedPieceCount < totalPiecesCountNeededForCompletion) return;
+        IsLevelCompleted = true;
+        iSystem.OnLevelCompleted();
+    }
+
+    public Tween FadeEdgesOnLevelComplete()
+    {
+        float strengthValue = 0;
+        Tween tween = DOTween.To(x => { strengthValue = x; }, EdgeShapeSO.normalStrengthValue, 0f, 1.25f);
+        tween.SetDelay(0.4f);
+        tween.onUpdate += () => Shader.SetGlobalFloat(EdgeShapeSO.NormalStrength,strengthValue);
+        return tween;
+    }
+
     public void ToggleReferenceImage(bool value)
     {
         refImage.gameObject.SetActive(value);
+    }
+
+    public void StartTimer()
+    {
+        stopwatchTimer.Reset();
+        stopwatchTimer.Start();
+    }
+
+    public double StopTimer()
+    {
+        if (!stopwatchTimer.IsRunning) return initialPlayedTime;
+        
+        stopwatchTimer.Stop();
+        return initialPlayedTime + stopwatchTimer.Elapsed.TotalSeconds;
     }
 
     #endregion
@@ -305,4 +359,5 @@ public class PuzzlePieceData
     public Vector2Int gridCoordinate;
     public MeshData meshData;
     public Dictionary<int,Vector2Int> neighbourCoordinates;
+    public bool isCornerPiece;
 }
