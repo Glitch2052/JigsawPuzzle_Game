@@ -15,21 +15,27 @@ MonoBehaviour:
   themeName: 5
   textureData:
   - themeName: 5
-    texture: {fileID: 2800000, guid: 6e468d374511a0d4a9d5c4eed255f895, type: 3}
+    name: puzzle_01
+    iconTextureKey: Vehicles/Icon_puzzle_01.png
+    textureKey: Vehicles/puzzle_01.png
   - themeName: 5
-    texture: {fileID: 2800000, guid: 7035aa12b8b4c3249a228e4ed3f2e672, type: 3}
+    name: puzzle_02
+    iconTextureKey: Vehicles/Icon_puzzle_02.png
+    textureKey: Vehicles/puzzle_02.png
   - themeName: 5
-    texture: {fileID: 2800000, guid: 8ef296ecd33f59a4bad71349d4cf1803, type: 3}
+    name: puzzle_03
+    iconTextureKey: Vehicles/Icon_puzzle_03.png
+    textureKey: Vehicles/puzzle_03.png
   - themeName: 5
-    texture: {fileID: 2800000, guid: 04e029a1512d57a49b14c0bbb45c3616, type: 3}
+    name: puzzle_04
+    iconTextureKey: Vehicles/Icon_puzzle_04.png
+    textureKey: Vehicles/puzzle_04.png
   - themeName: 5
-    texture: {fileID: 2800000, guid: 69bf63fc966ac3444baeaaa488280dde, type: 3}
+    name: puzzle_05
+    iconTextureKey: Vehicles/Icon_puzzle_05.png
+    textureKey: Vehicles/puzzle_05.png
   - themeName: 5
-    texture: {fileID: 2800000, guid: 07c158ba24da2f4449e0e698997f09c8, type: 3}
-  spritesList:
-  - {fileID: 2800000, guid: 6e468d374511a0d4a9d5c4eed255f895, type: 3}
-  - {fileID: 2800000, guid: 7035aa12b8b4c3249a228e4ed3f2e672, type: 3}
-  - {fileID: 2800000, guid: 8ef296ecd33f59a4bad71349d4cf1803, type: 3}
-  - {fileID: 2800000, guid: 04e029a1512d57a49b14c0bbb45c3616, type: 3}
-  - {fileID: 2800000, guid: 69bf63fc966ac3444baeaaa488280dde, type: 3}
-  - {fileID: 2800000, guid: 07c158ba24da2f4449e0e698997f09c8, type: 3}
+    name: puzzle_06
+    iconTextureKey: Vehicles/Icon_puzzle_06.png
+    textureKey: Vehicles/puzzle_06.png
+  spriteFolder: {fileID: 102900000, guid: 1ab32f7cbd092f84e9f4ba97e19cdc55, type: 3}

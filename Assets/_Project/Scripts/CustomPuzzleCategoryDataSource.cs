@@ -33,7 +33,7 @@ public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
         puzzleTextureDataList.Insert(0,new CustomPuzzleTexData
         {
             themeName = themeName,
-            texture = texture,
+            customTexture = texture,
             texturePath = path,
             isTextureLoaded = true
         });

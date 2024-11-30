@@ -15,24 +15,31 @@ MonoBehaviour:
   themeName: 1
   textureData:
   - themeName: 1
-    texture: {fileID: 2800000, guid: 3d49cf75daef84f44a76474abde107c0, type: 3}
+    name: puzzle_01
+    iconTextureKey: Animals/Icon_puzzle_01.png
+    textureKey: Animals/puzzle_01.png
   - themeName: 1
-    texture: {fileID: 2800000, guid: 8aab3b8b54974544c8a08600034d874a, type: 3}
+    name: puzzle_02
+    iconTextureKey: Animals/Icon_puzzle_02.png
+    textureKey: Animals/puzzle_02.png
   - themeName: 1
-    texture: {fileID: 2800000, guid: 22315856f202e674d9b39ba156ef86fb, type: 3}
+    name: puzzle_03
+    iconTextureKey: Animals/Icon_puzzle_03.png
+    textureKey: Animals/puzzle_03.png
   - themeName: 1
-    texture: {fileID: 2800000, guid: c6772c7df4ecdcb48aa5192b21b94602, type: 3}
+    name: puzzle_04
+    iconTextureKey: Animals/Icon_puzzle_04.png
+    textureKey: Animals/puzzle_04.png
   - themeName: 1
-    texture: {fileID: 2800000, guid: 6ad047a0079fe16469bf08e3da50dfde, type: 3}
+    name: puzzle_05
+    iconTextureKey: Animals/Icon_puzzle_05.png
+    textureKey: Animals/puzzle_05.png
   - themeName: 1
-    texture: {fileID: 2800000, guid: b0362ab4bd90669478f77c668a6b0259, type: 3}
+    name: puzzle_06
+    iconTextureKey: Animals/Icon_puzzle_06.png
+    textureKey: Animals/puzzle_06.png
   - themeName: 1
-    texture: {fileID: 2800000, guid: 5e4af558caa87fc4da44c28355609586, type: 3}
-  spritesList:
-  - {fileID: 2800000, guid: 3d49cf75daef84f44a76474abde107c0, type: 3}
-  - {fileID: 2800000, guid: 8aab3b8b54974544c8a08600034d874a, type: 3}
-  - {fileID: 2800000, guid: 22315856f202e674d9b39ba156ef86fb, type: 3}
-  - {fileID: 2800000, guid: c6772c7df4ecdcb48aa5192b21b94602, type: 3}
-  - {fileID: 2800000, guid: 6ad047a0079fe16469bf08e3da50dfde, type: 3}
-  - {fileID: 2800000, guid: b0362ab4bd90669478f77c668a6b0259, type: 3}
-  - {fileID: 2800000, guid: 5e4af558caa87fc4da44c28355609586, type: 3}
+    name: puzzle_07
+    iconTextureKey: Animals/Icon_puzzle_07.png
+    textureKey: Animals/puzzle_07.png
+  spriteFolder: {fileID: 102900000, guid: 1cfce852d7cff08469b292d9866bbea1, type: 3}

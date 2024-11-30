@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using SimpleJSON;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class PuzzleGenerator : MonoBehaviour
@@ -70,7 +70,7 @@ public class PuzzleGenerator : MonoBehaviour
         
     }
 
-    public void UpdateBackGroundData(PuzzleTextureData data)
+    public async void UpdateBackGroundData(PuzzleTextureData data)
     {
         if (border)
         {
@@ -79,7 +79,10 @@ public class PuzzleGenerator : MonoBehaviour
         }
         if (refImage)
         {
-            refImage.GetComponent<MeshRenderer>().material.mainTexture = data.texture;
+            if (data is CustomPuzzleTexData customPuzzleTexData)
+                refImage.GetComponent<MeshRenderer>().material.mainTexture = customPuzzleTexData.customTexture;
+            else
+                refImage.GetComponent<MeshRenderer>().material.mainTexture = await AssetLoader.Instance.LoadAssetAsync<Texture2D>(data.textureKey);
             refImage.localScale = new Vector3(XWidth * 2, YWidth * 2, 1);
         }
     }
@@ -89,7 +92,7 @@ public class PuzzleGenerator : MonoBehaviour
         backGround.sprite = sprite;
     }
 
-    public void GenerateGrid(PuzzleTextureData textureData, JSONNode configDataNode = null)
+    public async UniTask GenerateGrid(PuzzleTextureData textureData, JSONNode configDataNode = null)
     {
         //Assign Json Node Loaded From File
         boardConfigData = configDataNode;
@@ -107,7 +110,12 @@ public class PuzzleGenerator : MonoBehaviour
         //Generate Grid with X and Y Size
         Vector2 origin = new Vector2(-XWidth, -YWidth) * (0.5f * CellSize);
         Vector2 cellOffset = Vector2.one * (CellSize * 0.5f);
-        edgeShapeSO.UpdatePuzzleMaterial(textureData.texture,XWidth,YWidth,CellSize);
+        Texture2D texture;
+        if (textureData is CustomPuzzleTexData customPuzzleTexData)
+            texture = customPuzzleTexData.customTexture;
+        else 
+            texture = await AssetLoader.Instance.LoadAssetAsync<Texture2D>(textureData.textureKey);
+        edgeShapeSO.UpdatePuzzleMaterial(texture,XWidth,YWidth,CellSize);
         PuzzleGrid = new Grid<GridObject>(XWidth, YWidth, CellSize, origin, cellOffset,OnGridObjectCreated);
 
         //Load Puzzle Pieces From Json If Present

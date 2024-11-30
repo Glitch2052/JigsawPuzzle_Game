@@ -45,11 +45,14 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoadSceneCoroutine(string sceneName, JSONNode configData = null, PuzzleTextureData textureData = default)
     {
         iSystem = null;
-        AsyncOperation handle = SceneManager.LoadSceneAsync(sceneName);
-        while (handle is { isDone: false })
-        {
-            yield return null;
-        }
+        LoadingScreen.Instance.ShowLoading();
+        // AsyncOperation handle = AssetLoader.Instance.LoadSceneAsync(sceneName);
+        // while (handle is { isDone: false })
+        // {
+        //     yield return null;
+        // }
+        var handle = AssetLoader.Instance.LoadSceneAsync(sceneName);
+        yield return handle;
 
         var newScene = SceneManager.GetSceneByName(sceneName);
         if (newScene.IsValid())
@@ -64,7 +67,7 @@ public class GameManager : MonoBehaviour
             }
             yield return UIManager.Instance.OnSceneLoad(configData);
         }
-        
+        LoadingScreen.Instance.HideLoading();
         loadingCoroutine = null;
     }
 

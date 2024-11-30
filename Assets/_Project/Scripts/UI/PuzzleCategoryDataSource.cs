@@ -1,26 +1,22 @@
 using System.Collections.Generic;
 using PolyAndCode.UI;
-using UnityEngine;
 
 public class PuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 {
-    private ThemeName themeName;
+    public PuzzleCollectionData PuzzleCollectionData { get; private set; }
     private List<PuzzleTextureData> puzzleTextureData;
 
-    public PuzzleCategoryDataSource(ThemeName themeName, List<PuzzleTextureData> textureData)
+    public PuzzleCategoryDataSource() { }
+    public PuzzleCategoryDataSource(PuzzleCollectionData collectionData)
     {
-        this.themeName = themeName;
-        puzzleTextureData = textureData;
-    }
-    
-    public PuzzleCategoryDataSource(ThemeName themeName)
-    {
-        this.themeName = themeName;
+        PuzzleCollectionData = collectionData;
+        puzzleTextureData = collectionData.textureData;
     }
 
-    public void UpdateTextureCollection(List<PuzzleTextureData> textureData)
+    public void UpdateTextureCollection(PuzzleCollectionData collectionData)
     {
-        puzzleTextureData = textureData;
+        PuzzleCollectionData = collectionData;
+        puzzleTextureData = collectionData.textureData;
     }
     
     public int GetItemCount()
@@ -30,7 +26,7 @@ public class PuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 
     public void InitCell(ICell cell)
     {
-        ((PuzzleCategoryCell)cell).InitCell(themeName);
+        ((PuzzleCategoryCell)cell).InitCell();
     }
 
     public void SetCell(ICell cell, int index)

@@ -31,7 +31,7 @@ public class PuzzlePiece : IObject
         meshFilter.mesh = mesh;
     }
     
-    public void UpdateData(PuzzlePieceData puzzlePieceData)
+    public async void UpdateData(PuzzlePieceData puzzlePieceData)
     {
         currentAssignedPieceData = puzzlePieceData;
         gridCoordinate = puzzlePieceData.gridCoordinate;
@@ -44,7 +44,8 @@ public class PuzzlePiece : IObject
         mesh.uv = puzzlePieceData.meshData.uvs;
 
         meshRenderer.material.SetVector(GridCoord,(Vector2)gridCoordinate);
-        meshRenderer.material.SetTexture(NormalTex, puzzlePieceData.meshData.normalTex);
+        meshRenderer.material.SetTexture(NormalTex,
+            await AssetLoader.Instance.LoadAssetAsync<Texture2D>(puzzlePieceData.meshData.normalTexKey));
         neighbourCoordinates = puzzlePieceData.neighbourCoordinates;
     }
 

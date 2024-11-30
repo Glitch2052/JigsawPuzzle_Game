@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Textures
+  m_EditorClassIdentifier: 
+  m_GroupName: Textures
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 27cac8727ccfd490f92e1bda8bf0b391
+  m_SerializeEntries:
+  - m_GUID: 1cfce852d7cff08469b292d9866bbea1
+    m_Address: Animals
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Animals
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af405b265e5d8624a8ed8d063f03599e
+    m_Address: Cities
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Cities
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35707deda0c81614287e8f231535ad49
+    m_Address: General
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - General
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6d792eaf3585c9448963fb3a6af4321
+    m_Address: Landmarks
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Landmarks
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d4a652e2859865448cb1294ebfcab49
+    m_Address: Nature
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Nature
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ab32f7cbd092f84e9f4ba97e19cdc55
+    m_Address: Vehicles
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Vehicles
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af4573480575140b4b09a7e175abf3b6
+    m_Address: Normal Maps
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NormalMaps
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8635cf3cd271a445a877d67c70386c91, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0211b68c4c40a491489d0073c8526478, type: 2}
+    - {fileID: 11400000, guid: be199f7a86e854591bcfb806a0fa2774, type: 2}

@@ -234,8 +234,13 @@ public class EdgeShapeSO : ScriptableObject
         {
             MeshData newMeshData = meshData;
             string path = assetPaths.FirstOrDefault(p => p.Contains(meshData.edgeProfile));
-            if (path == String.Empty || path == "") continue;
-            newMeshData.normalTex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (path == String.Empty || path == "")
+            {
+                Debug.LogError($"normal map for edge profile {meshData.edgeProfile} not found");
+                continue;
+            }
+            newMeshData.normalTexKey = path.Substring(path.IndexOf("Normal Maps",StringComparison.Ordinal));
+            // newMeshData.normalTex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             updatedMeshData.Add(newMeshData);
         }
         allPossibleMeshCacheList.Clear();
@@ -273,7 +278,7 @@ public enum EdgeType
 public struct MeshData
 {
     public string edgeProfile;
-    public Texture2D normalTex;
+    public string normalTexKey;
     public Vector3[] vertices;
     public int[] triangles;
     public Vector2[] uvs;

@@ -15,33 +15,43 @@ MonoBehaviour:
   themeName: 2
   textureData:
   - themeName: 2
-    texture: {fileID: 2800000, guid: 1245af08b7e13c8489ff1ca77a6ea5ae, type: 3}
+    name: puzzle_01
+    iconTextureKey: Cities/Icon_puzzle_01.png
+    textureKey: Cities/puzzle_01.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: f5824c1f15465284291cce80830bb988, type: 3}
+    name: puzzle_02
+    iconTextureKey: Cities/Icon_puzzle_02.png
+    textureKey: Cities/puzzle_02.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: c96d6213276384b46969ba6061ad2a8c, type: 3}
+    name: puzzle_03
+    iconTextureKey: Cities/Icon_puzzle_03.png
+    textureKey: Cities/puzzle_03.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: a634576726bbb2344869fb1010757f17, type: 3}
+    name: puzzle_04
+    iconTextureKey: Cities/Icon_puzzle_04.png
+    textureKey: Cities/puzzle_04.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: a4a78374dd420e54baa65950d7e950d8, type: 3}
+    name: puzzle_05
+    iconTextureKey: Cities/Icon_puzzle_05.png
+    textureKey: Cities/puzzle_05.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: efaed9de0264cbd4d9171e9a6cb07dbb, type: 3}
+    name: puzzle_06
+    iconTextureKey: Cities/Icon_puzzle_06.png
+    textureKey: Cities/puzzle_06.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: 34c344dbbc96451489a81cb3f1ac198c, type: 3}
+    name: puzzle_07
+    iconTextureKey: Cities/Icon_puzzle_07.png
+    textureKey: Cities/puzzle_07.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: 584b64b8eba11b2468b00ee21710dce3, type: 3}
+    name: puzzle_08
+    iconTextureKey: Cities/Icon_puzzle_08.png
+    textureKey: Cities/puzzle_08.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: 1258b63ce98a1744797d93818ed3d15a, type: 3}
+    name: puzzle_09
+    iconTextureKey: Cities/Icon_puzzle_09.png
+    textureKey: Cities/puzzle_09.png
   - themeName: 2
-    texture: {fileID: 2800000, guid: 8fc59c49230065145b300644fa116969, type: 3}
-  spritesList:
-  - {fileID: 2800000, guid: 1245af08b7e13c8489ff1ca77a6ea5ae, type: 3}
-  - {fileID: 2800000, guid: f5824c1f15465284291cce80830bb988, type: 3}
-  - {fileID: 2800000, guid: c96d6213276384b46969ba6061ad2a8c, type: 3}
-  - {fileID: 2800000, guid: a634576726bbb2344869fb1010757f17, type: 3}
-  - {fileID: 2800000, guid: a4a78374dd420e54baa65950d7e950d8, type: 3}
-  - {fileID: 2800000, guid: efaed9de0264cbd4d9171e9a6cb07dbb, type: 3}
-  - {fileID: 2800000, guid: 34c344dbbc96451489a81cb3f1ac198c, type: 3}
-  - {fileID: 2800000, guid: 584b64b8eba11b2468b00ee21710dce3, type: 3}
-  - {fileID: 2800000, guid: 1258b63ce98a1744797d93818ed3d15a, type: 3}
-  - {fileID: 2800000, guid: 8fc59c49230065145b300644fa116969, type: 3}
+    name: puzzle_10
+    iconTextureKey: Cities/Icon_puzzle_10.png
+    textureKey: Cities/puzzle_10.png
+  spriteFolder: {fileID: 102900000, guid: af405b265e5d8624a8ed8d063f03599e, type: 3}

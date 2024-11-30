@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Threading.Tasks;
 using DG.Tweening;
 using PolyAndCode.UI;
 using SimpleJSON;
@@ -51,6 +51,9 @@ public class UIManager : MonoBehaviour
     private CustomPuzzleCategoryDataSource customCategoryContentDataSource;
     private PuzzleTextureData currentTextureData;
 
+    private Vector2 safeArea;
+    private Vector2 unSafeArea;
+    
     private readonly int[] sizeOptions =
     {
         36, 64, 81, 100, 144, 225
@@ -76,14 +79,29 @@ public class UIManager : MonoBehaviour
 
     public void Init()
     {
+        safeArea = new Vector2(Screen.safeArea.width, Screen.safeArea.height);
+        unSafeArea = new Vector2(Screen.width, Screen.height) - safeArea;
+        
         Vector2 bodySizeDelta = bodyTransform.sizeDelta;
-        bodySizeDelta.y = Screen.height - headerTransform.sizeDelta.y - footerTransform.sizeDelta.y;
+        bodySizeDelta.y = Screen.height - headerTransform.sizeDelta.y - footerTransform.sizeDelta.y - unSafeArea.y;
         bodyTransform.sizeDelta = bodySizeDelta;
+        bodyTransform.anchoredPosition = bodyTransform.anchoredPosition.SetY(-unSafeArea.y * 0.5f);
+
+        headerTransform.sizeDelta = headerTransform.sizeDelta.SetY(headerTransform.sizeDelta.y + unSafeArea.y);
+        gameHeaderPanel.sizeDelta = gameHeaderPanel.sizeDelta.SetY(gameHeaderPanel.sizeDelta.y + unSafeArea.y);
+        RectTransform bgScrollTransform = bgOptionsScrollRect.GetComponent<RectTransform>();
+        bgScrollTransform.offsetMax = bgScrollTransform.offsetMax.SetY(-unSafeArea.y);
+            
+        generalCollectionData.SetUpData();
+        foreach (var data in themesCollectionData)
+        {
+            data.SetUpData();
+        }
     }
     
     public void LoadMainCategory()
     {
-        mainCategoryContentDataSource ??= new PuzzleCategoryDataSource(ThemeName.General, generalCollectionData.textureData);
+        mainCategoryContentDataSource ??= new PuzzleCategoryDataSource(generalCollectionData);
         mainCategoryScrollRect.Initialize(mainCategoryContentDataSource);
     }
 
@@ -142,9 +160,9 @@ public class UIManager : MonoBehaviour
     {
         backButton.gameObject.SetActive(true);
         themeCategoryScrollRect.gameObject.SetActive(true);
-        themeCategoryContentDataSource ??= new PuzzleCategoryDataSource(puzzleCollectionData.themeName);
+        themeCategoryContentDataSource ??= new PuzzleCategoryDataSource();
         
-        themeCategoryContentDataSource.UpdateTextureCollection(puzzleCollectionData.textureData);
+        themeCategoryContentDataSource.UpdateTextureCollection(puzzleCollectionData);
         themeCategoryScrollRect.Initialize(themeCategoryContentDataSource);
     }
     
@@ -155,10 +173,13 @@ public class UIManager : MonoBehaviour
         backButton.gameObject.SetActive(false);
     }
 
-    public void EnableContinuePanel(PuzzleTextureData textureData)
+    public async void EnableContinuePanel(PuzzleTextureData textureData)
     {
         currentTextureData = textureData;
-        continuePuzzleDisplay.texture = currentTextureData.texture;
+        if (textureData is CustomPuzzleTexData customPuzzleTexData)
+            continuePuzzleDisplay.texture = customPuzzleTexData.customTexture;
+        else
+            continuePuzzleDisplay.texture = await AssetLoader.Instance.LoadAssetAsync<Texture2D>(currentTextureData.iconTextureKey);;
         continuePanel.gameObject.SetActive(true);
     }
 
@@ -167,10 +188,17 @@ public class UIManager : MonoBehaviour
         continuePanel.gameObject.SetActive(false);
     }
 
-    public void EnableSizeOption(PuzzleTextureData textureData)
+    public async void EnableSizeOption(PuzzleTextureData textureData)
     {
         currentTextureData = textureData;
-        newPuzzleDisplay.texture = currentTextureData.texture;
+        if (textureData is CustomPuzzleTexData customPuzzleTexData)
+        {
+            newPuzzleDisplay.texture = customPuzzleTexData.customTexture;
+        }
+        else
+        {
+            newPuzzleDisplay.texture = await AssetLoader.Instance.LoadAssetAsync<Texture2D>(currentTextureData.iconTextureKey);
+        }
         sizeOptionsPanel.gameObject.SetActive(true);
     }
 
@@ -241,7 +269,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
+            configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.name}.json";
         }
         configData[StringID.NewGame] = 1;
         configData.SetNextSceneType(SceneType.GameScene);
@@ -258,7 +286,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.texture.name}.json";
+            configData[StringID.PuzzleSceneID] = $"{currentTextureData.themeName}/{currentTextureData.name}.json";
         }
         configData.SetNextSceneType(SceneType.GameScene);
         GameManager.Instance.LoadScene(currentTextureData, configData);
@@ -353,3 +381,19 @@ public class UIManager : MonoBehaviour
         return timeSpan.Seconds + " seconds";
     }
 }
+
+public class Animal{
+    public virtual async Task DoAction()
+    {
+        
+    }
+}
+
+public class Dog : Animal
+{
+    public override async Task DoAction()
+    {
+        
+    }
+}
+

@@ -6,22 +6,19 @@ public class PuzzleCategoryCell : MonoBehaviour, ICell
 {
     [SerializeField] private Button button;
     [SerializeField] private RawImage buttonImage;
-
-    private ThemeName themeName;
+    
     private PuzzleTextureData puzzleTextureData;
 
-    public void InitCell(ThemeName theme)
+    public void InitCell()
     {
-        themeName = theme;
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(LoadPuzzleScene);
-        // button.onClick.AddListener(() => GameManager.Instance.LoadScene(puzzleTextureData));
     }
 
-    public void SetCell(PuzzleTextureData data)
+    public async void SetCell(PuzzleTextureData data)
     {
         puzzleTextureData = data;
-        buttonImage.texture = data.texture;
+        buttonImage.texture = await AssetLoader.Instance.LoadAssetAsync<Texture2D>(data.iconResourceLocation);;
     }
 
     private void LoadPuzzleScene()
@@ -40,7 +37,7 @@ public class PuzzleCategoryCell : MonoBehaviour, ICell
 
     private bool CheckForSavedScene()
     {
-        string jsonPath = $"{themeName}/{puzzleTextureData.texture.name}.json";
+        string jsonPath = $"{puzzleTextureData.themeName}/{puzzleTextureData.name}.json";
         return StorageManager.IsFileExist(jsonPath);
     }
 }

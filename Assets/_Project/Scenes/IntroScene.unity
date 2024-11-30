@@ -168,7 +168,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 8471232517650941362, guid: ed90740b5aeb0bf439aabb4e877aebdc, type: 3}
+  soundManager: {fileID: 1276895699459745930, guid: a34dafd50a0e64dc7a82d277774e3bc6, type: 3}
   uiManager: {fileID: 5733292238916866990, guid: 0f79fa00bc209ac40979f3a879da5de2, type: 3}
+  loadingScreen: {fileID: -2093500133974036995, guid: e0151fa00c9334252890ec25605a9af3, type: 3}
 --- !u!1 &2080940872
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,8 +242,8 @@ Camera:
   m_GameObject: {fileID: 2080940872}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.93333334, g: 0.93333334, b: 0.93333334, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

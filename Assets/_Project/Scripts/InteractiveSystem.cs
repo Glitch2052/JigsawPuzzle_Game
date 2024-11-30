@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using SimpleJSON;
 using UnityEngine;
@@ -76,6 +77,7 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         if (configData[StringID.NewGame])
         {
             squaredSize = configData[StringID.BoardSize];
+            StorageManager.Delete(configData[StringID.PuzzleSceneID]);
         }
         else
         {
@@ -89,7 +91,7 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         puzzleGenerator.SetGridSize(size,size);
         puzzleGenerator.UpdateBackGroundData(puzzleTextureData);
         
-        puzzleGenerator.GenerateGrid(puzzleTextureData, node[StringID.BoardData]);
+        yield return puzzleGenerator.GenerateGrid(puzzleTextureData, node[StringID.BoardData]).ToCoroutine();
         
         cameraController.SetISystem(this);
         palette.SetISystem(this);

@@ -15,24 +15,31 @@ MonoBehaviour:
   themeName: 4
   textureData:
   - themeName: 4
-    texture: {fileID: 2800000, guid: a88a317bf8afa0d4a941b33819549a5b, type: 3}
+    name: puzzle_01
+    iconTextureKey: Nature/Icon_puzzle_01.png
+    textureKey: Nature/puzzle_01.png
   - themeName: 4
-    texture: {fileID: 2800000, guid: dab19569db16bde4396b59ffbe849ef9, type: 3}
+    name: puzzle_02
+    iconTextureKey: Nature/Icon_puzzle_02.png
+    textureKey: Nature/puzzle_02.png
   - themeName: 4
-    texture: {fileID: 2800000, guid: bc455c81007ea9c4fa787e37a2b85afc, type: 3}
+    name: puzzle_03
+    iconTextureKey: Nature/Icon_puzzle_03.png
+    textureKey: Nature/puzzle_03.png
   - themeName: 4
-    texture: {fileID: 2800000, guid: d304dbb518db079448744badf3b79b10, type: 3}
+    name: puzzle_04
+    iconTextureKey: Nature/Icon_puzzle_04.png
+    textureKey: Nature/puzzle_04.png
   - themeName: 4
-    texture: {fileID: 2800000, guid: d46008891f0fc8e419a93427704fb486, type: 3}
+    name: puzzle_05
+    iconTextureKey: Nature/Icon_puzzle_05.png
+    textureKey: Nature/puzzle_05.png
   - themeName: 4
-    texture: {fileID: 2800000, guid: 26adcd1bd5f5f954288d6699d32805ee, type: 3}
+    name: puzzle_06
+    iconTextureKey: Nature/Icon_puzzle_06.png
+    textureKey: Nature/puzzle_06.png
   - themeName: 4
-    texture: {fileID: 2800000, guid: 21c8ffe7e43932b4cb29229c39e7e107, type: 3}
-  spritesList:
-  - {fileID: 2800000, guid: a88a317bf8afa0d4a941b33819549a5b, type: 3}
-  - {fileID: 2800000, guid: dab19569db16bde4396b59ffbe849ef9, type: 3}
-  - {fileID: 2800000, guid: bc455c81007ea9c4fa787e37a2b85afc, type: 3}
-  - {fileID: 2800000, guid: d304dbb518db079448744badf3b79b10, type: 3}
-  - {fileID: 2800000, guid: d46008891f0fc8e419a93427704fb486, type: 3}
-  - {fileID: 2800000, guid: 26adcd1bd5f5f954288d6699d32805ee, type: 3}
-  - {fileID: 2800000, guid: 21c8ffe7e43932b4cb29229c39e7e107, type: 3}
+    name: puzzle_07
+    iconTextureKey: Nature/Icon_puzzle_07.png
+    textureKey: Nature/puzzle_07.png
+  spriteFolder: {fileID: 102900000, guid: 2d4a652e2859865448cb1294ebfcab49, type: 3}

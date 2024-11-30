@@ -23,15 +23,15 @@ public class CustomPuzzleCategoryCell : MonoBehaviour, ICell
     {
         puzzleTextureData = data;
         if(data.isTextureLoaded)
-            buttonImage.texture = data.texture;
+            buttonImage.texture = data.customTexture;
         else
         {
             byte[] bytes = StorageManager.ReadBytesNow(data.texturePath);
             Texture2D texToLoad = new Texture2D(0, 0);
             texToLoad.LoadImage(bytes);
-            data.texture = texToLoad;
+            data.customTexture = texToLoad;
             data.isTextureLoaded = true;
-            buttonImage.texture = data.texture;
+            buttonImage.texture = data.customTexture;
         }
     }
 

@@ -17,6 +17,8 @@ public class SnapSwipe : MonoBehaviour
 
     private float scrollTo;
     private float scrollToSoft;
+
+    private bool isTapping = false;
     
     public int BtnNumber { get; private set; }
     
@@ -52,10 +54,12 @@ public class SnapSwipe : MonoBehaviour
         // Debug.Log($"Scroll Rect Velocity is {scrollRect.velocity.x}");
         if (Input.GetMouseButton(0) || Input.touchCount == 1)
         {
-            scrollPos = scrollbar.value;
+            if(!isTapping)
+                scrollPos = scrollbar.value;
         }
         else
         {
+            isTapping = false;
             for (int i = 0; i < pos.Length; i++)
             {
                 if (scrollPos < pos[i] + (distance / 2) && scrollPos > pos[i] - (distance / 2))
@@ -92,6 +96,7 @@ public class SnapSwipe : MonoBehaviour
 
     public void SelectSizeOnTap(int index)
     {
+        isTapping = true;
         scrollPos = (float)index / (pos.Length - 1);
     }
 }
