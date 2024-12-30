@@ -15,6 +15,12 @@ public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
         this.themeName = themeName;
         pathToTextureList = StorageManager.GetFilesInDirectory(StringID.CustomTextureFolder).ToList();
         puzzleTextureDataList = new List<CustomPuzzleTexData>();
+        puzzleTextureDataList.Add(new CustomPuzzleTexData()
+        {
+            themeName = themeName,
+            isTextureLoaded = false,
+            isEmptyDisplaySlot = true
+        });
         foreach (string texturePath in pathToTextureList)
         {
             var customData = new CustomPuzzleTexData
@@ -47,11 +53,11 @@ public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 
     public void InitCell(ICell cell)
     {
-        ((CustomPuzzleCategoryCell)cell).InitCell(themeName,this);
+        ((CustomPuzzleItemCell)cell).InitCell(themeName,this);
     }
 
     public void SetCell(ICell cell, int index)
     {
-        ((CustomPuzzleCategoryCell)cell).SetCell(puzzleTextureDataList[index]);
+        ((CustomPuzzleItemCell)cell).SetCell(puzzleTextureDataList[index]);
     }
 }

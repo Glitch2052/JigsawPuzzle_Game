@@ -31,6 +31,10 @@ public class PuzzleCollectionData : ScriptableObject
         }
     }
 
+    public IResourceLocation GetIconTextureResourceLocationKey()
+    {
+        return textureData[0].iconResourceLocation;
+    }
     // public IResourceLocation GetResourceLocation(string key)
     // {
     //     return keyToLocationMapDict.GetValueOrDefault(key);
@@ -105,6 +109,7 @@ public class CustomPuzzleTexData : PuzzleTextureData
     public string texturePath = String.Empty;
     public string jsonPath = StringID.Empty;
     public bool isTextureLoaded = false;
+    public bool isEmptyDisplaySlot = false;
 }
 
 public enum ThemeName

@@ -2,7 +2,7 @@ using PolyAndCode.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PuzzleCategoryCell : MonoBehaviour, ICell
+public class PuzzleItemCell : MonoBehaviour, ICell
 {
     [SerializeField] private Button button;
     [SerializeField] private RawImage buttonImage;
@@ -18,7 +18,7 @@ public class PuzzleCategoryCell : MonoBehaviour, ICell
     public async void SetCell(PuzzleTextureData data)
     {
         puzzleTextureData = data;
-        buttonImage.texture = await AssetLoader.Instance.LoadAssetAsync<Texture2D>(data.iconResourceLocation);;
+        buttonImage.texture = await AssetLoader.Instance.LoadAssetAsync<Texture2D>(data.iconResourceLocation);
     }
 
     private void LoadPuzzleScene()

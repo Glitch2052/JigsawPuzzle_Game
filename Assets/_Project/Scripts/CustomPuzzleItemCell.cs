@@ -2,7 +2,7 @@ using PolyAndCode.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CustomPuzzleCategoryCell : MonoBehaviour, ICell
+public class CustomPuzzleItemCell : MonoBehaviour, ICell
 {
     [SerializeField] private Button button;
     [SerializeField] private RawImage buttonImage;
@@ -22,6 +22,12 @@ public class CustomPuzzleCategoryCell : MonoBehaviour, ICell
     public void SetCell(CustomPuzzleTexData data)
     {
         puzzleTextureData = data;
+        if (data.isEmptyDisplaySlot)
+        {
+            buttonImage.texture = UIManager.Instance.plusIconSprite.texture;
+            return;
+        }
+        
         if(data.isTextureLoaded)
             buttonImage.texture = data.customTexture;
         else
@@ -37,6 +43,12 @@ public class CustomPuzzleCategoryCell : MonoBehaviour, ICell
 
     private void LoadPuzzleScene()
     {
+        if (puzzleTextureData.isEmptyDisplaySlot)
+        {
+            UIManager.Instance.ToggleGalleryOptionGameObject();
+            return;
+        }
+        
         if (CheckForSavedScene())
         {
             //Show Continue Option

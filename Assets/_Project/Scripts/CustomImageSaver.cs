@@ -4,7 +4,7 @@ public class CustomImageSaver : MonoBehaviour
 {
     public void OpenGallery()
     {
-        NativeGallery.Permission permission = NativeGallery.GetImageFromGallery(OnImageSelected, "Select Kar Bhai");
+        NativeGallery.Permission permission = NativeGallery.GetImageFromGallery(OnImageSelected, "Select Your Image");
         if (permission == NativeGallery.Permission.Denied)
         {
             Debug.LogError("Permission is Denied");

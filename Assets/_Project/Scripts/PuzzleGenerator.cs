@@ -26,6 +26,7 @@ public class PuzzleGenerator : MonoBehaviour
     public int selectedBgIndex;
     public List<Sprite> backGroundSpriteOptions;
 
+    public int TotalPieceCount => XWidth * YWidth;
     public Vector2Int GridSize => new Vector2Int(XWidth, YWidth);
     public Vector2 BoardSize => new Vector2(XWidth, YWidth) * CellSize;
     public Grid<GridObject> PuzzleGrid { get; private set; }

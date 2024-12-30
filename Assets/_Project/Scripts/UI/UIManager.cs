@@ -27,7 +27,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RecyclableScrollRect mainCategoryScrollRect;
     [SerializeField] private RecyclableScrollRect themeCategoryScrollRect;
     [SerializeField] private RecyclableScrollRect customCategoryScrollRect;
-    [SerializeField] private ScrollRect themesScrollRect;
+    [SerializeField] private RecyclableScrollRect themesOptionScrollRect;
     [SerializeField] private ScrollRect bgOptionsScrollRect;
 
     [Space(30)] 
@@ -38,6 +38,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform sizeOptionsPanel;
     [SerializeField] private RawImage continuePuzzleDisplay;
     [SerializeField] private RawImage newPuzzleDisplay;
+    [SerializeField] private Toggle openGalleryToggleBtn;
 
     [Space(30)] 
     [SerializeField] private RectTransform gameHeaderPanel;
@@ -45,9 +46,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI totalTimeText;
     [SerializeField] private BGTextureCell bgTextureCellPrefab;
     [SerializeField] private Toggle changeBgToggleBtn;
+    [SerializeField] private Image piecesCounter;
+    public Sprite plusIconSprite;
 
     private PuzzleCategoryDataSource mainCategoryContentDataSource;
     private PuzzleCategoryDataSource themeCategoryContentDataSource;
+    private ThemeOptionDataSource themeOptionDataSource;
     private CustomPuzzleCategoryDataSource customCategoryContentDataSource;
     private PuzzleTextureData currentTextureData;
 
@@ -79,11 +83,11 @@ public class UIManager : MonoBehaviour
 
     public void Init()
     {
-        safeArea = new Vector2(Screen.safeArea.width, Screen.safeArea.height);
+        safeArea = new Vector2(Screen.safeArea.width, Screen.safeArea.height + Screen.safeArea.y);
         unSafeArea = new Vector2(Screen.width, Screen.height) - safeArea;
         
         Vector2 bodySizeDelta = bodyTransform.sizeDelta;
-        bodySizeDelta.y = Screen.height - headerTransform.sizeDelta.y - footerTransform.sizeDelta.y - unSafeArea.y;
+        bodySizeDelta.y = canvas.GetComponent<RectTransform>().sizeDelta.y - headerTransform.sizeDelta.y - footerTransform.sizeDelta.y - unSafeArea.y;
         bodyTransform.sizeDelta = bodySizeDelta;
         bodyTransform.anchoredPosition = bodyTransform.anchoredPosition.SetY(-unSafeArea.y * 0.5f);
 
@@ -91,7 +95,7 @@ public class UIManager : MonoBehaviour
         gameHeaderPanel.sizeDelta = gameHeaderPanel.sizeDelta.SetY(gameHeaderPanel.sizeDelta.y + unSafeArea.y);
         RectTransform bgScrollTransform = bgOptionsScrollRect.GetComponent<RectTransform>();
         bgScrollTransform.offsetMax = bgScrollTransform.offsetMax.SetY(-unSafeArea.y);
-            
+        
         generalCollectionData.SetUpData();
         foreach (var data in themesCollectionData)
         {
@@ -112,26 +116,17 @@ public class UIManager : MonoBehaviour
 
     public void LoadThemeOptions()
     {
-        foreach (PuzzleCollectionData data in themesCollectionData)
-        {
-            Button button = Instantiate(themeButtonPrefab,themesScrollRect.content);
-            TextMeshProUGUI btnText = button.GetComponentInChildren<TextMeshProUGUI>();
-            btnText.text = data.themeName.ToString();
-            button.onClick.AddListener(() =>
-            {
-                LoadThemeCategory(data);
-            });
-        }
+        themesOptionScrollRect.gameObject.SetActive(true);
+        themeOptionDataSource ??= new ThemeOptionDataSource(themesCollectionData);
+        themesOptionScrollRect.Initialize(themeOptionDataSource);
     }
 
     public void UnloadThemeOptions()
     {
+        themesOptionScrollRect.ClearData();
         themeCategoryScrollRect.ClearData();
         themeCategoryScrollRect.gameObject.SetActive(false);
-        foreach (Transform child in themesScrollRect.content)
-        {
-            Destroy(child.gameObject);
-        }
+        themesOptionScrollRect.gameObject.SetActive(false);
     }
 
     public void LoadCustomCategory()
@@ -156,7 +151,7 @@ public class UIManager : MonoBehaviour
         customCategoryScrollRect.ReloadData();
     }
 
-    private void LoadThemeCategory(PuzzleCollectionData puzzleCollectionData)
+    public void LoadThemeCategory(PuzzleCollectionData puzzleCollectionData)
     {
         backButton.gameObject.SetActive(true);
         themeCategoryScrollRect.gameObject.SetActive(true);
@@ -311,6 +306,21 @@ public class UIManager : MonoBehaviour
     public void ToggleReferenceImage(bool value)
     {
         PuzzleGenerator.Instance.ToggleReferenceImage(value);
+    }
+
+    public void ToggleGalleryOptionGameObject()
+    {
+        openGalleryToggleBtn.isOn = !openGalleryToggleBtn.isOn;
+    }
+
+    public void SetPieceCounterDisplay(float value)
+    {
+        piecesCounter.fillAmount = value;
+    }
+
+    public void IncrementPieceCounterDisplay(float value)
+    {
+        piecesCounter.fillAmount += value;
     }
     
     public void OnBack()

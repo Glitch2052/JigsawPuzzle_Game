@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
             {
                 UIManager.Instance.ToggleLevelSelectPanel(false);
                 UIManager.Instance.ToggleGameplayOptionsPanel(true);
+                UIManager.Instance.SetPieceCounterDisplay(0);
                 iSystem.Init();
                 yield return iSystem.OnSceneLoad(textureData, configData);
             }

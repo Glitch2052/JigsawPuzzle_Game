@@ -26,11 +26,11 @@ public class PuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 
     public void InitCell(ICell cell)
     {
-        ((PuzzleCategoryCell)cell).InitCell();
+        ((PuzzleItemCell)cell).InitCell();
     }
 
     public void SetCell(ICell cell, int index)
     {
-        ((PuzzleCategoryCell)cell).SetCell(puzzleTextureData[index]);
+        ((PuzzleItemCell)cell).SetCell(puzzleTextureData[index]);
     }
 }
