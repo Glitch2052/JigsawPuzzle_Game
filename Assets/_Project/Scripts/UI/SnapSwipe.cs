@@ -91,7 +91,7 @@ public class SnapSwipe : MonoBehaviour
             }
         }
         
-        Debug.Log($"button number is {BtnNumber}");
+        // Debug.Log($"button number is {BtnNumber}");
     }
 
     public void SelectSizeOnTap(int index)

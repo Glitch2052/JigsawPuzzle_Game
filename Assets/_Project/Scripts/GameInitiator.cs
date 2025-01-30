@@ -9,6 +9,7 @@ public class GameInitiator : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private SoundManager soundManager;
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private AdManager adManager;
     [SerializeField] private LoadingScreen loadingScreen;
     private async void Start()
     {
@@ -29,6 +30,7 @@ public class GameInitiator : MonoBehaviour
         gameManager = Instantiate(gameManager);
         uiManager = Instantiate(uiManager);
         soundManager = Instantiate(soundManager);
+        adManager = Instantiate(adManager);
         AssetLoader.Init();
     }
 

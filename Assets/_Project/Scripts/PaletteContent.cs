@@ -112,7 +112,7 @@ public class PaletteContent : MonoBehaviour
         LocalPosition = pos;
         
         UpdatePositions();
-        Debug.Log($"CIndex is {currentItemCount} with DC {dataSource.Count} and LIndex {leftMostCellIndex}, RIndex {rightMostCellIndex}");
+        // Debug.Log($"CIndex is {currentItemCount} with DC {dataSource.Count} and LIndex {leftMostCellIndex}, RIndex {rightMostCellIndex}");
     }
 
     private void UpdatePositions()
@@ -297,6 +297,7 @@ public class PaletteContent : MonoBehaviour
 
         if (dragObject && (worldPos - dragStart).y >= dragThreshold)
         {
+            SoundManager.Instance.PlayOneShot(StringID.SfxPuzzleFromPalette);
             RemoveObjectFromPalette(dragObject);
             Vector3 pos = worldPos + Vector2.up * elevateOffset;
             pos.z = dragObject.Position.z;

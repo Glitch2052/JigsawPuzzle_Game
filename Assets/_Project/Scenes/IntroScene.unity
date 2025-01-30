@@ -170,6 +170,7 @@ MonoBehaviour:
   gameManager: {fileID: 8471232517650941362, guid: ed90740b5aeb0bf439aabb4e877aebdc, type: 3}
   soundManager: {fileID: 1276895699459745930, guid: a34dafd50a0e64dc7a82d277774e3bc6, type: 3}
   uiManager: {fileID: 5733292238916866990, guid: 0f79fa00bc209ac40979f3a879da5de2, type: 3}
+  adManager: {fileID: 5790071050808077729, guid: 0838301bdc7df429787bf7911b092886, type: 3}
   loadingScreen: {fileID: -2093500133974036995, guid: e0151fa00c9334252890ec25605a9af3, type: 3}
 --- !u!1 &2080940872
 GameObject:

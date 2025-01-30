@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using SimpleJSON;
 using UnityEngine;
@@ -12,6 +13,13 @@ public class GameManager : MonoBehaviour
     public JSONNode currentConfigData;
     public static SceneType SceneType = SceneType.None;
 
+#if UNITY_EDITOR
+    private readonly float interstitialTimer = 10f;
+#else
+    private readonly float interstitialTimer = 100f;
+#endif
+    private DateTime nextInterstitialTimer;
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -27,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     public void Init()
     {
-        
+        nextInterstitialTimer = DateTime.Now.AddSeconds(interstitialTimer);
     }
 
     public void LoadScene(PuzzleTextureData puzzleTextureData, JSONNode configData)
@@ -45,6 +53,26 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoadSceneCoroutine(string sceneName, JSONNode configData = null, PuzzleTextureData textureData = default)
     {
         iSystem = null;
+        
+        SoundManager.Instance.StopBGM();
+        
+        AdManager.Instance.HideBannerAd();
+        bool adWatched = false;
+        if (configData != null && configData[StringID.LevelCompleted])
+        {
+            AdManager.Instance.ShowRewardAd((value) =>
+            {
+                adWatched = true;
+                configData.Remove(StringID.LevelCompleted);
+            });
+            yield return new WaitUntil(() => adWatched);
+        }
+        else if (configData.GetNextSceneType() == SceneType.LevelSelect && DateTime.Now > nextInterstitialTimer)
+        {
+            AdManager.Instance.ShowInterstitial();
+            nextInterstitialTimer = nextInterstitialTimer.AddSeconds(interstitialTimer);
+        }
+        
         LoadingScreen.Instance.ShowLoading();
         // AsyncOperation handle = AssetLoader.Instance.LoadSceneAsync(sceneName);
         // while (handle is { isDone: false })
@@ -65,6 +93,7 @@ public class GameManager : MonoBehaviour
                 UIManager.Instance.SetPieceCounterDisplay(0);
                 iSystem.Init();
                 yield return iSystem.OnSceneLoad(textureData, configData);
+                AdManager.Instance.ShowBanner();
             }
             yield return UIManager.Instance.OnSceneLoad(configData);
         }

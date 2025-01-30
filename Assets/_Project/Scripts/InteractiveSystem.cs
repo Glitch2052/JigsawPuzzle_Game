@@ -102,6 +102,9 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         
         //Start timer To keep track of time taken to complete level
         puzzleGenerator.StartTimer();
+        
+        //Start Bgm
+        SoundManager.Instance.SetAudioLoop(true).SetBGM(Random.Range(0f,1f) > 0.5f ? StringID.Bgm01 : StringID.Bgm02);
     }
 
     public void UpdateCameraSize()
@@ -169,6 +172,7 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         }
         JSONNode node = new JSONObject();
         node.SetNextSceneType(SceneType.LevelSelect);
+        node[StringID.LevelCompleted] = puzzleGenerator.IsLevelCompleted;
         GameManager.Instance.LoadScene(StringID.LevelSelectScene, node);
     }
 
@@ -204,6 +208,8 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         Tween zoomOutTween = cameraController.ZoomOutOnLevelComplete();
         Tween fadeOutPalette = palette.FadeOutPaletteOnLevelComplete();
         Tween fadeOutUi = UIManager.Instance.FadeUIOnSceneComplete();
+        
+        SoundManager.Instance.PlayOneShot(StringID.SfxPuzzleComplete);
         
         yield return normalStrengthTween.WaitForCompletion();
         yield return zoomOutTween.WaitForCompletion();

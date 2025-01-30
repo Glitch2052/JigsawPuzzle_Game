@@ -59,7 +59,7 @@ public class SoundManager : MonoBehaviour
         
         if (clip)
         {
-            keyToSfxDictionary.Add(key, clip);
+            keyToSfxDictionary.TryAdd(key, clip);
             return clip;
         }
         Debug.Log($"Audio Clip with key {key} not found");
@@ -75,7 +75,25 @@ public class SoundManager : MonoBehaviour
     public void PlayOneShot(AudioClip clip, float volume = 1)
     {
         if (clip != null || audioDisabled) return;
-        audioPlayer.Stop();
         audioPlayer.PlayOneShot(clip, volume);
+    }
+
+    public async void SetBGM(string key)
+    {
+        AudioClip clip = await GetAudioClip(key);
+        if(clip == null) return;
+        audioPlayer.clip = clip;
+        audioPlayer.Play();
+    }
+
+    public void StopBGM()
+    {
+        audioPlayer.Stop();
+    }
+
+    public SoundManager SetAudioLoop(bool value)
+    {
+        audioPlayer.loop = value;
+        return this;
     }
 }

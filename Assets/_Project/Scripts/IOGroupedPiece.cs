@@ -44,8 +44,8 @@ public class IOGroupedPiece : IObject
             foreach (var piece in puzzlePieces)
             {
                 piece.SetISystem(null);
-                var gridObject = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(puzzlePiece.gridCoordinate.x, puzzlePiece.gridCoordinate.y);
-                gridObject.AssignTargetPuzzlePiece(puzzlePiece);
+                var gridObject = PuzzleGenerator.Instance.PuzzleGrid.GetGridObject(piece.gridCoordinate.x, piece.gridCoordinate.y);
+                gridObject.AssignTargetPuzzlePiece(piece);
             }
             transform.DOMove(gridPos, 0.14f).SetEase(Ease.OutQuad).onComplete += OnPuzzlePiecePlacedOnBoard;
             return;

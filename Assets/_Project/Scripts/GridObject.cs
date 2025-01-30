@@ -28,6 +28,19 @@ public class GridObject : IGridObject
             targetPuzzlePiece = puzzlePiece;
             puzzlePiece.SetISystem(null);
             UIManager.Instance.IncrementPieceCounterDisplay(1f / PuzzleGenerator.Instance.TotalPieceCount);
+            SoundManager.Instance.PlayOneShot(StringID.SfxPlacingOnCorrectSpot);
+            OnCorrectPuzzlePieceAssigned?.Invoke();
+            OnCorrectPuzzlePieceAssigned = null;
+        }
+    }
+
+    public void AssignSavedPuzzlePieceOnSceneLoad(PuzzlePiece puzzlePiece)
+    {
+        if (desiredPuzzlePiece == puzzlePiece)
+        {
+            targetPuzzlePiece = puzzlePiece;
+            puzzlePiece.SetISystem(null);
+            UIManager.Instance.IncrementPieceCounterDisplay(1f / PuzzleGenerator.Instance.TotalPieceCount);
             OnCorrectPuzzlePieceAssigned?.Invoke();
             OnCorrectPuzzlePieceAssigned = null;
         }

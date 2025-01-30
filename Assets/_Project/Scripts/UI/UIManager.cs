@@ -238,9 +238,15 @@ public class UIManager : MonoBehaviour
     public void OnHintButtonClicked()
     {
         var iSystem = GameManager.Instance.iSystem;
-        if (iSystem != null && iSystem.palette.AssignPuzzlePieceOnGrid())
+        if (iSystem != null)
         {
-            
+            iSystem.palette.AssignPuzzlePieceOnGrid();
+
+            // AdManager.Instance.ShowRewardAd((value) =>
+            // {
+            //     if (value)
+            //         iSystem.palette.AssignPuzzlePieceOnGrid();
+            // });
         }
     }
 
@@ -322,6 +328,11 @@ public class UIManager : MonoBehaviour
     {
         piecesCounter.fillAmount += value;
     }
+
+    public void PlayButtonSound()
+    {
+        SoundManager.Instance.PlayOneShot(StringID.SfxButtonTap);
+    }
     
     public void OnBack()
     {
@@ -365,7 +376,7 @@ public class UIManager : MonoBehaviour
         timerPanel.gameObject.SetActive(true);
         Sequence sequence = DOTween.Sequence();
         sequence.Append(gameHeaderPanel.DOAnchorPosY(gameHeaderPanel.sizeDelta.y, 1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
-        sequence.Append(timerPanel.DOAnchorPosY(0f,1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
+        sequence.Append(timerPanel.DOAnchorPosY(300f,1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
         return sequence;
     }
 
@@ -391,19 +402,3 @@ public class UIManager : MonoBehaviour
         return timeSpan.Seconds + " seconds";
     }
 }
-
-public class Animal{
-    public virtual async Task DoAction()
-    {
-        
-    }
-}
-
-public class Dog : Animal
-{
-    public override async Task DoAction()
-    {
-        
-    }
-}
-

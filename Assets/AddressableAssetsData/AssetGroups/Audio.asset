@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Audio
+  m_EditorClassIdentifier: 
+  m_GroupName: Audio
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 97328b4f14b3647eda575ca290b6fee6
+  m_SerializeEntries:
+  - m_GUID: b2d4c98ca81dc40fdbbbe9372ec604a2
+    m_Address: bgm_01
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioClips
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b868db59d51b4604803253d64709974
+    m_Address: bgm_02
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioClips
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7c30bf3fd891458dbe24f22e6a096e4
+    m_Address: sfx_button tap
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioClips
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ee0242208a6e4d55b91e562435d5daf
+    m_Address: sfx_on puzzle complete
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioClips
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 476f9cd0ba704464babb821a0b8cfc0a
+    m_Address: sfx_placing on correct spot
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioClips
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0fd64505c9de843d294890c47f887117
+    m_Address: sfx_puzzle from palette
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AudioClips
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8635cf3cd271a445a877d67c70386c91, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ff5c4d3c882bf4e6c8d38a551fd2aeef, type: 2}
+    - {fileID: 11400000, guid: 2246470ae2b4542eabefd890b730668f, type: 2}

@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using SimpleJSON;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 using Random = UnityEngine.Random;
 
 public class PuzzleGenerator : MonoBehaviour
@@ -277,7 +278,7 @@ public class PuzzleGenerator : MonoBehaviour
             
             var gridObject = PuzzleGrid.GetGridObject(data.gridCoordinate.x, data.gridCoordinate.y);
             gridObject.desiredPuzzlePiece = solvedPiece;
-            gridObject.AssignTargetPuzzlePiece(solvedPiece);
+            gridObject.AssignSavedPuzzlePieceOnSceneLoad(solvedPiece);
         }
 
         yield return null;
@@ -327,6 +328,7 @@ public class PuzzleGenerator : MonoBehaviour
 
     private void CheckForLevelCompletion()
     {
+        UnityEngine.Debug.Log("Assigned Piece Count is " +currAssignedPieceCount);
         if (currAssignedPieceCount < totalPiecesCountNeededForCompletion) return;
         IsLevelCompleted = true;
         iSystem.OnLevelCompleted();
