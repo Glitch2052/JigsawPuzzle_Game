@@ -240,13 +240,11 @@ public class UIManager : MonoBehaviour
         var iSystem = GameManager.Instance.iSystem;
         if (iSystem != null)
         {
-            iSystem.palette.AssignPuzzlePieceOnGrid();
-
-            // AdManager.Instance.ShowRewardAd((value) =>
-            // {
-            //     if (value)
-            //         iSystem.palette.AssignPuzzlePieceOnGrid();
-            // });
+            AdManager.Instance.ShowRewardAd((value) =>
+            {
+                if (value)
+                    iSystem.palette.AssignPuzzlePieceOnGrid();
+            });
         }
     }
 
