@@ -7,7 +7,7 @@
   <files />
   <settings>
     <setting name="androidAbis" value="arm64-v8a,armeabi-v7a" />
-    <setting name="bundleId" value="com.AstroRockGames.JigsawPuzzle" />
+    <setting name="bundleId" value="com.astrorock.jigsaw.puzzle.paradise.game" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
     <setting name="gradlePropertiesTemplateEnabled" value="True" />
