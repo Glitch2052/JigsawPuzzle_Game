@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
         iSystem = null;
         
         SoundManager.Instance.StopBGM();
+
+        int totalPuzzleSolved = PlayerPrefs.GetInt(StringID.TotalPuzzleSolved, 0);
         
         AdManager.Instance.HideBannerAd();
         bool adWatched = false;
@@ -67,7 +69,7 @@ public class GameManager : MonoBehaviour
             });
             yield return new WaitUntil(() => adWatched);
         }
-        else if (configData.GetNextSceneType() == SceneType.LevelSelect && DateTime.Now > nextInterstitialTimer)
+        else if (totalPuzzleSolved > 3 && configData.GetNextSceneType() == SceneType.LevelSelect && DateTime.Now > nextInterstitialTimer)
         {
             AdManager.Instance.ShowInterstitial();
             nextInterstitialTimer = nextInterstitialTimer.AddSeconds(interstitialTimer);
@@ -90,6 +92,7 @@ public class GameManager : MonoBehaviour
             {
                 UIManager.Instance.ToggleLevelSelectPanel(false);
                 UIManager.Instance.ToggleGameplayOptionsPanel(true);
+                UIManager.Instance.SetGameplayOptionsUIPositions();
                 UIManager.Instance.SetPieceCounterDisplay(0);
                 iSystem.Init();
                 yield return iSystem.OnSceneLoad(textureData, configData);

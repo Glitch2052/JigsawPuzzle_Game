@@ -330,6 +330,10 @@ public class PuzzleGenerator : MonoBehaviour
     {
         UnityEngine.Debug.Log("Assigned Piece Count is " +currAssignedPieceCount);
         if (currAssignedPieceCount < totalPiecesCountNeededForCompletion) return;
+
+        int currentPuzzleSolved = PlayerPrefs.GetInt(StringID.TotalPuzzleSolved, 0);
+        currentPuzzleSolved++;
+        PlayerPrefs.SetInt(StringID.TotalPuzzleSolved,currentPuzzleSolved);
         IsLevelCompleted = true;
         iSystem.OnLevelCompleted();
     }

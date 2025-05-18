@@ -1,10 +1,22 @@
 using System.Collections.Generic;
 using PolyAndCode.UI;
+using UnityEngine;
 
 public class PuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 {
     public PuzzleCollectionData PuzzleCollectionData { get; private set; }
     private List<PuzzleTextureData> puzzleTextureData;
+
+    private static Material deSaturatedMaterial;
+    public static Material DeSaturatedMaterial
+    {
+        get
+        {
+            if(deSaturatedMaterial == null)
+                deSaturatedMaterial = new Material(Shader.Find("UI/DeSaturated UI (SoftMaskable)"));
+            return deSaturatedMaterial;
+        }
+    }
 
     public PuzzleCategoryDataSource() { }
     public PuzzleCategoryDataSource(PuzzleCollectionData collectionData)

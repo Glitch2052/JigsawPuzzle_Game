@@ -7,20 +7,22 @@ using UnityEngine;
 public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 {
     private readonly ThemeName themeName;
-    private List<CustomPuzzleTexData> puzzleTextureDataList;
-    private List<string> pathToTextureList;
+    private readonly List<CustomPuzzleTexData> puzzleTextureDataList;
+    private readonly List<string> pathToTextureList;
 
     public CustomPuzzleCategoryDataSource(ThemeName themeName)
     {
         this.themeName = themeName;
         pathToTextureList = StorageManager.GetFilesInDirectory(StringID.CustomTextureFolder).ToList();
-        puzzleTextureDataList = new List<CustomPuzzleTexData>();
-        puzzleTextureDataList.Add(new CustomPuzzleTexData()
+        puzzleTextureDataList = new List<CustomPuzzleTexData>
         {
-            themeName = themeName,
-            isTextureLoaded = false,
-            isEmptyDisplaySlot = true
-        });
+            new CustomPuzzleTexData()
+            {
+                themeName = themeName,
+                isTextureLoaded = false,
+                isEmptyDisplaySlot = true
+            }
+        };
         foreach (string texturePath in pathToTextureList)
         {
             var customData = new CustomPuzzleTexData
@@ -48,7 +50,7 @@ public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 
     public int GetItemCount()
     {
-        return pathToTextureList.Count;
+        return puzzleTextureDataList.Count;
     }
 
     public void InitCell(ICell cell)

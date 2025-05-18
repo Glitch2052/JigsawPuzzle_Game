@@ -31,6 +31,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private ScrollRect bgOptionsScrollRect;
 
     [Space(30)] 
+    public TabGroup tabGroup;
     public TabButton firstCategory;
     [SerializeField] private Button themeButtonPrefab;
     [SerializeField] private Button backButton;
@@ -64,6 +65,7 @@ public class UIManager : MonoBehaviour
     };
 
     private int selectedSizeIndex = 0;
+    
     private static bool firstTimeLoad = false;
     
     public static UIManager Instance { get; private set; }
@@ -242,8 +244,7 @@ public class UIManager : MonoBehaviour
         {
             AdManager.Instance.ShowRewardAd((value) =>
             {
-                if (value)
-                    iSystem.palette.AssignPuzzlePieceOnGrid();
+                if (value) iSystem.palette.AssignPuzzlePieceOnGrid();
             });
         }
     }
@@ -317,6 +318,11 @@ public class UIManager : MonoBehaviour
         openGalleryToggleBtn.isOn = !openGalleryToggleBtn.isOn;
     }
 
+    public void SetGameplayOptionsUIPositions()
+    {
+        gameHeaderPanel.anchoredPosition = gameHeaderPanel.anchoredPosition.SetY(0);
+    }
+
     public void SetPieceCounterDisplay(float value)
     {
         piecesCounter.fillAmount = value;
@@ -356,6 +362,10 @@ public class UIManager : MonoBehaviour
             {
                 firstCategory.OnPointerClick(new PointerEventData(EventSystem.current));
                 firstTimeLoad = true;
+            }
+            else if(configData[StringID.ReloadCategory])
+            {
+                tabGroup.selectedTab.OnPointerClick(new PointerEventData(EventSystem.current));
             }
         }
         if (configData.GetNextSceneType() == SceneType.GameScene)

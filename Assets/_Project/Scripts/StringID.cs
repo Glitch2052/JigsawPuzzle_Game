@@ -23,6 +23,7 @@ public static class StringID
     public static readonly string CustomTextureFolder = CustomFolderName + "/" + Textures;
     public static readonly string BackGroundID = "BackGround";
     public static readonly string TotalTime = "TotalTime";
+    public static readonly string TotalPuzzleSolved = "TotalPuzzleSolved";
     public static readonly string LevelCompleted = "LevelCompleted";
     public static readonly string Bgm01 = "bgm_01";
     public static readonly string Bgm02 = "bgm_02";
@@ -30,4 +31,5 @@ public static class StringID
     public static readonly string SfxPuzzleComplete = "sfx_on puzzle complete";
     public static readonly string SfxPlacingOnCorrectSpot = "sfx_placing on correct spot";
     public static readonly string SfxPuzzleFromPalette = "sfx_puzzle from palette";
+    public static readonly string ReloadCategory = "reload category";
 }

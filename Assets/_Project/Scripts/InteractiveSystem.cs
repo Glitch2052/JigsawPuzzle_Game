@@ -23,6 +23,7 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     protected Vector3 cameraPosition;
 
     private string sceneID;
+    private PuzzleTextureData currentTextureData;
     
     
     public Camera Camera { get; protected set; }
@@ -71,6 +72,7 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
     public IEnumerator OnSceneLoad(PuzzleTextureData puzzleTextureData, JSONNode configData)
     {
         sceneID = configData[StringID.PuzzleSceneID];
+        currentTextureData = puzzleTextureData;
         JSONNode node = new JSONObject();
         int squaredSize;
 
@@ -173,6 +175,8 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         JSONNode node = new JSONObject();
         node.SetNextSceneType(SceneType.LevelSelect);
         node[StringID.LevelCompleted] = puzzleGenerator.IsLevelCompleted;
+        if (currentTextureData != null)
+            node[StringID.ReloadCategory] = currentTextureData.isLocked && puzzleGenerator.IsLevelCompleted;
         GameManager.Instance.LoadScene(StringID.LevelSelectScene, node);
     }
 
@@ -201,6 +205,9 @@ public class InteractiveSystem : MonoBehaviour, IPointerDownHandler,IDragHandler
         EventSystem currentEventSystem = EventSystem.current;
         currentEventSystem.gameObject.SetActive(false);
 
+        if(currentTextureData != null)
+            PlayerPrefs.SetInt(currentTextureData.textureKey,1);
+        
         StorageManager.Delete(sceneID);
         UIManager.Instance.UpdateTotalTimerCompletionText(puzzleGenerator.StopTimer());
 

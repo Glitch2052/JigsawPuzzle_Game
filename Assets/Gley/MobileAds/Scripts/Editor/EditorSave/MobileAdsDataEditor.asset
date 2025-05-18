@@ -31,7 +31,7 @@ MonoBehaviour:
         displayName: App ID
         required: 1
       idBanner:
-        id: 
+        id: ca-app-pub-1858869558971561/2573467060
         displayName: Banner ID
         required: 1
       idMRec:
@@ -39,11 +39,11 @@ MonoBehaviour:
         displayName: MRec ID
         required: 1
       idInterstitial:
-        id: 
+        id: ca-app-pub-1858869558971561/6321140380
         displayName: Interstitial ID
         required: 1
       idRewarded:
-        id: 
+        id: ca-app-pub-1858869558971561/4056829308
         displayName: Rewarded Video ID
         required: 1
       idRewardedInterstitial:
@@ -54,7 +54,7 @@ MonoBehaviour:
         id: 
         displayName: App Open ID
         required: 1
-      testMode: 1
+      testMode: 0
       testDevice: 
       debugGeography: 0
     - platform: 1

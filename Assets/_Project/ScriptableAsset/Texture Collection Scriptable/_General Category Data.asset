@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: _General Category Data
   m_EditorClassIdentifier: 
   themeName: 0
+  isLevelBased: 1
   textureData:
   - themeName: 0
     name: puzzle_01

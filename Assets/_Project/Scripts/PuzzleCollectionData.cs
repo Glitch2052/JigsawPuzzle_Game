@@ -11,6 +11,7 @@ using System.Linq;
 public class PuzzleCollectionData : ScriptableObject
 {
     public ThemeName themeName;
+    public bool isLevelBased;
     public List<PuzzleTextureData> textureData;
 
     // private Dictionary<string, IResourceLocation> keyToLocationMapDict;
@@ -28,6 +29,19 @@ public class PuzzleCollectionData : ScriptableObject
         {
             data.iconResourceLocation = keyToLocationMapDict.GetValueOrDefault(data.iconTextureKey);
             data.texResourceLocation = keyToLocationMapDict.GetValueOrDefault(data.textureKey);
+        }
+
+        if (isLevelBased)
+            UpdateLinks();
+    }
+
+    private void UpdateLinks()
+    {
+        textureData[0].isLocked = true;
+        for (int i = 1; i < textureData.Count; i++)
+        {
+            textureData[i].isLocked = true;
+            textureData[i].previousItem = textureData[i - 1];
         }
     }
 
@@ -82,6 +96,12 @@ public class PuzzleCollectionData : ScriptableObject
         }
     }
 
+    [ContextMenu("Set Lock Data")]
+    public void SetLockData()
+    {
+        
+    }
+
     private string GetKey(Sprite sprite)
     {
         if (sprite == null) return "NONE";
@@ -96,6 +116,10 @@ public class PuzzleTextureData
 {
     public ThemeName themeName;
     public string name;
+
+    [HideInInspector] public bool isLocked = false;
+    [HideInInspector] public PuzzleTextureData previousItem;
+    
     public string iconTextureKey;
     public string textureKey;
 
