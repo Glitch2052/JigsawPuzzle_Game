@@ -1,6 +1,8 @@
 using System;
+using Cysharp.Threading.Tasks;
 using Gley.MobileAds;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AdManager : MonoBehaviour
 {
@@ -8,6 +10,7 @@ public class AdManager : MonoBehaviour
     private bool isInitialized;
     public bool IsInitialized => isInitialized;
     private Action<bool> rewardCallback;
+    private Action<bool> rewardInterstitialCallback;
     
     private void Awake()
     {
@@ -20,6 +23,17 @@ public class AdManager : MonoBehaviour
             Instance = this;
         }
         DontDestroyOnLoad(gameObject);
+    }
+
+    public async UniTask Init()
+    {
+#if UNITY_IOS
+        await UniTask.Delay(1000);
+        IOSATTManager.RequestAdConsent(this);
+        await UniTask.Delay(500);
+#else
+        await UniTask.Yield();
+#endif
         API.Initialize((() => isInitialized = true));
     }
     
@@ -40,24 +54,36 @@ public class AdManager : MonoBehaviour
         API.HideBanner();
     }
     
-    public void ShowInterstitial()
+    public bool ShowInterstitial()
     {
         if (isInitialized && API.IsInterstitialAvailable())
         {
             API.ShowInterstitial();
+            return true;
         }
-        else
-        {
-            Debug.LogWarning("Interstitial ad is not ready yet.");
-        }
+        Debug.LogWarning("Interstitial ad is not ready yet.");
+        return false;
     }
     
-    public void ShowRewardAd(Action<bool> callback)
+    public bool ShowRewardAd(Action<bool> callback)
     {
         if (isInitialized && API.IsRewardedVideoAvailable())
         {
             rewardCallback = callback;
             API.ShowRewardedVideo(RewardCompleted);
+            return true;
+        }
+        Debug.LogWarning("Rewarded ad is not available.");
+        callback?.Invoke(false);
+        return false;
+    }
+    
+    public void ShowRewardedInterstitialAd(Action<bool> callback)
+    {
+        if (isInitialized && API.IsRewardedInterstitialAvailable())
+        {
+            rewardInterstitialCallback = callback;
+            API.ShowRewardedInterstitial(RewardInterstitialCompleted);
         }
         else
         {
@@ -70,5 +96,11 @@ public class AdManager : MonoBehaviour
     {
         rewardCallback?.Invoke(completed);
         rewardCallback = null;
+    }
+    
+    private void RewardInterstitialCompleted(bool completed)
+    {
+        rewardInterstitialCallback?.Invoke(completed);
+        rewardInterstitialCallback = null;
     }
 }

@@ -159,7 +159,7 @@ public class PuzzlePiece : IObject
     private IObject GetBelowPuzzlePiece()
     {
         colliderResults ??= new Collider2D[10];
-        int hitCount = MainCollider.OverlapCollider(contactFilter2D, colliderResults);
+        int hitCount = MainCollider.Overlap(contactFilter2D, colliderResults);
         SortColliders(hitCount, colliderResults);
         
         Collider2D puzzleCollider = colliderResults[0];

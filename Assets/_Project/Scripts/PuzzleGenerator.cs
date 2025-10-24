@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,6 +47,7 @@ public class PuzzleGenerator : MonoBehaviour
     private int currAssignedPieceCount;
     private Stopwatch stopwatchTimer;
     private double initialPlayedTime;
+    private Coroutine timerCoroutine;
 
     private void Awake()
     {
@@ -356,14 +358,31 @@ public class PuzzleGenerator : MonoBehaviour
     {
         stopwatchTimer.Reset();
         stopwatchTimer.Start();
+        timerCoroutine = StartCoroutine(UpdateTimer());
     }
 
     public double StopTimer()
     {
         if (!stopwatchTimer.IsRunning) return initialPlayedTime;
-        
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
         stopwatchTimer.Stop();
         return initialPlayedTime + stopwatchTimer.Elapsed.TotalSeconds;
+    }
+    
+    private IEnumerator UpdateTimer()
+    {
+        while (true)
+        {
+            var ts = stopwatchTimer.Elapsed + TimeSpan.FromSeconds(initialPlayedTime);
+            string elapsedTime = $"{ts.Minutes:00} : {ts.Seconds:00}";
+            
+            UIManager.Instance.timerText.text = elapsedTime;
+            yield return null;
+        }
     }
 
     #endregion

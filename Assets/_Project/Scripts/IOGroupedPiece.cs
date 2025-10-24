@@ -168,7 +168,7 @@ public class IOGroupedPiece : IObject
     private IObject GetBelowPuzzlePiece(BoxCollider2D pieceCollider)
     {
         colliderResults ??= new Collider2D[10];
-        int hitCount = pieceCollider.OverlapCollider(contactFilter2D, colliderResults);
+        int hitCount = pieceCollider.Overlap(contactFilter2D, colliderResults);
         SortColliders(hitCount, colliderResults);
         
         Collider2D puzzleCollider = colliderResults[0];

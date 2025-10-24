@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: GoogleMobileAdsSettings
   m_EditorClassIdentifier: 
   adMobAndroidAppId: ca-app-pub-1858869558971561~8463537319
-  adMobIOSAppId: 
+  adMobIOSAppId: ca-app-pub-1858869558971561~5921651684
   enableKotlinXCoroutinesPackagingOption: 1
   optimizeInitialization: 1
   optimizeAdLoading: 1
-  userTrackingUsageDescription: 
+  userTrackingUsageDescription: Puzzle Paradise will use your data to provide a better
+    and personalized ad experience.
   validateGradleDependencies: 0
   userLanguage: en

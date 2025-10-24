@@ -144,6 +144,7 @@ public enum ThemeName
     Landmarks = 3,
     Nature = 4,
     Vehicles = 5,
+    AnimeScene = 6,
     
     
     Custom = 1000

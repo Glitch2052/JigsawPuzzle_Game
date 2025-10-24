@@ -38,13 +38,15 @@ public class CustomPuzzleCategoryDataSource : IRecyclableScrollRectDataSource
 
     public void AddNewPath(string path,Texture2D texture)
     {
-        puzzleTextureDataList.Insert(0,new CustomPuzzleTexData
+        var customData = new CustomPuzzleTexData
         {
             themeName = themeName,
             customTexture = texture,
             texturePath = path,
             isTextureLoaded = true
-        });
+        };
+        customData.jsonPath = customData.texturePath.Replace(StringID.Textures + "/", "").Replace(".png",".json");
+        puzzleTextureDataList.Insert(0,customData);
         pathToTextureList.Insert(0, path);
     }
 

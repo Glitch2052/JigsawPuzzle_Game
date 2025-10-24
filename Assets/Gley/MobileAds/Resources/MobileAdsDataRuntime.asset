@@ -52,43 +52,43 @@ MonoBehaviour:
       debugGeography: 0
     directedForChildren: 0
   iOSAdvertiser:
-    advertiser: 0
+    advertiser: 20
     platformSettings:
-      platform: 0
-      enabled: 0
+      platform: 1
+      enabled: 1
       appId:
-        id: 
-        displayName: 
-        required: 0
+        id: ca-app-pub-1858869558971561~5921651684
+        displayName: App ID
+        required: 1
       idBanner:
-        id: 
-        displayName: 
-        required: 0
+        id: ca-app-pub-1858869558971561/4935873072
+        displayName: Banner ID
+        required: 1
       idMRec:
         id: 
-        displayName: 
-        required: 0
+        displayName: MRec ID
+        required: 1
       idInterstitial:
-        id: 
-        displayName: 
-        required: 0
+        id: ca-app-pub-1858869558971561/5119721815
+        displayName: Interstitial ID
+        required: 1
       idRewarded:
-        id: 
-        displayName: 
-        required: 0
+        id: ca-app-pub-1858869558971561/6416475707
+        displayName: Rewarded Video ID
+        required: 1
       idRewardedInterstitial:
-        id: 
-        displayName: 
-        required: 0
+        id: ca-app-pub-1858869558971561/2309709735
+        displayName: Rewarded Interstitial ID
+        required: 1
       idOpenApp:
         id: 
-        displayName: 
-        required: 0
+        displayName: App Open ID
+        required: 1
       testMode: 0
       testDevice: 
       debugGeography: 0
     directedForChildren: 0
   debugMode: 0
   enableATT: 0
-  nativePopupText: We will use your data to provide a better and personalized ad
-    experience.
+  nativePopupText: Puzzle Paradise will use your data to provide a better and personalized
+    ad experience.

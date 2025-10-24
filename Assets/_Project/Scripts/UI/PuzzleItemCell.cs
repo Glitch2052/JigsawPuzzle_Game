@@ -35,6 +35,7 @@ public class PuzzleItemCell : MonoBehaviour, ICell
         {
             lockTransform.DOKill(true);
             lockTransform.DOPunchScale(Vector3.one * 0.25f, 0.4f);
+            UIManager.Instance.PlayCompletePrevLevelPanelAnimation();
             return;
         }
         

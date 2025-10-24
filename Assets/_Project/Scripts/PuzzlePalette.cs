@@ -43,7 +43,7 @@ public class PuzzlePalette : IObject
         oldOrthoSize = iSystem.Camera.orthographicSize;
         
         if(!iSystem.puzzleGenerator.IsLevelCompleted)
-            LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 1.5f * LocalScale.y);
+            LocalPosition = LocalPosition.SetY(-newOrthoSize + (PaletteHeight * 0.5f) + 2.25f * LocalScale.y);
     }
 
     public void AddObjectToPalette(PuzzlePiece puzzlePiece)

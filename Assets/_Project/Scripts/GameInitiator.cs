@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using SimpleJSON;
+using Unity.Advertisement.IosSupport;
+using Unity.Advertisement.IosSupport.Components;
 using UnityEngine;
 
 public class GameInitiator : MonoBehaviour
@@ -26,6 +28,8 @@ public class GameInitiator : MonoBehaviour
 
     private void BindObjects()
     {
+        // ContextScreenView.RequestAuthorizationTrackingFromUser();
+        
         loadingScreen = Instantiate(loadingScreen);
         gameManager = Instantiate(gameManager);
         uiManager = Instantiate(uiManager);
@@ -38,7 +42,12 @@ public class GameInitiator : MonoBehaviour
     {
         // Wait Till Initialization Of Objects
         // like ads handler or analytics services
-        await LoadAddressableLocations();
+        List<UniTask> allTasks = new()
+        {
+            adManager.Init(),
+            LoadAddressableLocations()
+        };
+        await UniTask.WhenAll(allTasks);
         
         gameManager.Init();
         uiManager.Init();
@@ -48,8 +57,8 @@ public class GameInitiator : MonoBehaviour
     private void BeginGame()
     {
         JSONNode node = new JSONObject();
-        node.SetNextSceneType(SceneType.LevelSelect);
-        gameManager.LoadScene(StringID.LevelSelectScene,node);
+        node.SetNextSceneType(SceneType.HomeScene);
+        gameManager.LoadScene(StringID.HomeScene,node);
     }
 
     private async UniTask LoadAddressableLocations()

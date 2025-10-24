@@ -4,5 +4,6 @@ namespace Gley.MobileAds.Internal
     {
         Android = 0,
         iOS = 1,
+        Amazon = 2,
     }
 }

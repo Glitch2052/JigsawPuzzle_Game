@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using DG.Tweening;
 using PolyAndCode.UI;
 using SimpleJSON;
@@ -9,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class UIManager : MonoBehaviour
 {
@@ -40,6 +40,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RawImage continuePuzzleDisplay;
     [SerializeField] private RawImage newPuzzleDisplay;
     [SerializeField] private Toggle openGalleryToggleBtn;
+    [SerializeField] private RectTransform completePrevLevelPanel;
+    [SerializeField] private Animator completePrevLevelAnimator;
+    [SerializeField] private RectTransform noAdsPanel;
 
     [Space(30)] 
     [SerializeField] private RectTransform gameHeaderPanel;
@@ -48,6 +51,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private BGTextureCell bgTextureCellPrefab;
     [SerializeField] private Toggle changeBgToggleBtn;
     [SerializeField] private Image piecesCounter;
+    [SerializeField] private TextMeshProUGUI piecesFillPercentText;
+    [SerializeField] private RectTransform barFillRectTransform;
+    [SerializeField] private RectTransform barMaskRectTransform;
+    public TextMeshProUGUI timerText;
     public Sprite plusIconSprite;
 
     private PuzzleCategoryDataSource mainCategoryContentDataSource;
@@ -64,6 +71,8 @@ public class UIManager : MonoBehaviour
         36, 64, 81, 100, 144, 225
     };
 
+
+    private float fillBarSize;
     private int selectedSizeIndex = 0;
     
     private static bool firstTimeLoad = false;
@@ -242,11 +251,31 @@ public class UIManager : MonoBehaviour
         var iSystem = GameManager.Instance.iSystem;
         if (iSystem != null)
         {
-            AdManager.Instance.ShowRewardAd((value) =>
+            if (!GameManager.IsNetworkReachable)
             {
-                if (value) iSystem.palette.AssignPuzzlePieceOnGrid();
-            });
+                ShowNoAdsPanel();
+                return;
+            }
+#if !UNITY_EDITOR
+            if(AdManager.Instance.ShowRewardAd((value) =>
+               {
+                   if (value) iSystem.palette.AssignPuzzlePieceOnGrid();
+               }))
+            { }
+            else 
+                ShowNoAdsPanel();
+#else
+            iSystem.palette.AssignPuzzlePieceOnGrid();
+#endif
         }
+    }
+
+    public void ShowNoAdsPanel()
+    {
+        noAdsPanel.localScale = Vector3.one * 0.5f;
+        noAdsPanel.gameObject.SetActive(true);
+        noAdsPanel.DOKill(true);
+        noAdsPanel.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
     }
 
     public void ToggleCornerSortingOption(bool value)
@@ -325,17 +354,28 @@ public class UIManager : MonoBehaviour
 
     public void SetPieceCounterDisplay(float value)
     {
+        fillBarSize = barMaskRectTransform.rect.size.x;
         piecesCounter.fillAmount = value;
+        barFillRectTransform.offsetMax = barFillRectTransform.offsetMax.SetX(-(1 - piecesCounter.fillAmount) * fillBarSize);
+        piecesFillPercentText.text = $"{Mathf.Clamp(Mathf.CeilToInt(piecesCounter.fillAmount * 100f),0,100)}%";
     }
 
     public void IncrementPieceCounterDisplay(float value)
     {
+        fillBarSize = barMaskRectTransform.rect.size.x;
         piecesCounter.fillAmount += value;
+        barFillRectTransform.offsetMax = barFillRectTransform.offsetMax.SetX(-(1 - piecesCounter.fillAmount) * fillBarSize);
+        piecesFillPercentText.text = $"{Mathf.Clamp(Mathf.CeilToInt(piecesCounter.fillAmount * 100f),0,100)}%";
     }
 
     public void PlayButtonSound()
     {
         SoundManager.Instance.PlayOneShot(StringID.SfxButtonTap);
+    }
+
+    public void PlayCompletePrevLevelPanelAnimation()
+    {
+        completePrevLevelAnimator.Play("anim0",-1,0);
     }
     
     public void OnBack()
@@ -373,6 +413,7 @@ public class UIManager : MonoBehaviour
             ToggleLevelSelectPanel(false);
             ToggleGameplayOptionsPanel(true);
             LoadBgOptions();
+            // Debug.Log($"Fill bar size is {fillBarSize}");
         }
         timerPanel.gameObject.SetActive(false);
         timerPanel.anchoredPosition = timerPanel.anchoredPosition.SetY(-500f);
@@ -383,7 +424,7 @@ public class UIManager : MonoBehaviour
     {
         timerPanel.gameObject.SetActive(true);
         Sequence sequence = DOTween.Sequence();
-        sequence.Append(gameHeaderPanel.DOAnchorPosY(gameHeaderPanel.sizeDelta.y, 1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
+        sequence.Append(gameHeaderPanel.DOAnchorPosY(gameHeaderPanel.sizeDelta.y + 150f, 1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
         sequence.Append(timerPanel.DOAnchorPosY(300f,1f).SetDelay(0.4f).SetEase(Ease.OutQuad));
         return sequence;
     }

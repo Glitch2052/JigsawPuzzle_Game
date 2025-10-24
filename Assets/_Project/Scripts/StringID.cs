@@ -20,6 +20,7 @@ public static class StringID
     public static readonly string Textures = "Textures";
     public static readonly string GameScene = "GameScene";
     public static readonly string LevelSelectScene = "MainMenu";
+    public static readonly string HomeScene = "HomeScene";
     public static readonly string CustomTextureFolder = CustomFolderName + "/" + Textures;
     public static readonly string BackGroundID = "BackGround";
     public static readonly string TotalTime = "TotalTime";

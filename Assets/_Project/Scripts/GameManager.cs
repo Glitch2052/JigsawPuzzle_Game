@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     public InteractiveSystem iSystem;
     private Coroutine loadingCoroutine;
     public JSONNode currentConfigData;
-    public static SceneType SceneType = SceneType.None;
+    public static SceneType sceneType = SceneType.None;
+    public static bool IsNetworkReachable => Application.internetReachability != NetworkReachability.NotReachable;
 
 #if UNITY_EDITOR
     private readonly float interstitialTimer = 10f;
@@ -62,17 +63,18 @@ public class GameManager : MonoBehaviour
         bool adWatched = false;
         if (configData != null && configData[StringID.LevelCompleted])
         {
-            AdManager.Instance.ShowRewardAd((value) =>
-            {
-                adWatched = true;
+            if(AdManager.Instance.ShowInterstitial())
                 configData.Remove(StringID.LevelCompleted);
-            });
-            yield return new WaitUntil(() => adWatched);
+            // AdManager.Instance.ShowRewardedInterstitialAd((value) =>
+            // {
+            //     adWatched = true;
+            // });
+            // yield return new WaitUntil(() => adWatched);
         }
         else if (totalPuzzleSolved > 3 && configData.GetNextSceneType() == SceneType.LevelSelect && DateTime.Now > nextInterstitialTimer)
         {
-            AdManager.Instance.ShowInterstitial();
-            nextInterstitialTimer = nextInterstitialTimer.AddSeconds(interstitialTimer);
+            if(AdManager.Instance.ShowInterstitial())
+                nextInterstitialTimer = nextInterstitialTimer.AddSeconds(interstitialTimer);
         }
         
         LoadingScreen.Instance.ShowLoading();
@@ -87,18 +89,35 @@ public class GameManager : MonoBehaviour
         var newScene = SceneManager.GetSceneByName(sceneName);
         if (newScene.IsValid())
         {
+            UIManager.Instance.SetPieceCounterDisplay(0);
+            
             iSystem = FindObjectOfType<InteractiveSystem>();
             if (iSystem)
             {
-                UIManager.Instance.ToggleLevelSelectPanel(false);
-                UIManager.Instance.ToggleGameplayOptionsPanel(true);
                 UIManager.Instance.SetGameplayOptionsUIPositions();
-                UIManager.Instance.SetPieceCounterDisplay(0);
                 iSystem.Init();
                 yield return iSystem.OnSceneLoad(textureData, configData);
                 AdManager.Instance.ShowBanner();
             }
             yield return UIManager.Instance.OnSceneLoad(configData);
+        }
+        sceneType = configData.GetNextSceneType();
+        switch (sceneType)
+        {
+            case SceneType.None:
+                break;
+            case SceneType.HomeScene:
+                break;
+            case SceneType.LevelSelect:
+                UIManager.Instance.ToggleLevelSelectPanel(true);
+                UIManager.Instance.ToggleGameplayOptionsPanel(false);
+                break;
+            case SceneType.GameScene:
+                UIManager.Instance.ToggleLevelSelectPanel(false);
+                UIManager.Instance.ToggleGameplayOptionsPanel(true);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         LoadingScreen.Instance.HideLoading();
         loadingCoroutine = null;
@@ -118,6 +137,7 @@ public class GameManager : MonoBehaviour
 public enum SceneType
 {
     None,
+    HomeScene,
     LevelSelect,
     GameScene
 }

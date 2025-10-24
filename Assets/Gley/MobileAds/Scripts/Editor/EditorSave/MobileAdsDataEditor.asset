@@ -58,13 +58,13 @@ MonoBehaviour:
       testDevice: 
       debugGeography: 0
     - platform: 1
-      enabled: 0
+      enabled: 1
       appId:
-        id: 
+        id: ca-app-pub-1858869558971561~5921651684
         displayName: App ID
         required: 1
       idBanner:
-        id: 
+        id: ca-app-pub-1858869558971561/4935873072
         displayName: Banner ID
         required: 1
       idMRec:
@@ -72,15 +72,15 @@ MonoBehaviour:
         displayName: MRec ID
         required: 1
       idInterstitial:
-        id: 
+        id: ca-app-pub-1858869558971561/5119721815
         displayName: Interstitial ID
         required: 1
       idRewarded:
-        id: 
+        id: ca-app-pub-1858869558971561/6416475707
         displayName: Rewarded Video ID
         required: 1
       idRewardedInterstitial:
-        id: 
+        id: ca-app-pub-1858869558971561/2309709735
         displayName: Rewarded Interstitial ID
         required: 1
       idOpenApp:
@@ -402,7 +402,7 @@ MonoBehaviour:
   usePlaymaker: 0
   useUnityVisualScripting: 0
   enableATT: 0
-  nativePopupText: We will use your data to provide a better and personalized ad
-    experience.
+  nativePopupText: Puzzle Paradise will use your data to provide a better and personalized
+    ad experience.
   selectedAndroidAdvertiser: 20
-  selectediOSAdvertiser: 0
+  selectediOSAdvertiser: 20
